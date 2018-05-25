@@ -367,9 +367,9 @@
         // set the text for the 'create new target' button.
         var label = '<i class="fas fa-plus-circle"></i> ' + getNewTargetBtnLabel($("#id_target_frequency").val());
         $("#addNewPeriodicTarget").html(label);
-        var selected_option = $("#id_target_frequency").find("option:selected").text();
+        var selected_option = parseInt($("#id_target_frequency").find("option:selected").val()) || 0;
         if ( (lock == true || $('#id_target_frequency').attr('readonly'))
-                 && selected_option != 'Life of Program (LoP) only') {
+                 && selected_option != 1) {
             $("#id_target_frequency option:not(:selected)").attr("disabled", true);
             $("#id_target_frequency").attr("readonly", true);
             $("#id_create_targets_btn").attr("disabled", true);
@@ -378,7 +378,7 @@
             $("#div_id_target_frequency_custom").hide();
             lock = true;
         }
-        if (selected_option == 'Life of Program (LoP) only' || selected_option == '---------') {
+        if (selected_option == 1 || selected_option == 0) {
             $("#div_id_create_targets_btn").hide();
         } else {
             if ($("#id_div_periodic_tables_placeholder").children().length > 0) {
@@ -387,7 +387,7 @@
                 $("#id_delete_targets_btn").hide();
             }
 
-            if (selected_option == 'Event') {
+            if (selected_option == 8) {
                 $("#div_id_target_frequency_num_periods label").text("Number of events*");
                 $("#div_id_create_targets_btn").show();
             } else {
@@ -399,9 +399,9 @@
 
 
         if (lock == false) {
-            if (selected_option == 'Life of Program (LoP) only' ||
-                selected_option == 'Midline and endline' ||
-                selected_option == '---------') {
+            if (selected_option == 1 ||
+                selected_option == 2 ||
+                selected_option == 0) {
                 $("#div_id_target_frequency_start").hide();
                 $("#div_id_target_frequency_num_periods").hide();
                 $("#div_id_target_frequency_custom").hide();
@@ -409,7 +409,7 @@
                 // $("#id_target_frequency_start").prop('required', false);
                 $("#id_target_frequency_custom").val('');
 
-            } else if (selected_option == 'Event') {
+            } else if (selected_option == 8) {
                 $("#div_id_target_frequency_start").hide();
                 $("#id_target_frequency_start").val('');
                 $("#div_id_target_frequency_custom").show();
