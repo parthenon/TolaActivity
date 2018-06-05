@@ -114,7 +114,6 @@
     function setupMonthPickers() {
         const start_date_id = "id_reporting_start_date";
         const end_date_id = "id_reporting_end_date";
-        // $('.rptMonthPicker').datepicker({
         var opts = {
             changeMonth: true,
             changeYear: true,
@@ -138,7 +137,6 @@
             beforeShow: function (input, inst) {
                 $("#ui-datepicker-div").addClass("month-only");
                 var datestr = this.id == start_date_id ? $('#alt_start_date').val() : $('#alt_end_date').val();
-                console.log("datestr:", datestr);
                 if (datestr.length > 0) {
                   var dateArray = datestr.split("-");
                   year = dateArray[0];
@@ -147,10 +145,8 @@
                   $(this).datepicker('setDate', new Date(year, month, 1));
                 }
                 var other = this.id == start_date_id ? `#${end_date_id}` : `#${start_date_id}`;
-                console.log("other:", other);
                 var option = this.id == start_date_id ? "maxDate" : "minDate";
                 var selectedDate = other == `#${start_date_id}` ? $('#alt_start_date').val() : $('#alt_end_date').val();
-                console.log("sd:", selectedDate);
                 if (selectedDate.length > 0) {
                   var sdateArray = selectedDate.split("-");
                   year = sdateArray[0];
@@ -203,8 +199,6 @@
 
     $("#reportingperiod_update_form").on('submit', function(e) {
         e.preventDefault();
-
-        console.log($(this).serialize());
 
         $.post($(this).attr('action'), $(this).serialize(), function(data){
             var program_id = data.program_id;
