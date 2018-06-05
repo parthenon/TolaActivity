@@ -1,4 +1,5 @@
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <div id="id_reporting_period_modal" class="modal fade" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -53,39 +54,33 @@
                                 <h3>{% trans 'Reporting start and end dates' %}</h3>
                             </div>
                             <div id="div_reporting_dates">
-                                <div id="div_id_reporting_start_date" class="mr-5 div-rpt-date-input">
-                                    <div class="mb-0 text-uppercase"><h4>{% trans 'Start date' %}</h4></div>
-                                    <div class="input-group">
-                                        <h4>
-                                            <input type="text"
-                                                   name="reporting_period_start"
-                                                   class="form-control rptMonthPicker"
-                                                   autocomplete="off"
-                                                   id="id_reporting_start_date">
-                                        </h4>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text mb-2">
-                                                <i class="fas fa-calendar-alt"></i>
-                                            </span>
-                                        </div>
-                                    </div>
+                                <div id="div_id_reporting_start_date" style="display: inline-block;" class="mr-5">
+                                    <h4>
+                                        <div class="mb-0 text-uppercase">{% trans 'Start date' %}</div>
+                                        <input type="text"
+                                               name=""
+                                               class="form-control rptMonthPicker"
+                                               id="id_reporting_start_date">
+                                        <input type="hidden"
+                                               name="reporting_period_start"
+                                               class="form-control"
+                                               id="alt_start_date"
+                                               value="">
+                                    </h4>
                                 </div>
-                                <div id="div_reporting_end_date" class="div-rpt-date-input">
-                                    <div class="text-uppercase"><h4 class="mb-0">{% trans 'End date' %}</h4></div>
-                                    <div class="input-group">
-                                        <h4>
-                                            <input type="text"
-                                                name="reporting_period_end"
-                                                class="form-control rptMonthPicker"
-                                                autocomplete="off"
-                                                id="id_reporting_end_date">
-                                        </h4>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text mb-2">
-                                                <i class="fas fa-calendar-alt"></i>
-                                            </span>
-                                        </div>
-                                    </div>
+                                <div id="div_reporting_end_date" style="display: inline-block;">
+                                    <h4>
+                                        <div class="mb-0 text-uppercase">{% trans 'End date' %}</div>
+                                        <input type="text"
+                                           name=""
+                                           class="form-control rptMonthPicker"
+                                           id="id_reporting_end_date">
+                                        <input type="hidden"
+                                               name="reporting_period_end"
+                                               class="form-control"
+                                               id="alt_end_date"
+                                               value="">
+                                    </h4>
                                 </div>
                             </div>
                             <div id="div_reporting_dates_description">
@@ -107,54 +102,60 @@
 </div>
 
 <script type="text/javascript">
-    var origRptStart = "";
-    var origRptEnd = "";
+    var userLang = "{{ LANGUAGE_CODE }}";
+
+    if (userLang == 'en') {
+        var dateformat = 'M d, yy';
+    }
+    else {
+        var dateformat = 'd M yy'
+    }
 
     function setupMonthPickers() {
         const start_date_id = "id_reporting_start_date";
         const end_date_id = "id_reporting_end_date";
-        $('.rptMonthPicker').datepicker({
+        // $('.rptMonthPicker').datepicker({
+        var opts = {
             changeMonth: true,
             changeYear: true,
             showButtonPanel: true,
-            dateFormat: 'M d, yy',
+            dateFormat: dateformat,
+            altFormat: 'yy-mm-dd',
             onClose: function (dateText, inst) {
-                const month = inst.selectedMonth;
-                const year = inst.selectedYear;
-                const existingDate = $(this).val();
-                var newDate = ""
-                if (this.id == start_date_id)
-                    newDate = formatDate(new Date(year, month, 1));
-                else {
-                    newDate = formatDate(new Date(year, month+1, 0));
-                }
+              const month = inst.selectedMonth;
+              const year = inst.selectedYear;
+              var existingDate = this.id == start_date_id ? $('#alt_start_date').val() : $('#alt_end_date').val();
+              const newDate = (new Date(year, month, 1)).toISOString().split('T')[0];
                 if (existingDate != newDate) {
-                    $(this).change();
+                  $(this).change();
                 }
-                $(this).datepicker('setDate', newDate);
-                $(this).blur();
-            },
+                if (this.id == start_date_id) {
+                  $(this).datepicker('setDate', new Date(year, month, 1));
+                } else {
+                  $(this).datepicker('setDate', new Date(year, month + 1, 0));
+                }
+              },
             beforeShow: function (input, inst) {
                 $("#ui-datepicker-div").addClass("month-only");
-                if ((datestr = $(this).val()).length > 0) {
-                    year = datestr.substring(datestr.length - 4, datestr.length);
-                    month = jQuery.inArray(datestr.substring(0, 3), $(this).datepicker('option', 'monthNamesShort'));
-                    var defaultDate = "";
-                    if (this.id == start_date_id) {
-                        defaultDate = new Date(year, month, 1);
-                    }
-                    else {
-                        defaultDate = new Date(year, month+1, 0);
-                    }
-                    $(this).datepicker('option', 'defaultDate', defaultDate);
-                    $(this).datepicker('setDate', defaultDate);
+                var datestr = this.id == start_date_id ? $('#alt_start_date').val() : $('#alt_end_date').val();
+                console.log("datestr:", datestr);
+                if (datestr.length > 0) {
+                  var dateArray = datestr.split("-");
+                  year = dateArray[0];
+                  month = parseInt(dateArray[1], 10) -1;
+                  $(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
+                  $(this).datepicker('setDate', new Date(year, month, 1));
                 }
                 var other = this.id == start_date_id ? `#${end_date_id}` : `#${start_date_id}`;
+                console.log("other:", other);
                 var option = this.id == start_date_id ? "maxDate" : "minDate";
-                if ((selectedDate = $(other).val()).length > 0) {
-                    year = selectedDate.substring(selectedDate.length - 4, selectedDate.length);
-                    month = jQuery.inArray(selectedDate.substring(0, 3), $(this).datepicker('option', 'monthNamesShort'));
-                    if (this.id == start_date_id){
+                var selectedDate = other == `#${start_date_id}` ? $('#alt_start_date').val() : $('#alt_end_date').val();
+                console.log("sd:", selectedDate);
+                if (selectedDate.length > 0) {
+                  var sdateArray = selectedDate.split("-");
+                  year = sdateArray[0];
+                  month = parseInt(sdateArray[1], 10), - 1;
+                  if (this.id == start_date_id){
                         $(this).datepicker("option", option, new Date(year, month, 1));
                     }
                     else {
@@ -163,75 +164,47 @@
 
                 }
             },
-        })
+        };
+
+        $('#id_reporting_start_date').datepicker(
+          $.extend({
+            altField: '#alt_start_date'
+          }, opts)
+        );
+
+        $('#id_reporting_end_date').datepicker(
+          $.extend({
+            altField: '#alt_end_date'
+          }, opts)
+        );
     }
 
     /*
     *  Populate the programs start and end datestr
     */
     $('#id_reporting_period_modal').on('show.bs.modal', function (event) {
-        var base_url = "{% url 'reportingperiod_update' 0 %}";
-        base_url = base_url.slice(0,-1);
+        var base_url = "{% url 'reportingperiod_update' 0 %}"
+        base_url = base_url.slice(0,-1)
         $("input[name=program_id]").val($(event.relatedTarget).data('program'));
         $("#reportingperiod_update_form").attr("action", base_url + $(event.relatedTarget).data('program'));
-        var testDate = "";
-        if ((testDate = new Date($(event.relatedTarget).data('progstart'))) == "Invalid Date"){
-            $("#id_gait_start_date").html("Unavailable");
-            $("#id_gait_start_date").addClass("color-red");
-            $("#id_reporting_start_date").attr("disabled", true);
-            $("#id_reporting_end_date").attr("disabled", true);
-            $("#submit-id-submit").attr("disabled", true);
-        }
-        else {
-            $("#id_gait_start_date").html(formatDate(testDate));
-        }
-        if ((testDate = new Date($(event.relatedTarget).data('progend'))) == "Invalid Date"){
-            $("#id_gait_end_date").html("Unavailable");
-            $("#id_gait_end_date").addClass("color-red");
-            $("#id_reporting_start_date").attr("disabled", true);
-            $("#id_reporting_end_date").attr("disabled", true);
-            $("#submit-id-submit").attr("disabled", true);
-        }
-        else {
-            $("#id_gait_end_date").html(formatDate(testDate));
-        }
-        if ((testDate = new Date($(event.relatedTarget).data('rptstart'))) == "Invalid Date"){
-            $("#id_reporting_start_date").val("");
-        }
-        else {
-            $("#id_reporting_start_date").val(formatDate(testDate));
-            origRptStart = $(event.relatedTarget).data('rptstart');
-        }
-        if ((testDate = new Date($(event.relatedTarget).data('rptend'))) == "Invalid Date"){
-            $("#id_reporting_end_date").val("");
-        }
-        else {
-            $("#id_reporting_end_date").val(formatDate(testDate));
-            origRptEnd = $(event.relatedTarget).data('rptend');
-        }
-
-        if ($(event.relatedTarget).data('recordcount') > 0) {
-            $("#id_reporting_start_date").attr("disabled", true);
-            $("#id_reporting_end_date").attr("disabled", true);
-            $("#submit-id-submit").attr("disabled", true);
-        }
-
+        $("#id_gait_start_date").html($.datepicker.formatDate(dateformat, new Date($(event.relatedTarget).data('progstart'))));
+        $("#id_gait_end_date").html($.datepicker.formatDate(dateformat, new Date($(event.relatedTarget).data('progend'))));
+        $("#id_reporting_start_date").val($.datepicker.formatDate(dateformat, new Date($(event.relatedTarget).data('rptstart'))));
+        $("#id_reporting_end_date").val($.datepicker.formatDate(dateformat, new Date(($(event.relatedTarget).data('progend').replace(/-/g, '\/')))));
+        $("#alt_start_date").val($.datepicker.formatDate('yy-mm-dd', new Date($(event.relatedTarget).data('rptstart'))));
+        $("#alt_end_date").val($.datepicker.formatDate('yy-mm-dd', new Date(($(event.relatedTarget).data('rptend').replace(/-/g, '\/')))));
+        
         setupMonthPickers();
     });
 
     $('#id_reporting_period_modal').on('hide.bs.modal', function (event) {
-        // Need to remove the month-only class from the date-picker so it doesn't interfere with other datepickers
-        // on the page.  Can't do it in the picker because it results in a calendar flash before picker is closed.
         $("#ui-datepicker-div").removeClass("month-only");
-
-        // Remove the classes on close because they will still be there if a different link is clicked
-        $("#id_gait_start_date, #id_gait_end_date, #id_reporting_start_date, #id_reporting_end_date")
-            .removeClass("color-red");
-        $("#id_reporting_start_date, #id_reporting_end_date, #submit-id-submit").attr("disabled", false);
     });
 
     $("#reportingperiod_update_form").on('submit', function(e) {
         e.preventDefault();
+
+        console.log($(this).serialize());
 
         $.post($(this).attr('action'), $(this).serialize(), function(data){
             var program_id = data.program_id;
@@ -252,13 +225,6 @@
               "#div-id-reportingperiod-alert")
 
         });
-    });
-
-    $("#reportingperiod_update_form").on('reset', function(e) {
-        e.preventDefault();
-        $("#id_reporting_start_date").val(formatDate(new Date(origRptStart)));
-        $("#id_reporting_end_date").val(formatDate(new Date(origRptEnd)));
-
     });
 
 </script>
