@@ -583,7 +583,8 @@
 
         if ($.isEmptyObject(field.val())) {
             errMsg = "{% trans 'Please complete this field.' %}";
-        } else if (!isDate(field.val())) {
+        } 
+        else if (!isDate(field.val())) {
             if (userLang == 'en') {
                 errMsg = "{% trans 'Please enter a valid date.' %}";
             }
