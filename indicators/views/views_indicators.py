@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 from urlparse import urlparse
 
-import dateutil.parser
+import dateparser
 import requests
 from dateutil.relativedelta import relativedelta
 from django.contrib import messages
@@ -68,7 +68,7 @@ def generate_periodic_target_single(tf, start_date, nthTargetPeriod,
         end = ((start_date + relativedelta(years=+j)) +
                relativedelta(days=-1)).strftime('%Y-%m-%d')
 
-        target_period = {'period': 'Year %s' % j, 'start_date': start,
+        target_period = {'period': _('Year %s') % j, 'start_date': start,
                          'end_date': end}
     elif tf == Indicator.SEMI_ANNUAL:
         start = ((start_date + relativedelta(months=+(i * 6)))
@@ -77,7 +77,7 @@ def generate_periodic_target_single(tf, start_date, nthTargetPeriod,
         end = ((start_date + relativedelta(months=+(j * 6))) +
                relativedelta(days=-1)).strftime('%Y-%m-%d')
 
-        target_period = {'period': 'Semi-annual period %s' % j,
+        target_period = {'period': (_'Semi-annual period %s') % j,
                          'start_date': start, 'end_date': end}
 
     elif tf == Indicator.TRI_ANNUAL:
@@ -87,7 +87,7 @@ def generate_periodic_target_single(tf, start_date, nthTargetPeriod,
         end = ((start_date + relativedelta(months=+(j * 4))) +
                relativedelta(days=-1)).strftime('%Y-%m-%d')
 
-        target_period = {'period': 'Tri-annual period %s' % j,
+        target_period = {'period': _('Tri-annual period %s') % j,
                          'start_date': start, 'end_date': end}
 
     elif tf == Indicator.QUARTERLY:
@@ -97,7 +97,7 @@ def generate_periodic_target_single(tf, start_date, nthTargetPeriod,
         end = ((start_date + relativedelta(months=+(j * 3))) +
                relativedelta(days=-1)).strftime('%Y-%m-%d')
 
-        target_period = {'period': 'Quarter %s' % j, 'start_date': start,
+        target_period = {'period': _('Quarter %s') % j, 'start_date': start,
                          'end_date': end}
     elif tf == Indicator.MONTHLY:
         month = (start_date + relativedelta(months=+i)).strftime("%B")
@@ -502,9 +502,12 @@ class IndicatorUpdate(UpdateView):
         return kwargs
 
     def form_invalid(self, form):
-        messages.error(self.request, _('Invalid Form'), fail_silently=False)
-        print("...............%s.........................." % form.errors)
-        return self.render_to_response(self.get_context_data(form=form))
+        if self.request.is_ajax():
+            return HttpResponse(status=400)
+        else:
+            messages.error(self.request, _('Invalid Form'), fail_silently=False)
+            print("...............%s.........................." % form.errors)
+            return self.render_to_response(self.get_context_data(form=form))
 
     def form_valid(self, form, **kwargs):
         periodic_targets = self.request.POST.get('periodic_targets', None)
@@ -542,7 +545,7 @@ class IndicatorUpdate(UpdateView):
                     pk = None
 
                 try:
-                    start_date = dateutil.parser.parse(
+                    start_date = dateparser.parse(
                         pt.get('start_date', None))
 
                     start_date = datetime.strftime(start_date, '%Y-%m-%d')
@@ -551,7 +554,7 @@ class IndicatorUpdate(UpdateView):
                     start_date = None
 
                 try:
-                    end_date = dateutil.parser.parse(pt.get('end_date', None))
+                    end_date = dateparser.parse(pt.get('end_date', None))
                     end_date = datetime.strftime(end_date, '%Y-%m-%d')
                 except ValueError:
                     # raise ValueError("Incorrect data value")
