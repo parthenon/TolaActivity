@@ -109,7 +109,8 @@ function formatIntDate(dateString, lang="en", day=0) {
         return ret;
 
     } catch (err) {
-            return dateString == null ? '' : dateString;
+        console.log(err);
+        return dateString == null ? '' : dateString;
     }
 }
 

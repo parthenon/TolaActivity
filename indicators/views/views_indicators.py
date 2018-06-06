@@ -77,7 +77,7 @@ def generate_periodic_target_single(tf, start_date, nthTargetPeriod,
         end = ((start_date + relativedelta(months=+(j * 6))) +
                relativedelta(days=-1)).strftime('%Y-%m-%d')
 
-        target_period = {'period': (_'Semi-annual period %s') % j,
+        target_period = {'period': _('Semi-annual period %s') % j,
                          'start_date': start, 'end_date': end}
 
     elif tf == Indicator.TRI_ANNUAL:

@@ -17,7 +17,7 @@
             changeMonth: true,
             changeYear: true,
             showButtonPanel: true,
-            dateFormat: 'dateformat',
+            dateFormat: dateformat,
             beforeShow(input, inst){
                 // move date picker popup div inside modal dialog(fix for firefox)
                 $(input).parent().append($('#ui-datepicker-div'));
@@ -355,6 +355,24 @@
             else {
                 show_hide_cummulative_inputs('number')
             }
+        }
+        ).fail(function() {
+            var alertsElement = "#alerts";
+            if ( $("#modalmessages").length) {
+                alertsElement = "#modalmessages";
+            }
+
+            $(alertsElement).html('');
+
+            const fieldId = "id_target_frequency_start";
+            const field = $("#" + fieldId);
+            errMsg = "{% trans 'Please enter a valid date.' %}";
+            field.addClass('is-invalid');
+            $("#div_id_target_frequency_start").addClass('mb-5')
+            $("#div_id_target_frequency_start").removeClass('mb-3')
+            $("#validation_" + fieldId).text(errMsg);
+            $("#id_create_targets_btn").attr("disabled", false);
+
         });
     }
 
