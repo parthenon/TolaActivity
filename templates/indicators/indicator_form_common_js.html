@@ -1,23 +1,16 @@
 {% load i18n %}
-{% get_current_language as LANGUAGE_CODE %}
 
 <script>
     var validation_msgs = {};
-    var mediaSize = window.matchMedia("(max-width: 575px)");
+    var mediaSize = window.matchMedia("(max-width: 575px)")
     var userLang = "{{ LANGUAGE_CODE }}";
-
-    if (userLang == 'en') {
-        var dateformat = 'M d, yy';
-    } else {
-        var dateformat = 'd M yy';
-    }
 
     function setupPopupCalendar() {
         $('.monthPicker').datepicker({
             changeMonth: true,
             changeYear: true,
             showButtonPanel: true,
-            dateFormat: dateformat,
+            dateFormat: 'M d, yy',
             beforeShow(input, inst){
                 // move date picker popup div inside modal dialog(fix for firefox)
                 $(input).parent().append($('#ui-datepicker-div'));
@@ -50,6 +43,10 @@
                 field.datepicker('setDate', new Date(year, month, 1));
                 field.trigger('change');
             });
+        });
+
+        $('.monthPicker').on('keypress', function(e) {
+            e.preventDefault(); // No manual editing
         });
     }
 
@@ -172,7 +169,7 @@
                     <td class="align-middle pr-0">
                         ${(target_frequency != 8) ? `
                             <strong>${pt.period }</strong></div>
-                            <div>${formatIntDate(pt.start_date, userLang)} ${ pt.start_date ? '-' : ''} ${formatIntDate(pt.end_date, userLang)}</div>`
+                            <div>${formatDate(pt.start_date)} ${ pt.start_date ? '-' : ''} ${formatDate(pt.end_date)}</div>`
                             :
                             `<input type="text" name="${pt.period}" placeholder="Enter event name" value="${(rowNum == 0) ? pt.period : (pt.id ? pt.period : '') }" class="form-control input-text">
                                 <span style="margin:0px;" class="help-block"> </span>`
@@ -180,7 +177,7 @@
                     </td>
 
                     <td class="align-middle" align="right" width="150px">
-                        <input type="number" id="pt-${pt.id}" value="${parseFloat(pt.target).toFixed(2).replace(/[.,]00$/, "")}" data-start-date="${formatIntDate(pt.start_date, userLang)}" data-end-date="${formatIntDate(pt.end_date, userLang)}" name="${pt.period}" placeholder="{% trans 'Enter target' %}" class="form-control input-value">
+                        <input type="number" id="pt-${pt.id}" value="${parseFloat(pt.target).toFixed(2).replace(/[.,]00$/, "")}" data-start-date="${formatDate(pt.start_date)}" data-end-date="${formatDate(pt.end_date)}" name="${pt.period}" placeholder="{% trans 'Enter target' %}" class="form-control input-value">
                             <span id="hint_id_pt_${pt.period}" style="margin:0px;" class="help-block"> </span>
                     </td>
                 </tr>
@@ -355,24 +352,6 @@
             else {
                 show_hide_cummulative_inputs('number')
             }
-        }
-        ).fail(function() {
-            var alertsElement = "#alerts";
-            if ( $("#modalmessages").length) {
-                alertsElement = "#modalmessages";
-            }
-
-            $(alertsElement).html('');
-
-            const fieldId = "id_target_frequency_start";
-            const field = $("#" + fieldId);
-            errMsg = "{% trans 'Please enter a valid date.' %}";
-            field.addClass('is-invalid');
-            $("#div_id_target_frequency_start").addClass('mb-5')
-            $("#div_id_target_frequency_start").removeClass('mb-3')
-            $("#validation_" + fieldId).text(errMsg);
-            $("#id_create_targets_btn").attr("disabled", false);
-
         });
     }
 
@@ -583,11 +562,6 @@
 
         if ($.isEmptyObject(field.val())) {
             errMsg = "{% trans 'Please complete this field.' %}";
-        } 
-        else if (!isDate(field.val())) {
-            if (userLang == 'en') {
-                errMsg = "{% trans 'Please enter a valid date.' %}";
-            }
         }
 
         if (errMsg) {
@@ -597,10 +571,6 @@
             $("#validation_" + fieldId).text(errMsg);
             return false;
         } else {
-            if (userLang == "en") {
-                var val = formatDate(field.val(), 1);
-                field.val(val);
-            }
             errMsg = undefined;
             field.removeClass('is-invalid');
             $("#div_id_target_frequency_start").addClass('mb-3')
