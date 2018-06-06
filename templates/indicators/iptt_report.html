@@ -21,7 +21,7 @@
     <div id="id_div_top_iptt_report">
         <span id="id_span_iptt_date_range">
           <h2>Indicator Performance Tracking Table</h2>
-          <strong>{{ report_start_date|date:"M d, Y" }} - {{ report_end_date_actual|date:"M d, Y" }}</strong>
+          <strong>{{ report_start_date|date:"SHORT_DATE_FORMAT" }} - {{ report_end_date_actual|date:"SHORT_DATE_FORMAT" }}</strong>
         </span>
         <table id="iptt_table" class="table table-sm table-bordered table-hover">
           <caption>Indicator Performance Tracking Table</caption>
@@ -44,7 +44,7 @@
                     class="text-center lopCols text-nowrap">
                   {{ k|upper }}<br>
                   {% if v.0 is not None and v.1 is not None %}
-                    <small>{{ v.0|date:"M d, Y" }} - {{ v.1|date:"M d, Y" }}</small>
+                    <small>{{ v.0|date:"SHORT_DATE_FORMAT" }} - {{ v.1|date:"SHORT_DATE_FORMAT" }}</small>
                   {% endif %}
                 </td>
               {% endfor %}

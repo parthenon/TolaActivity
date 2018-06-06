@@ -27,6 +27,10 @@ LOCALE_PATHS = [
     join(DJANGO_ROOT, 'locale'),
 ]
 
+FORMAT_MODULE_PATH = [
+    'formats'
+]
+
 ########## END PATH CONFIGURATION
 
 
