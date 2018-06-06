@@ -100,7 +100,7 @@ function formatIntDate(dateString, lang="en", day=0) {
             // alert("offsetting timezone tz=" + tz + " hrs = " + hrs);
             dateval.setMinutes(dateval.getMinutes() + tz);
         }
-        if day !== 0 {
+        if (day !== 0) {
             // set day to day specified in function call
             dateval.setDate(day);
         }
