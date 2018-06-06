@@ -20,11 +20,11 @@
   <main class="iptt_table_wrapper">
     <div id="id_div_top_iptt_report">
         <span id="id_span_iptt_date_range">
-          <h2>Indicator Performance Tracking Table</h2>
+          <h2>{% trans "Indicator Performance Tracking Table" %}</h2>
           <strong>{{ report_start_date|date:"SHORT_DATE_FORMAT" }} - {{ report_end_date_actual|date:"SHORT_DATE_FORMAT" }}</strong>
         </span>
         <table id="iptt_table" class="table table-sm table-bordered table-hover">
-          <caption>Indicator Performance Tracking Table</caption>
+          <caption>{% trans "Indicator Performance Tracking Table" %}</caption>
           <colgroup scope="col" span="9"></colgroup>
           <colgroup scope="col" span="3" class="lopCols"></colgroup>
           <colgroup scope="col" span="{{ report_date_ranges|length }}"></colgroup>

@@ -94,7 +94,7 @@
                         <a href="{% url 'collecteddata_update' cdata.id %}"
                            class="collecteddata-link"
                            id="collected-{{cdata.id}}">
-                                {{ cdata.date_collecte|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                                {{ cdata.date_collected|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
                         </a>
                         {% endif %}
                         <span class="float-right">
