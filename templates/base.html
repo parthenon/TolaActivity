@@ -102,7 +102,7 @@
                             </li>
                         </ul>
 
-                        <ul class="navbar-nav ml-auto">
+                        <ul class="navbar-nav ml-auto align-items-center">
                             {% if user.is_authenticated  %}
                                 <li class="nav-item">
                                   <a class="nav-link" href="{% url 'profile' %}">
@@ -137,7 +137,7 @@
                             <li class="nav-item">
                                 <form action="{% url 'set_language' %}" method="post" class="select-language form-inline mx-2">{% csrf_token %}
                                     <input name="next" type="hidden" value="{{ redirect_to }}" />
-                                    <select name="language" class="form-control form-control-sm custom-select">
+                                    <select name="language" class="form-control form-control-sm custom-select" onchange="this.form.submit()">
                                         {% get_current_language as LANGUAGE_CODE %}
                                         {% get_available_languages as LANGUAGES %}
                                         {% get_language_info_list for LANGUAGES as languages %}
@@ -147,7 +147,6 @@
                                             </option>
                                         {% endfor %}
                                     </select>
-                                    <input type="submit" class="btn btn-dark" value="Go" />
                                 </form>
                             </li>
                         </ul>
