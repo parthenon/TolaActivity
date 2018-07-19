@@ -955,3 +955,6 @@ used on collected data table in IPTT */
 .break-word {
     word-break: break-word; /* wraps text in the middle of words */
 }
+
+/* language chooser */
+.select-language { }
