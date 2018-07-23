@@ -134,25 +134,6 @@
                                     </div>
                                 </li>
                             {% endif %}
-                            <li class="nav-item">
-                                {% get_current_language as LANGUAGE_CODE %}
-                                {{ LANGUAGE_CODE }}
-                                {% comment %}
-                                <form action="{% url 'set_language' %}" method="post" class="select-language form-inline mx-2">{% csrf_token %}
-                                    <input name="next" type="hidden" value="{{ redirect_to }}" />
-                                    <select name="language" class="form-control form-control-sm custom-select" onchange="this.form.submit()">
-                                        {% get_current_language as LANGUAGE_CODE %}
-                                        {% get_available_languages as LANGUAGES %}
-                                        {% get_language_info_list for LANGUAGES as languages %}
-                                        {% for language in languages %}
-                                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
-                                                {{ language.name_local }} ({{ language.code }})
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </form>
-                                {% endcomment %}
-                            </li>
                         </ul>
 
                     </div>
