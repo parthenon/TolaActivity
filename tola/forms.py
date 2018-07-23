@@ -40,7 +40,7 @@ class RegistrationForm(UserChangeForm):
     helper.html5_required = True
     helper.layout = Layout(
         Fieldset(
-            '','title', 'name', 'employee_number', 'user', 'username', 'country', 'countries','modified_by','created','updated'
+            '','title', 'name', 'employee_number', 'user', 'username', 'country', 'language', 'countries','modified_by','created','updated'
         ),
         Div(
             FormActions(
