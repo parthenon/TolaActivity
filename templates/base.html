@@ -137,6 +137,7 @@
                             <li class="nav-item">
                                 {% get_current_language as LANGUAGE_CODE %}
                                 {{ LANGUAGE_CODE }}
+                                {% comment %}
                                 <form action="{% url 'set_language' %}" method="post" class="select-language form-inline mx-2">{% csrf_token %}
                                     <input name="next" type="hidden" value="{{ redirect_to }}" />
                                     <select name="language" class="form-control form-control-sm custom-select" onchange="this.form.submit()">
@@ -150,6 +151,7 @@
                                         {% endfor %}
                                     </select>
                                 </form>
+                                {% endcomment %}
                             </li>
                         </ul>
 

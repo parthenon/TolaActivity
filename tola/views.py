@@ -253,6 +253,8 @@ def profile(request):
                 form.save()
                 messages.error(request, 'Your profile has been updated.', fail_silently=False,
                                extra_tags='success')
+                # immediately redirect to user sees language change
+                return HttpResponseRedirect('/accounts/profile/')
 
         return render(request, "registration/profile.html", {
             'form': form, 'helper': RegistrationForm.helper

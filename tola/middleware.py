@@ -40,26 +40,21 @@ class UserLanguageMiddleware(object):
         user = getattr(request, 'user', None)
 
         if not user:
-            print 'not user'
             return response
 
         if not user.is_authenticated:
-            print 'not authenticated'
             return response
 
-        user_language = getattr(user, 'language', None)
+        tola_user = getattr(user, 'tola_user', None)
+        user_language = getattr(tola_user, 'language', None)
         if not user_language:
-            print user
-            print 'not language'
             return response
 
-        current_language = translation.get_language()
-        if user_language == current_language:
-            print 'user language'
-            return response
-
+        # bypass django language pref discovery
+        # (see https://docs.djangoproject.com/en/1.11/topics/i18n/translation/#how-django-discovers-language-preference)
+        # current_language = translation.get_language()
+        current_language = user_language
         translation.activate(user_language)
         request.session[translation.LANGUAGE_SESSION_KEY] = user_language
 
-        print 'return'
         return response
