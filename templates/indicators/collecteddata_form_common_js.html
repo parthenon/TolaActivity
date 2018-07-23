@@ -115,7 +115,12 @@
     }
 
     function validateDateCollected(){
+        var program_id = $("#id_program").val();
+        var reporting_period_id = `#id_link_reporting_period_${program_id}`;
+        var start_date = new Date($(reporting_period_id).data("rptstart"));
+        var end_date = new Date($(reporting_period_id).data("rptend"));
         var field = $("#id_date_collected").val();
+        var date_collected = new Date(field);
         if ($.isEmptyObject(field)) {
             $("#div_id_date_collected").addClass('has-error');
             $("#id_date_collected").addClass('is-invalid');
@@ -123,6 +128,10 @@
         }else if (!isDate(field)) {
             $("#div_id_date_collected").addClass('has-error');
             $("#hint_id_date_collected").html("<small>{% trans 'Please enter a valid date.' %}</small>");
+            return false;
+        } else if (date_collected > end_date || date_collected < start_date ) {
+            $("#div_id_date_collected").addClass('has-error');
+            $("#hint_id_date_collected").html(`Please select a date between ${formatDate(start_date)} and ${formatDate(end_date)}.`);
             return false;
         } else {
             var val = formatDate(field);

@@ -24,7 +24,7 @@ from ..templatetags.mytags import symbolize_change, symbolize_measuretype
 
 class IPTT_Mixin(object):
     """
-    A mixin that abstracts all of the comman functionality for IPTT reports
+    A mixin that abstracts all of the common functionality for IPTT reports
     """
     template_name = 'indicators/iptt_report.html'
     REPORT_TYPE_TIMEPERIODS = 'timeperiods'
@@ -51,11 +51,11 @@ class IPTT_Mixin(object):
         """
         try:
             return {
-                Indicator.ANNUAL: IPTT_ReportView.MONTHS_PER_YEAR,
-                Indicator.SEMI_ANNUAL: IPTT_ReportView.MONTHS_PER_SEMIANNUAL,
-                Indicator.TRI_ANNUAL: IPTT_ReportView.MONTHS_PER_TRIANNUAL,
-                Indicator.QUARTERLY: IPTT_ReportView.MONTHS_PER_QUARTER,
-                Indicator.MONTHLY: IPTT_ReportView.MONTHS_PER_MONTH
+                Indicator.ANNUAL: IPTT_Mixin.MONTHS_PER_YEAR,
+                Indicator.SEMI_ANNUAL: IPTT_Mixin.MONTHS_PER_SEMIANNUAL,
+                Indicator.TRI_ANNUAL: IPTT_Mixin.MONTHS_PER_TRIANNUAL,
+                Indicator.QUARTERLY: IPTT_Mixin.MONTHS_PER_QUARTER,
+                Indicator.MONTHLY: IPTT_Mixin.MONTHS_PER_MONTH
             }[period]
         except KeyError:
             return 0
@@ -81,25 +81,25 @@ class IPTT_Mixin(object):
         if start_date is None:
             num_months_in_period = 0
 
-        if num_months_in_period == IPTT_ReportView.MONTHS_PER_MONTH:
+        if num_months_in_period == IPTT_Mixin.MONTHS_PER_MONTH:
             # if interval is monthly, set the start_date to the first of the month
             period_start_date = start_date.replace(day=1)
-        elif num_months_in_period == IPTT_ReportView.MONTHS_PER_QUARTER:
+        elif num_months_in_period == IPTT_Mixin.MONTHS_PER_QUARTER:
             # if interval is quarterly, set period_start_date to first calendar quarter
             quarter_start = [start_date.replace(month=month, day=1) for month in (1, 4, 7, 10)]
             index = bisect.bisect(quarter_start, start_date)
-            period_start_date = quarter_start[index-1]
-        elif num_months_in_period == IPTT_ReportView.MONTHS_PER_TRIANNUAL:
+            period_start_date = quarter_start[index - 1]
+        elif num_months_in_period == IPTT_Mixin.MONTHS_PER_TRIANNUAL:
             # if interval is tri-annual, set period_start_date to first calendar tri-annual
             tri_annual_start = [start_date.replace(month=month, day=1) for month in (1, 5, 9)]
             index = bisect.bisect(tri_annual_start, start_date)
-            period_start_date = tri_annual_start[index-1]
-        elif num_months_in_period == IPTT_ReportView.MONTHS_PER_SEMIANNUAL:
+            period_start_date = tri_annual_start[index - 1]
+        elif num_months_in_period == IPTT_Mixin.MONTHS_PER_SEMIANNUAL:
             # if interval is semi-annual, set period_start_date to first calendar semi-annual
             semi_annual = [start_date.replace(month=month, day=1) for month in (1, 7)]
             index = bisect.bisect(semi_annual, start_date)
-            period_start_date = semi_annual[index-1]
-        elif num_months_in_period == IPTT_ReportView.MONTHS_PER_YEAR:
+            period_start_date = semi_annual[index - 1]
+        elif num_months_in_period == IPTT_Mixin.MONTHS_PER_YEAR:
             # if interval is annual, set period_start_date to first calendar year
             period_start_date = start_date.replace(month=1, day=1)
         else:
@@ -119,7 +119,7 @@ class IPTT_Mixin(object):
             # Create annotations for MIDLINE TargetPeriod
             last_data_record = CollectedData.objects.filter(
                 indicator=OuterRef('pk'),
-                periodic_target__period=PeriodicTarget.MIDLINE)\
+                periodic_target__period=PeriodicTarget.MIDLINE) \
                 .order_by('-date_collected', '-pk')
             midline_sum = Sum(
                 Case(
@@ -165,7 +165,7 @@ class IPTT_Mixin(object):
             # Create annotations for ENDLINE TargetPeriod
             last_data_record = CollectedData.objects.filter(
                 indicator=OuterRef('pk'),
-                periodic_target__period=PeriodicTarget.ENDLINE)\
+                periodic_target__period=PeriodicTarget.ENDLINE) \
                 .order_by('-date_collected', '-pk')
             endline_sum = Sum(
                 Case(
@@ -223,7 +223,7 @@ class IPTT_Mixin(object):
                 last_data_record = CollectedData.objects.filter(
                     indicator=OuterRef('pk'),
                     date_collected__gte=start_date,
-                    date_collected__lte=end_date)\
+                    date_collected__lte=end_date) \
                     .order_by('-date_collected', '-pk')
 
                 # 1.) If the indicator is NUMBER and CUMULATIVE then do include all data
@@ -320,7 +320,7 @@ class IPTT_Mixin(object):
         """
         Returns the number of periods, in months, depending on the period
         """
-        num_months_in_period = IPTT_ReportView._get_num_months(period)
+        num_months_in_period = IPTT_Mixin._get_num_months(period)
         total_num_months = len(list(rrule.rrule(rrule.MONTHLY, dtstart=start_date, until=end_date)))
         try:
             num_periods = total_num_months / num_months_in_period
@@ -378,7 +378,8 @@ class IPTT_Mixin(object):
             if len(targetperiods_less_than_today) > num_recents:
                 # filter out dates that are outside of the most_recent index specified by user
                 most_recent_targetperiods = targetperiods_less_than_today[(
-                    len(targetperiods_less_than_today)-num_recents):]
+                                                                              len(
+                                                                                  targetperiods_less_than_today) - num_recents):]
             else:
                 most_recent_targetperiods = targetperiods_less_than_today
 
@@ -404,8 +405,8 @@ class IPTT_Mixin(object):
         period_name = self._get_period_name(frequency)
         num_months_in_period = self._get_num_months(frequency)
 
-        num_periods = IPTT_ReportView._get_num_periods(self.program.reporting_period_start,
-                                                       self.program.reporting_period_end, frequency)
+        num_periods = IPTT_Mixin._get_num_periods(self.program.reporting_period_start,
+                                                  self.program.reporting_period_end, frequency)
 
         start_date = self.program.reporting_period_start
 
@@ -440,7 +441,7 @@ class IPTT_Mixin(object):
             timeperiods_less_than_today = filter(lambda v: v[1][0] <= today_date, timeperiods.items())
             if len(timeperiods_less_than_today) > num_recents:
                 # filter out dates that are outside of the most_recent index specified by user
-                most_recent_timeperiods = timeperiods_less_than_today[(len(timeperiods_less_than_today)-num_recents):]
+                most_recent_timeperiods = timeperiods_less_than_today[(len(timeperiods_less_than_today) - num_recents):]
             else:
                 most_recent_timeperiods = timeperiods_less_than_today
             # convert to oredered dictionary to preserve order (IMPORTANT!)
@@ -494,7 +495,8 @@ class IPTT_Mixin(object):
             pass
 
         try:
-            filters['indicator_type__in'] = data['ind_type'] if isinstance(data['ind_type'], list) else [data['ind_typ']]
+            filters['indicator_type__in'] = data['ind_type'] if isinstance(data['ind_type'], list) else [
+                data['ind_typ']]
         except KeyError:
             pass
 
@@ -734,11 +736,11 @@ class IPTT_Mixin(object):
                       actualavg=Avg('collecteddata__achieved'),
                       lastlevel=Subquery(lastlevel.values('name')[:1]),
                       lastlevelcustomsort=Subquery(lastlevel.values('customsort')[:1]),
-                      lastdata=Subquery(last_data_record.values('achieved')[:1]))\
+                      lastdata=Subquery(last_data_record.values('achieved')[:1])) \
             .values(
-                'id', 'number', 'name', 'program', 'target_frequency', 'lastlevel', 'unit_of_measure',
-                'direction_of_change', 'unit_of_measure_type', 'is_cumulative', 'baseline', 'baseline_na',
-                'lop_target', 'actualsum', 'actualavg', 'lastdata', 'lastlevelcustomsort')
+            'id', 'number', 'name', 'program', 'target_frequency', 'lastlevel', 'unit_of_measure',
+            'direction_of_change', 'unit_of_measure_type', 'is_cumulative', 'baseline', 'baseline_na',
+            'lop_target', 'actualsum', 'actualavg', 'lastdata', 'lastlevelcustomsort')
 
         start_period = self.request.GET.get('start_period')
         end_period = self.request.GET.get('end_period')
@@ -891,12 +893,12 @@ class IPTT_ExcelExport(IPTT_Mixin, TemplateView):
                     end_date = datetime.strftime(period[1], '%b %d, %Y')
 
                     # process period name
-                    ws.merge_cells(start_row=2, start_column=col, end_row=2, end_column=col+2)
+                    ws.merge_cells(start_row=2, start_column=col, end_row=2, end_column=col + 2)
                     ws.cell(row=2, column=col).value = name
                     ws.cell(row=2, column=col).alignment = alignment
                     ws.cell(row=2, column=col).font = headers_font
 
-                    ws.merge_cells(start_row=3, start_column=col, end_row=3, end_column=col+2)
+                    ws.merge_cells(start_row=3, start_column=col, end_row=3, end_column=col + 2)
                     ws.cell(row=3, column=col).value = "{} - {}".format(start_date, end_date)
                     ws.cell(row=3, column=col).alignment = alignment
                     ws.cell(row=3, column=col).font = headers_font
@@ -904,19 +906,17 @@ class IPTT_ExcelExport(IPTT_Mixin, TemplateView):
                 except TypeError:
                     start_date = ''
                     end_date = ''
-                    ws.merge_cells(start_row=3, start_column=col, end_row=3, end_column=col+2)
+                    ws.merge_cells(start_row=3, start_column=col, end_row=3, end_column=col + 2)
                     ws.cell(row=3, column=col).value = name
                     ws.cell(row=3, column=col).alignment = alignment
                     ws.cell(row=3, column=col).font = headers_font
 
-
-
                 ws.cell(row=4, column=col).value = 'Target'
                 ws.cell(row=4, column=col).alignment = alignment_right
-                ws.cell(row=4, column=col+1).value = 'Actual'
-                ws.cell(row=4, column=col+1).alignment = alignment_right
-                ws.cell(row=4, column=col+2).value = '% Met'
-                ws.cell(row=4, column=col+2).alignment = alignment_right
+                ws.cell(row=4, column=col + 1).value = 'Actual'
+                ws.cell(row=4, column=col + 1).alignment = alignment_right
+                ws.cell(row=4, column=col + 2).value = '% Met'
+                ws.cell(row=4, column=col + 2).alignment = alignment_right
                 col_offset += 3
             col += 2
         elif data['reporttype'] == self.REPORT_TYPE_TIMEPERIODS:
@@ -978,10 +978,10 @@ class IPTT_ExcelExport(IPTT_Mixin, TemplateView):
                     ws.cell(row=row, column=col).value = indicator[target]
 
                     actual = "{}_actual".format(k)
-                    ws.cell(row=row, column=col+1).value = indicator[actual]
+                    ws.cell(row=row, column=col + 1).value = indicator[actual]
 
                     percent_met = "{}_percent_met".format(k)
-                    ws.cell(row=row, column=col+2).value = indicator[percent_met]
+                    ws.cell(row=row, column=col + 2).value = indicator[percent_met]
 
                     col_offset += 3
             elif context['reporttype'] == self.REPORT_TYPE_TIMEPERIODS:
@@ -996,7 +996,7 @@ class IPTT_ExcelExport(IPTT_Mixin, TemplateView):
     def set_column_widths(self, ws):
         widths = [10, 100, 12, 40, 8, 12]
         for i, w in enumerate(widths):
-            ws.column_dimensions[get_column_letter(i+1)].width = w
+            ws.column_dimensions[get_column_letter(i + 1)].width = w
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -1142,7 +1142,7 @@ class IPTT_ReportView(IPTT_Mixin, TemplateView):
     def post(self, request, *args, **kwargs):
         filterdata = request.POST.copy()
         # no need to include this token in querystring
-        del(filterdata['csrfmiddlewaretoken'])
+        del (filterdata['csrfmiddlewaretoken'])
         url_kwargs = {
             'program_id': filterdata['program'],
             'reporttype': kwargs['reporttype'],
@@ -1154,8 +1154,8 @@ class IPTT_ReportView(IPTT_Mixin, TemplateView):
         # by period_start or period_end dates.
         if filterdata.get('timeframe', None) is not None:
             try:
-                del(filterdata['start_period'])
-                del(filterdata['end_period'])
+                del (filterdata['start_period'])
+                del (filterdata['end_period'])
             except KeyError:
                 pass
 
