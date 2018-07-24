@@ -28,6 +28,7 @@
         var pickerApiLoaded = false;
         var oauthToken;
         var actionType = null;
+        var picker = null;
 
         // Use the API Loader script to load google.picker and gapi.auth.
         function onApiLoad() {
@@ -47,7 +48,7 @@
 
         function onPickerApiLoad() {
             pickerApiLoaded = true;
-            createPicker();
+            // createPicker();
         }
 
         function handleAuthResult(authResult) {
@@ -70,7 +71,7 @@
                 teamView.setIncludeFolders(true);
                 teamView.setSelectFolderEnabled(true);
                 teamView.setMode("DocsViewMode.LIST");
-                var picker = new google.picker.PickerBuilder()
+                picker = new google.picker.PickerBuilder()
                     // .enableFeature(google.picker.Feature.NAV_HIDDEN)
                     .enableFeature(google.picker.Feature.SUPPORT_TEAM_DRIVES)
                     .addView(view)

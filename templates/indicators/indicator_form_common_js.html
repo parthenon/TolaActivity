@@ -289,8 +289,10 @@
         // If there aren't any existing periodic_targets then set the flag to generate them.
         if ($.isEmptyObject(periodic_targets)) {
             form_data += "&periodic_targets=generateTargets";
+            $(form).data('periodic_targets_exist', false);
         } else {
             form_data += "&periodic_targets=" + JSON.stringify(periodic_targets);
+            $(form).data('periodic_targets_exist', true);
         }
 
         // Set is_cumulative if it's not already set
