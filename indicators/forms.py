@@ -1,7 +1,10 @@
+import dateparser
 from datetime import datetime
 from functools import partial
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django import forms
+from django.forms.fields import DateField
 from django.utils.translation import ugettext_lazy as _
 from workflow.models import (
     Program, SiteProfile, Documentation, ProjectComplete, TolaUser, Sector
@@ -24,6 +27,18 @@ class DatePicker(forms.DateInput):
     DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 
+class LocaleDateField(DateField):
+    def to_python(self, value):
+        if value in self.empty_values:
+            return None
+        try:
+            return dateparser.parse(value).date()
+        except (AttributeError):
+            raise ValidationError(
+                self.error_messages['invalid'], code='invalid')
+
+
+
 class IndicatorForm(forms.ModelForm):
     program2 = forms.CharField(
         widget=forms.TextInput(
@@ -42,6 +57,11 @@ class IndicatorForm(forms.ModelForm):
     # is_cumulative = forms.ChoiceField(
     #     choices=cumulative_choices,
     #     widget=forms.RadioSelect())
+
+    target_frequency_start = LocaleDateField(
+        widget=forms.DateInput(
+            attrs={'class': 'monthPicker'})
+    )
 
     program = forms.CharField(widget=forms.HiddenInput())
 
@@ -83,7 +103,6 @@ class IndicatorForm(forms.ModelForm):
         self.fields['name'].required = True
         self.fields['unit_of_measure'].required = True
         self.fields['target_frequency'].required = True
-        self.fields['target_frequency_start'].widget.attrs['class'] = 'monthPicker'
         # self.fields['is_cumulative'].widget = forms.RadioSelect()
         if self.instance.target_frequency and self.instance.target_frequency != Indicator.LOP:
             self.fields['target_frequency'].widget.attrs['readonly'] = True

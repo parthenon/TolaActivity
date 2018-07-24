@@ -88,6 +88,33 @@ function formatDate(dateString, day=0) {
     }
 }
 
+function formatIntDate(dateString, lang="en", day=0) {
+    if (dateString == null || dateString == undefined || dateString.length == 0 || dateString == 'undefined' || dateString == 'null' ) {
+        return '';
+    }
+    try {
+        var dateval = new Date(dateString);
+        tz = dateval.getTimezoneOffset();
+        hrs = dateval.getHours();
+        if (hrs > 0) {
+            // alert("offsetting timezone tz=" + tz + " hrs = " + hrs);
+            dateval.setMinutes(dateval.getMinutes() + tz);
+        }
+        if (day !== 0) {
+            // set day to day specified in function call
+            dateval.setDate(day);
+        }
+        var options = {year: 'numeric', month: 'short', day: 'numeric'};
+        var ret = dateval.toLocaleDateString(lang, options);
+        return ret;
+
+    } catch (err) {
+        console.log(err);
+        return dateString == null ? '' : dateString;
+    }
+}
+
+
 
 $(function() {
      // Javascript to enable link to tab
