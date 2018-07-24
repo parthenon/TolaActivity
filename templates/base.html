@@ -230,6 +230,19 @@
         <script type="text/javascript" src="{% static "js/bootstrap-multiselect.js" %}?v=w"></script>
         <link href="{% static "css/bootstrap-multiselect.css" %}?v=w" rel="stylesheet" type="text/css">
 
+        <!-- Add JQuery UI language files -->
+        <script type="text/javascript" src="{% static 'js/datepicker-fr.js' %}"></script>
+
+        {% get_current_language as LANGUAGE_CODE %}
+
+        <script type="text/javascript">
+            var userLang = "{{ LANGUAGE_CODE }}";
+            $(document).ready(function() {
+                $.datepicker.setDefaults( $.datepicker.regional[ userLang ] );
+            });
+        </script>
+        <!-- End JQuery UI language files -->
+
 
         {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
             {% include "google_analytics.html" %}
