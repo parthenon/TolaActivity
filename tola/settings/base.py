@@ -27,6 +27,10 @@ LOCALE_PATHS = [
     join(DJANGO_ROOT, 'locale'),
 ]
 
+FORMAT_MODULE_PATH = [
+    'formats'
+]
+
 ########## END PATH CONFIGURATION
 
 
@@ -77,12 +81,12 @@ SITE_ID = 1
 USE_I18N = True
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
-USE_L10N = False
+USE_L10N = True
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
 
-DATE_FORMAT = 'Y-n-d'
+DATE_FORMAT = 'Y-m-d'
 
 # Add list of languages available for selection.
 LANGUAGES = [
