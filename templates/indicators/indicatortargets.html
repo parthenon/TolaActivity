@@ -29,7 +29,7 @@
                                 <span style="margin:0px;" class="help-block"> </span>
                             {% else %}
                                 <strong>{{ pt.period }}</strong>
-                                <div>{{ pt.start_date|convert2dateobject|date:"M j, Y"|default:'' }} {% if pt.start_date %} - {% endif %} {{ pt.end_date|convert2dateobject|date:"M j, Y"|default:'' }}</div>
+                                <div>{{ pt.start_date|convert2dateobject|date:"SHORT_DATE_FORMAT"|default:'' }} {% if pt.start_date %} - {% endif %} {{ pt.end_date|convert2dateobject|date:"SHORT_DATE_FORMAT"|default:'' }}</div>
                             {% endif %}
                         </td>
 
@@ -41,8 +41,8 @@
                                     name="{{ pt.period }}"
                                     value="{{ pt.target|floatformat:"-2"}}"
                                     data-periodictarget="pt"
-                                    data-start-date="{{pt.start_date|convert2dateobject|date:"M d, Y"|default:''}}"
-                                    data-end-date="{{pt.end_date|convert2dateobject|date:"M d, Y"|default:''}}"
+                                    data-start-date="{{pt.start_date|convert2dateobject|date:"SHORT_DATE_FORMAT"|default:''}}"
+                                    data-end-date="{{pt.end_date|convert2dateobject|date:"SHORT_DATE_FORMAT"|default:''}}"
                                     placeholder="{% trans 'Enter target' %}"
                                     class="form-control input-value">
                             </span>
