@@ -39,10 +39,7 @@ class UserLanguageMiddleware(object):
         response = self.get_response(request)
         user = getattr(request, 'user', None)
 
-        if not user:
-            return response
-
-        if not user.is_authenticated:
+        if not user or user.is_authenticated is False:
             return response
 
         tola_user = getattr(user, 'tola_user', None)
