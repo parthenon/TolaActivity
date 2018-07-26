@@ -117,9 +117,7 @@ STATIC_URL = '/static/'
 
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = (
-    normpath(join(SITE_ROOT, 'static')),
-)
+STATICFILES_DIRS = ()
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
@@ -406,5 +404,3 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 GOOGLE_ANALYTICS_PROPERTY_ID = None # replaced in private settings file
 GOOGLE_ANALYTICS_DOMAIN = 'example.org' # replaced in private settings file
-
-

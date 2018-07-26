@@ -399,6 +399,17 @@ def handleDataCollectedRecords(indicatr, lop, existing_target_frequency,
                 .update(periodic_target=pt)
 
 
+def reset_indicator_target_frequency(ind):
+    if ind.target_frequency and ind.target_frequency != 1 and \
+            not ind.periodictargets.count():
+                ind.target_frequency = None
+                ind.target_frequency_start = None
+                ind.target_frequency_num_periods = 1
+                ind.save()
+                return True
+    return False
+
+
 class IndicatorUpdate(UpdateView):
     """
     Update and Edit Indicators.
@@ -418,12 +429,7 @@ class IndicatorUpdate(UpdateView):
             # If target_frequency is set but not targets are saved then
             # unset target_frequency too.
             indicator = self.get_object()
-            if indicator.target_frequency and indicator.target_frequency != 1 and \
-                    not indicator.periodictargets.count():
-                indicator.target_frequency = None
-                indicator.target_frequency_start = None
-                indicator.target_frequency_num_periods = 1
-                indicator.save()
+            reset_indicator_target_frequency(indicator)
         try:
             self.guidance = FormGuidance.objects.get(form="Indicator")
         except FormGuidance.DoesNotExist:
@@ -1074,6 +1080,7 @@ def service_json(request, service):
 
 def collected_data_view(request, indicator, program):
     ind = Indicator.objects.get(pk=indicator)
+    reset_indicator_target_frequency(ind)
     template_name = 'indicators/collected_data_table.html'
     program = ind.program.all()[0].id
     program_obj = Program.objects.get(pk=program)

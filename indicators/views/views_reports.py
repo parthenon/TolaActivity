@@ -5,7 +5,7 @@ from django.utils import formats, timezone
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from django.core.urlresolvers import reverse_lazy
-from django.db.models import Sum, Avg, Subquery, OuterRef, Case, When, Q, F, Max, Min
+from django.db.models import Sum, Avg, Subquery, OuterRef, Case, When, Q, F, Max
 from django.views.generic import TemplateView, FormView
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect, HttpResponse
@@ -378,8 +378,7 @@ class IPTT_Mixin(object):
             if len(targetperiods_less_than_today) > num_recents:
                 # filter out dates that are outside of the most_recent index specified by user
                 most_recent_targetperiods = targetperiods_less_than_today[(
-                                                                              len(
-                                                                                  targetperiods_less_than_today) - num_recents):]
+                    len(targetperiods_less_than_today) - num_recents):]
             else:
                 most_recent_targetperiods = targetperiods_less_than_today
 
@@ -441,7 +440,8 @@ class IPTT_Mixin(object):
             timeperiods_less_than_today = filter(lambda v: v[1][0] <= today_date, timeperiods.items())
             if len(timeperiods_less_than_today) > num_recents:
                 # filter out dates that are outside of the most_recent index specified by user
-                most_recent_timeperiods = timeperiods_less_than_today[(len(timeperiods_less_than_today) - num_recents):]
+                most_recent_timeperiods = timeperiods_less_than_today[(
+                    len(timeperiods_less_than_today) - num_recents):]
             else:
                 most_recent_timeperiods = timeperiods_less_than_today
             # convert to oredered dictionary to preserve order (IMPORTANT!)
@@ -981,7 +981,10 @@ class IPTT_ExcelExport(IPTT_Mixin, TemplateView):
                     ws.cell(row=row, column=col + 1).value = indicator[actual]
 
                     percent_met = "{}_percent_met".format(k)
-                    ws.cell(row=row, column=col + 2).value = indicator[percent_met]
+                    try:
+                        ws.cell(row=row, column=col + 2).value = indicator[percent_met].encode('UTF-8')
+                    except ValueError:
+                        pass
 
                     col_offset += 3
             elif context['reporttype'] == self.REPORT_TYPE_TIMEPERIODS:
