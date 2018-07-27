@@ -20,6 +20,8 @@
         "cpx-select2-css": "cpx node_modules/select2/dist/css/select2.min.css $npm_package_config_css",
         "cpx-leaflet-css": "cpx node_modules/leaflet/dist/leaflet.css $npm_package_config_css",
         "cpx-leaflet-js": "cpx node_modules/leaflet/dist/leaflet.js $npm_package_config_js",
+        "cpx-moment-js": "cpx node_modules/moment/min/moment.min.js $npm_package_config_js",
+        "cpx-moment-locales-js": "cpx \"node_modules/moment/locale/*.js\" $npm_package_config_js",
         "copy": "npm-run-all cpx-*"
     },
     "devDependencies": {
@@ -29,6 +31,7 @@
         "jquery-ui-dist": "1.12.1",
         "cpx": "*",
         "npm-run-all": "*",
+        "moment": "^2.22.2",
         "select2": "4.0.0",
         "leaflet": "0.7.3",
         "bootstrap-multiselect": "git+ssh://git@github.com/davidstutz/bootstrap-multiselect.git"
