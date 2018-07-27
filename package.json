@@ -21,7 +21,8 @@
         "cpx-leaflet-css": "cpx node_modules/leaflet/dist/leaflet.css $npm_package_config_css",
         "cpx-leaflet-js": "cpx node_modules/leaflet/dist/leaflet.js $npm_package_config_js",
         "cpx-moment-js": "cpx node_modules/moment/min/moment.min.js $npm_package_config_js",
-        "cpx-moment-locales-js": "cpx \"node_modules/moment/locale/*.js\" $npm_package_config_js",
+        "cpx-moment-locale-es": "cpx node_modules/moment/locale/es.js $npm_package_config_js/locale",
+        "cpx-moment-locale-fr": "cpx node_modules/moment/locale/fr.js $npm_package_config_js/locale",
         "copy": "npm-run-all cpx-*"
     },
     "devDependencies": {
