@@ -1,2 +1,3 @@
-DATE_FORMAT = 'Y-m-d'
-SHORT_DATE_FORMAT = 'N j, Y'
+DATE_FORMAT = 'Y-m-d' # 2018-07-30
+LONG_DATE_FORMAT = 'F j, Y' # July 7, 2018
+SHORT_DATE_FORMAT = 'N j, Y' # Jul. 7, 2018

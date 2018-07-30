@@ -1,3 +1,4 @@
 
 DATE_FORMAT = 'Y-m-d'
+LONG_DATE_FORMAT = 'j F Y'
 SHORT_DATE_FORMAT = 'j N Y'
