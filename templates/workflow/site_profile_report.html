@@ -32,7 +32,7 @@
 
 <ul class="list-group">
 {% for item in getSiteProfile %}
-    <li class="list-group-item"><b>{{ item.create_date|date }} - {{ item.name }}</b>
+    <li class="list-group-item"><b>{{ item.create_date|date:"DATE_FORMAT" }} - {{ item.name }}</b>
     <div class="btn-group align-right" role="group" aria-label="...">
         <a href="/workflow/siteprofile_update/{{ item.id }}" class="btn btn-xs btn-warning">Update Sites</a>
     </div>

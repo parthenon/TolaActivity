@@ -66,7 +66,7 @@
 
                 <li class="list-group-item"><b>Name: </b>{{ getAgreement.project_name }}<br/>
                     <b>Project Code: </b>{{ getAgreement.activity_code }}<br/>
-                    <b>Created:</b> <span class="date-badge">{{ getAgreement.create_date|date }}</span> <b>Edited:</b> <span class="date-badge">{{ getAgreement.edit_date|date }}</span>
+                    <b>Created:</b> <span class="date-badge">{{ getAgreement.create_date|date:"DATE_FORMAT" }}</span> <b>Edited:</b> <span class="date-badge">{{ getAgreement.edit_date|date:"DATE_FORMAT" }}</span>
                 </li>
                 <li class="list-group-item">
                     <div class="btn-group" role="group" aria-label="...">
@@ -109,7 +109,7 @@
                 </li>
                 <li class="list-group-item"><b>Name: </b>{{ getComplete.project_name }}<br/>
                     <b>Project Code: </b>{{ getComplete.activity_code }}<br/>
-                    <b>Created:</b> <span class="date-badge">{{ getComplete.create_date|date }}</span> <b>Edited:</b> <span class="date-badge">{{ getComplete.edit_date|date }}</span>
+                    <b>Created:</b> <span class="date-badge">{{ getComplete.create_date|date:"DATE_FORMAT" }}</span> <b>Edited:</b> <span class="date-badge">{{ getComplete.edit_date|date:"DATE_FORMAT" }}</span>
                 </li>
                 <li class="list-group-item">
                     <div class="btn-group" role="group" aria-label="...">

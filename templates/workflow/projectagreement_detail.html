@@ -24,7 +24,11 @@
   <li role="presentation"><a href="/workflow/siteprofile_report/{{ id }}/">Sites</a></li>
 </ul>
 <h3>{{ agreement.project_name }}</h3>
-<p><b>Created:</b> {{ agreement.create_date }} <b>Last Edited:</b> {{ agreement.edit_date }} <span class="btn btn-xs btn-info">Status: <b>{{ agreement.approval }}</b></span></p>
+<p>
+    <b>Created:</b> {{ agreement.create_date|date:"DATE_FORMAT" }}
+    <b>Last Edited:</b> {{ agreement.edit_date|date:"DATE_FORMAT" }}
+    <span class="btn btn-xs btn-info">Status: <b>{{ agreement.approval }}</b></span>
+</p>
 <div class="panel panel-info">
     <!-- Default panel contents -->
     <div class="panel-heading">Part I: Executive Summary</div>
@@ -79,8 +83,8 @@
             <th>Expected End Date</th>
         </tr>
         <tr>
-            <td>{{ agreement.expected_start_date|date:"M d, Y" }}</td>
-            <td>{{ agreement.expected_end_date|date:"M d, Y" }}</td>
+            <td>{{ agreement.expected_start_date|date:"DATE_FORMAT" }}</td>
+            <td>{{ agreement.expected_end_date|date:"DATE_FORMAT" }}</td>
         </tr>
     </table>
     <br/>
@@ -106,8 +110,8 @@
             <td>{{ agreement.local_total_estimated_budget }}</td>
             <td>{{ agreement.local_mc_estimated_budget }}</td>
             <td>{{ agreement.exchange_rate }}</td>
-            <td>{{ agreement.exchange_rate_date|date:"M d, Y"  }}</td>
-            <td>{{ agreement.estimation_date|date:"M d, Y"  }}</td>
+            <td>{{ agreement.exchange_rate_date|date:"DATE_FORMAT"  }}</td>
+            <td>{{ agreement.estimation_date|date:"DATE_FORMAT"  }}</td>
         </tr>
     </table>
     <br/>
@@ -235,32 +239,32 @@
         <tr>
             <td>Originated By</td>
             <td>{{ agreement.estimated_by }}</td>
-            <td>{{ agreement.estimated_by_date|date:"M d, Y" }}</td>
+            <td>{{ agreement.estimated_by_date|date:"DATE_FORMAT" }}</td>
         </tr>
         <tr>
             <td>Checked By</td>
             <td>{{ agreement.checked_by }}</td>
-            <td>{{ agreement.checked_by_date|date:"M d, Y" }}</td>
+            <td>{{ agreement.checked_by_date|date:"DATE_FORMAT" }}</td>
         </tr>
         <tr>
             <td>Checked</td>
             <td>{{ agreement.estimated_by }}</td>
-            <td>{{ agreement.estimated_by_date|date:"M d, Y" }}</td>
+            <td>{{ agreement.estimated_by_date|date:"DATE_FORMAT" }}</td>
         </tr>
         <tr>
             <td>Field Verification By</td>
             <td>{{ agreement.reviewed_by }}</td>
-            <td>{{ agreement.reviewed_by_date|date:"M d, Y" }}</td>
+            <td>{{ agreement.reviewed_by_date|date:"DATE_FORMAT" }}</td>
         </tr>
         <tr>
             <td>Finance Reviewed By</td>
             <td>{{ agreement.finance_reviewed_by }}</td>
-            <td>{{ agreement.finance_reviewed_by_date|date:"M d, Y" }}</td>
+            <td>{{ agreement.finance_reviewed_by_date|date:"DATE_FORMAT" }}</td>
         </tr>
         <tr>
             <td>M&E Reviewed By</td>
             <td>{{ agreement.me_reviewed_by }}</td>
-            <td>{{ agreement.me_reviewed_by_date|date:"M d, Y" }}</td>
+            <td>{{ agreement.me_reviewed_by_date|date:"DATE_FORMAT" }}</td>
         </tr>
     </table>
      <br/>
@@ -273,7 +277,7 @@
          <tr>
             <td>Approved By</td>
             <td>{{ agreement.approved_by }}</td>
-            <td>{{ agreement.approved_by_date|date:"M d, Y" }}</td>
+            <td>{{ agreement.approved_by_date|date:"DATE_FORMAT" }}</td>
         </tr>
         <tr>
             <td>Approval Submitted By</td>

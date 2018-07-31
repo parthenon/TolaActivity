@@ -82,7 +82,7 @@
         {% for item in getSiteProfile %}
             <tr>
                 <td>
-                    <a href="/workflow/siteprofile_update/{{ item.id }}">{{ item.create_date|date:"M d, Y"|default:'' }}</a>
+                    <a href="/workflow/siteprofile_update/{{ item.id }}">{{ item.create_date|date:"DATE_FORMAT"|default:'' }}</a>
                 </td>
                 <td><a href="/workflow/siteprofile_update/{{ item.id }}">{{ item.name }}</a></td>
                 {% if item.status == 1 %}

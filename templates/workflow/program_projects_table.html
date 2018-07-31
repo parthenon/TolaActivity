@@ -1,5 +1,5 @@
 <tr>
-    <td>{{ item.create_date|date:"d-m-Y" }}</td>
+    <td>{{ item.create_date|date:"DATE_FORMAT" }}</td>
     <td> {{ item.project_name }} <br/>
         {% if item.approval == "approved" %}
           <a href="#" class="badge badge-secondary"><i class="fas fa-lock"></i> Initiation Form</a>

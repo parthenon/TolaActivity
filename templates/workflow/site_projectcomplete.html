@@ -31,7 +31,7 @@
                         </tr>
         {% endifchanged %}
         <tr>
-            <td>{{ item.create_date|date:"d-m-Y" }}</td>
+            <td>{{ item.create_date|date:"DATE_FORMAT" }}</td>
             <td> {{ item.project_name }}</td>
             <td>{{ item.activity_code }}</td>
             <td>{{ item.office }}</td>
