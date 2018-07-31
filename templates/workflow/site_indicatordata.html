@@ -10,35 +10,27 @@
 {% block page_title %}Indicator Data for <small>{{ site }}</small> {% endblock %}
 
 {% block content %}
+    {% regroup collecteddata by program as program_list %}
 
-    {% for d in collecteddata %}
-        {% ifchanged d.program %}
-            {% if not forloop.first %}
-                </div></div>
-            {% endif %}
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ d.program }}</div>
-                    <div class="panel-body">
-
-        {% endifchanged %}
-
-
-        {% ifchanged d.indicator %}
-            <p>{{ d.indicator}}</p>
-        {% endifchanged %}
-        <table class="table table-striped table-bordered">
-            {% ifchanged d.indicator %}
-                <tr>
-                    <th>Achieved</th>
-                    <th>Periodic Target</th>
-                </tr>
-            {% endifchanged %}
-            <tr>
-                <td> {{ d.achieved }}</td>
-                <td> {{ d.periodic_target }} </td>
+    {% for program in program_list %}
+        <h3><a href="{% url "default_custom_dashboard" program.grouper.id %}">{{ program.grouper }}</a></h3>
+        <table class="table mb-4">
+            <tr class="">
+                <th>Achieved</th>
+                <th>Periodic Target</th>
             </tr>
+            {% regroup program.list by indicator as indicator_list %}
+            {% for indicator in indicator_list %}
+                <tr class="bg-gray-lighter">
+                    <th colspan="2">{{ indicator.grouper }}</th>
+                </tr>
+                {% for d in indicator.list %}
+                    <tr class="bg-white">
+                        <td>{{ d.achieved }}</td>
+                        <td>{{ d.periodic_target }}</td>
+                    </tr>
+                {%  endfor %}
+            {% endfor %}
         </table>
-
-        {% if forloop.last %}</ul>{% endif %}
     {% endfor %}
 {% endblock content %}
