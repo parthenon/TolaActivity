@@ -16,7 +16,7 @@
 
 <ul class="list-group">
 {% for item in getForms %}
-    <li class="list-group-item"><b>{{ item.create_date|date }} - {{ item.name }}</b>
+    <li class="list-group-item"><b>{{ item.create_date|date:"DATE_FORMAT" }} - {{ item.name }}</b>
     </li>
 
 {% empty %}

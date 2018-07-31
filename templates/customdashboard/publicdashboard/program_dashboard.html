@@ -73,7 +73,7 @@
                                               <td>{{ project.activity_code }}</td>
                                               <td>{{ project.project_name }}</td>
                                               <td>{{ project.approval }}</td>
-                                              <td>{{ project.expected_start_date }}</td>
+                                              <td>{{ project.expected_start_date|date:"DATE_FORMAT" }}</td>
                                           </tr>
                                           {% endfor %}
                                       </table>
@@ -224,7 +224,7 @@
                                 {% endif %}
                                  {% for item in getBeneficiaries %}
                                     <tr>
-                                        <td>{{ item.create_date|date }} </td>
+                                        <td>{{ item.create_date|date:"DATE_FORMAT" }} </td>
                                         <td>{{ item.beneficiary_name }}</td>
                                         <td>{{ item.age }}</td>
                                         <td>{{ item.gender }}</td>
@@ -250,7 +250,7 @@
                                 {% endif %}
                                  {% for item in getTrainings %}
                                     <tr>
-                                        <td>{{ item.create_date|date }} </td>
+                                        <td>{{ item.create_date|date:"DATE_FORMAT" }} </td>
                                         <td>{{ item.training_name }}</td>
                                     </tr>
 
@@ -274,7 +274,7 @@
                                 {% endif %}
                                  {% for item in getDistributions %}
                                     <tr>
-                                        <td>{{ item.create_date|date }} </td>
+                                        <td>{{ item.create_date|date:"DATE_FORMAT" }} </td>
                                         <td>{{ item.distribution_name }}</td>
                                     </tr>
 
