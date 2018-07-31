@@ -16,7 +16,7 @@
             </span>
             <h3>
                 <span class="color-red">
-                    {% blocktrans with program_id=program.id startdate=program.reporting_period_start enddate=program.reporting_period_end start=program.reporting_period_start|date:"M d, Y" end=program.reporting_period_end|date:"M d, Y" %}
+                    {% blocktrans with program_id=program.id startdate=program.reporting_period_start enddate=program.reporting_period_end start=program.reporting_period_start|date:"DATE_FORMAT" end=program.reporting_period_end|date:"DATE_FORMAT" %}
                         To see program results, please update your periodic targets to match your reporting start and end dates:
                         <a href="#"
                             data-toggle="modal"
@@ -47,7 +47,7 @@
                                 <a href="{% url 'indicator_update' indicator.pk %}"
                                    class="indicator-link"
                                    data-tab="targets">
-                                    {{ indicator.minstarts|date:"M d, Y" }}
+                                    {{ indicator.minstarts|date:"DATE_FORMAT" }}
                                 </a>
                             </td>
                         </tr>

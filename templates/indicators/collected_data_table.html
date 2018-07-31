@@ -45,9 +45,9 @@
                         <td {% if dataCount %} rowspan="{{ dataCount }}" {% endif %} class="text-nowrap">
                             <strong class="text-uppercase">{{ item.period }}</strong><br>
                             <small>
-                                {{ item.start_date|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                                {{ item.start_date|date:"DATE_FORMAT"|default_if_none:"" }}
                                 {% if item.start_date %} - {% endif %}
-                                {{ item.end_date|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                                {{ item.end_date|date:"DATE_FORMAT"|default_if_none:"" }}
                             </small>
                         </td>
                         <td {% if dataCount %} rowspan="{{ dataCount }}" {% endif %} align="right">
@@ -100,12 +100,12 @@
                     <td class="d-flex justify-content-between text-nowrap {% if cdata.periodic_target == None %}bg-danger-lighter{% endif %}">
                         <div>
                           {% if is_editable is False %}
-                            {{ cdata.date_collected|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                            {{ cdata.date_collected|date:"DATE_FORMAT"|default_if_none:"" }}
                           {% else %}
                           <a href="{% url 'collecteddata_update' cdata.id %}"
                              class="collecteddata-link"
                              id="collected-{{cdata.id}}">
-                                  {{ cdata.date_collected|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                                  {{ cdata.date_collected|date:"DATE_FORMAT"|default_if_none:"" }}
                           </a>
                           {% endif %}
                         </div>
@@ -173,10 +173,10 @@
                 <td align="right"></td>
                 <td style="" class="d-flex justify-content-between text-nowrap bg-danger-lighter">
                     {% if is_editable is False %}
-                      {{ coldata.date_collected|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                      {{ coldata.date_collected|date:"DATE_FORMAT"|default_if_none:"" }}
                     {% else %}
                       <a href="{% url 'collecteddata_update' coldata.id %}" class="collecteddata-link" id="collected-{{coldata.id}}">
-                          {{ coldata.date_collected|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                          {{ coldata.date_collected|date:"DATE_FORMAT"|default_if_none:"" }}
                       </a>
                     {% endif %}
                     <div class="pl-2">
