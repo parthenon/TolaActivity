@@ -958,3 +958,35 @@ used on collected data table in IPTT */
 
 /* language chooser */
 .select-language { }
+
+/* Branding */
+.navbar-brand-wrapper { /* BS has a navbar-brand class already :-( */
+    display: flex;
+    align-items: center;
+}
+.navbar-tola {
+    padding: 0;
+}
+.navbar-tola--container {
+    align-items: flex-start !important;
+    padding-left: 0;
+}
+.navbar-brand--mc {
+    display: block;
+    background: #C8202F;
+    margin-right: 15px;
+}
+.navbar-brand--mc-logo {
+    display: block;
+    height: 60px;
+    width: auto;
+}
+.navbar-brand--tola {
+    display: block;
+    margin-right: 25px;
+}
+.navbar-brand--tola-logo {
+    display: block;
+    max-width: 120px;
+    height: auto;
+}

@@ -209,7 +209,7 @@ class ReportFormCommon(forms.Form):
 
     SHOW_ALL = 1
     MOST_RECENT = 2
-    TIMEFRAME_CHOCIES = (
+    TIMEFRAME_CHOICES = (
         (SHOW_ALL, _("Show all")),
         (MOST_RECENT, _("Most recent"))
     )
@@ -221,7 +221,7 @@ class ReportFormCommon(forms.Form):
     program = forms.ModelChoiceField(queryset=Program.objects.none())
     timeperiods = forms.ChoiceField(choices=TIMEPERIODS_CHOICES, required=False)
     targetperiods = forms.ChoiceField(choices=TARGETPERIODS_CHOICES, required=False)
-    timeframe = forms.ChoiceField(choices=TIMEFRAME_CHOCIES, widget=forms.RadioSelect(), required=False)
+    timeframe = forms.ChoiceField(choices=TIMEFRAME_CHOICES, widget=forms.RadioSelect(), required=False)
     numrecentperiods = forms.IntegerField(required=False)
     formprefix = forms.CharField(widget=forms.HiddenInput(), required=False)
 

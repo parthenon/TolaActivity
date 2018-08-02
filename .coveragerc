@@ -1,0 +1,16 @@
+# Default options for coverage commands
+
+[run]
+branch = True
+omit =
+    ../venv2/*
+    **/tests/*
+    **/test_*py
+    formlibrary/*
+
+[report]
+skip_covered = True
+sort = Cover
+
+[html]
+# Values in the [report] section also apply to [html]
