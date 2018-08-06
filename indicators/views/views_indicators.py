@@ -64,37 +64,23 @@ def generate_periodic_target_single(tf, start_date, nthTargetPeriod, event_name=
 
     if tf == Indicator.ANNUAL:
         start = ((start_date + relativedelta(years=+i)).replace(day=1)).strftime('%Y-%m-%d')
-        end = ((start_date + relativedelta(years=+j)) +
-               relativedelta(days=-1)).strftime('%Y-%m-%d')
+        end = ((start_date + relativedelta(years=+j)) + relativedelta(days=-1)).strftime('%Y-%m-%d')
+        target_period = {'period': _('Year %s') % j, 'start_date': start, 'end_date': end}
 
-        target_period = {'period': _('Year %s') % j, 'start_date': start,
-                         'end_date': end}
     elif tf == Indicator.SEMI_ANNUAL:
-        start = ((start_date + relativedelta(months=+(i * 6)))
-                 .replace(day=1)).strftime('%Y-%m-%d')
-
-        end = ((start_date + relativedelta(months=+(j * 6))) +
-               relativedelta(days=-1)).strftime('%Y-%m-%d')
-
-        target_period = {'period': _('Semi-annual period %s') % j,
-                         'start_date': start, 'end_date': end}
+        start = ((start_date + relativedelta(months=+(i * 6))).replace(day=1)).strftime('%Y-%m-%d')
+        end = ((start_date + relativedelta(months=+(j * 6))) + relativedelta(days=-1)).strftime('%Y-%m-%d')
+        target_period = {'period': _('Semi-annual period %s') % j, 'start_date': start, 'end_date': end}
 
     elif tf == Indicator.TRI_ANNUAL:
-        start = ((start_date + relativedelta(months=+(i * 4)))
-                 .replace(day=1)).strftime('%Y-%m-%d')
-
-        end = ((start_date + relativedelta(months=+(j * 4))) +
-               relativedelta(days=-1)).strftime('%Y-%m-%d')
-
-        target_period = {'period': _('Tri-annual period %s') % j,
-                         'start_date': start, 'end_date': end}
+        start = ((start_date + relativedelta(months=+(i * 4))).replace(day=1)).strftime('%Y-%m-%d')
+        end = ((start_date + relativedelta(months=+(j * 4))) + relativedelta(days=-1)).strftime('%Y-%m-%d')
+        target_period = {'period': _('Tri-annual period %s') % j, 'start_date': start, 'end_date': end}
 
     elif tf == Indicator.QUARTERLY:
         start = ((start_date + relativedelta(months=+(i * 3))).replace(day=1)).strftime('%Y-%m-%d')
-        end = ((start_date + relativedelta(months=+(j * 3))) +
-               relativedelta(days=-1)).strftime('%Y-%m-%d')
-        target_period = {'period': _('Quarter %s') % j, 'start_date': start,
-                         'end_date': end}
+        end = ((start_date + relativedelta(months=+(j * 3))) + relativedelta(days=-1)).strftime('%Y-%m-%d')
+        target_period = {'period': _('Quarter %s') % j, 'start_date': start, 'end_date': end}
 
     elif tf == Indicator.MONTHLY:
         month = (start_date + relativedelta(months=+i)).strftime("%B")
@@ -525,6 +511,7 @@ class IndicatorUpdate(UpdateView):
 
     def form_invalid(self, form):
         if self.request.is_ajax():
+            print("...............%s.........................." % form.errors)
             return HttpResponse(status=400)
         else:
             messages.error(self.request, _('Invalid Form'), fail_silently=False)
@@ -572,9 +559,7 @@ class IndicatorUpdate(UpdateView):
                     pk = None
 
                 try:
-                    start_date = dateparser.parse(
-                        pt.get('start_date', None))
-
+                    start_date = dateparser.parse(pt.get('start_date', None))
                     start_date = datetime.strftime(start_date, '%Y-%m-%d')
                 except ValueError:
                     # raise ValueError("Incorrect data value")
