@@ -11,6 +11,7 @@ from workflow.models import Program
 
 
 class IPTT_MixinTestCase(TestCase):
+    """Tests private methods not specifically tested in other test cases"""
     freqs = {
         Indicator.ANNUAL: 12,
         Indicator.SEMI_ANNUAL: 6,
@@ -21,40 +22,6 @@ class IPTT_MixinTestCase(TestCase):
 
     def setUp(self):
         self.mixin = IPTT_Mixin()
-        self.factory = RequestFactory()
-        self.program = ProgramFactory()
-        self.user = UserFactory()
-
-
-    def test_view_returns_200(self):
-        args = [1, 1]
-        kwargs = {'program_id': self.program.id,
-                  'reporttype': IPTT_Mixin.REPORT_TYPE_TARGETPERIODS, }
-        path = reverse_lazy('iptt_report', kwargs=kwargs)
-        request = self.factory.get(path, args=args, follow=True)
-        request.user = self.user
-        response = IPTTReportQuickstartView.as_view()(request)
-
-        self.assertEqual(response.status_code, 200)
-
-    @skip('WIP: Currently fails')
-    def test_page_uses_correct_template(self):
-        """Do we load the right template?"""
-        args = (('targetperiods', 1), ('timeframe', 1))
-        kwargs = {'program_id': self.program.id,
-                  'reporttype': IPTT_Mixin.REPORT_TYPE_TARGETPERIODS, }
-        path = reverse_lazy('iptt_report', kwargs=kwargs)
-        request = self.client.get(path, data=args, follow=True)
-        request.user = self.user
-        response = IPTTReportQuickstartView.as_view()(request)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'indicators/iptt_report.html')
-        self.assertContains(response, 'Indicator Performance Tracking Table')
-
-    @skip('Implement this')
-    def test_page_redirects_to_iptt_quickstart_if_program_not_exist(self):
-        pass
 
     def test__get_num_months(self):
         """Do we return the right number of months per period?"""
@@ -195,9 +162,7 @@ class IPTT_MixinTestCase(TestCase):
 class IPTT_ExcelExportTestCase(TestCase):
 
     def setUp(self):
-        self.client = Client()
-        self.mixin = IPTT_Mixin()
-        self.mixin.program = Program()
+        pass
 
     @skip('TODO: Implement this')
     def test_get_filename(self):
@@ -226,9 +191,7 @@ class IPTT_ExcelExportTestCase(TestCase):
 
 class IPTT_ReportIndicatorsWithVariedStartDateTestCase(TestCase):
     def setUp(self):
-        self.client = Client()
-        self.mixin = IPTT_Mixin()
-        self.mixin.program = Program()
+        pass
 
     @skip('TODO: Implement this')
     def test_get_context_data(self):
@@ -276,13 +239,13 @@ class IPTTReportQuickstartViewTestCase(TestCase):
         """Does POSTing to iptt_quickstart with valid form data return 302
         and redirect to /indicators/iptt_report/{program_id}/{reporttype}/"""
         p = ProgramFactory()
-        args = {'csrfmiddlewaretoken': 'lolwut?',
+        data = {'csrfmiddlewaretoken': 'lolwut?',
                 'program': p.id,
                 'formprefix': 'targetperiods',
                 'targetperiods': 1,
                 'timeframe': 1, }
         path = reverse_lazy('iptt_quickstart')
-        response = self.client.post(path, data=args, follow=True)
+        response = self.client.post(path, data=data, follow=True)
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(response.redirect_chain), 1)
@@ -304,10 +267,8 @@ class IPTTReportQuickstartViewTestCase(TestCase):
 class IPTT_ReportViewTestCase(TestCase):
 
     def setUp(self):
-        self.client = Client()
-        self.mixin = IPTT_Mixin()
-        self.mixin.program = Program()
-
+        pass
+    
     @skip('TODO: Implement this')
     def test_get(self):
         pass
