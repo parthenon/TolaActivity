@@ -58,11 +58,6 @@ class IndicatorForm(forms.ModelForm):
     #     choices=cumulative_choices,
     #     widget=forms.RadioSelect())
 
-    target_frequency_start = LocaleDateField(
-        widget=forms.DateInput(
-            attrs={'class': 'monthPicker'})
-    )
-
     program = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:

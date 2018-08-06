@@ -182,6 +182,7 @@
                                 value="${parseFloat(pt.target).toFixed(2).replace(/[.,]00$/, "")}"
                                 data-start-date="${formatDate(pt.start_date)}"
                                 data-end-date="${formatDate(pt.end_date)}"
+                                data-periodictarget="pt"
                                 name="${pt.period}"
                                 placeholder="{% trans 'Enter target' %}"
                                 class="form-control input-value">
@@ -359,30 +360,10 @@
             else {
                 show_hide_cummulative_inputs('number')
             }
-            /* HEAD
 
             if (remove_missing_targts_link == true) {
                 $(`#id_missing_target_periods_for_indicator_id_${indicator.pk}`).html('');
             }
-            */
-        }
-        ).fail(function() {
-            var alertsElement = "#alerts";
-            if ( $("#modalmessages").length) {
-                alertsElement = "#modalmessages";
-            }
-
-            $(alertsElement).html('');
-
-            const fieldId = "id_target_frequency_start";
-            const field = $("#" + fieldId);
-            errMsg = "{% trans 'Please enter a valid date.' %}";
-            field.addClass('is-invalid');
-            $("#div_id_target_frequency_start").addClass('mb-5')
-            $("#div_id_target_frequency_start").removeClass('mb-3')
-            $("#validation_" + fieldId).text(errMsg);
-            $("#id_create_targets_btn").attr("disabled", false);
-
         });
     }
 
@@ -435,14 +416,11 @@
             if (selected_option == 1 ||
                 selected_option == 2 ||
                 selected_option == 0) {
-                // $("#div_id_target_frequency_start").hide(); // TODO: removed in master & dev?
                 $("#div_id_target_frequency_num_periods").hide();
                 $("#div_id_target_frequency_custom").hide();
                 $("#id_target_frequency_custom").val('');
 
             } else if (selected_option == 8) {
-                // $("#div_id_target_frequency_start").hide(); // TODO: removed in master & dev?
-                // $("#id_target_frequency_start").val(''); // TODO: removed in master & dev?
                 $("#div_id_target_frequency_custom").show();
                 $("#div_id_target_frequency_num_periods").show();
             } else {
@@ -579,38 +557,6 @@
                 errMsg = undefined;
                 return true;
             }
-        }
-    }
-
-    function validatePeriodStartField() {
-        // Unused? This was merged into dev in pr/509 & may be legacy
-        const fieldId = "id_target_frequency_start";
-        const field = $("#" + fieldId);
-
-        let errMsg = undefined;
-
-        if ($.isEmptyObject(field.val())) {
-            errMsg = "{% trans 'Please complete this field.' %}";
-        }
-        else if (!isDate(field.val())) {
-            if (userLang == 'en') {
-                errMsg = "{% trans 'Please enter a valid date.' %}";
-            }
-        }
-
-        if (errMsg) {
-            field.addClass('is-invalid');
-            $("#div_id_target_frequency_start").addClass('mb-5')
-            $("#div_id_target_frequency_start").removeClass('mb-3')
-            $("#validation_" + fieldId).text(errMsg);
-            return false;
-        } else {
-            errMsg = undefined;
-            field.removeClass('is-invalid');
-            $("#div_id_target_frequency_start").addClass('mb-3')
-            $("#div_id_target_frequency_start").removeClass('mb-5')
-            $("#validation_" + fieldId).text(" ");
-            return true;
         }
     }
 
