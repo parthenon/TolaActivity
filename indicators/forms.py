@@ -129,6 +129,7 @@ class CollectedDataForm(forms.ModelForm):
     )
     target_frequency = forms.CharField()
     date_collected = forms.DateField(widget=DatePicker.DateInput(),
+                                     input_formats=["%b %d, %Y"], # We can hardcode input formats directly into forms
                                      required=True)
 
     def __init__(self, *args, **kwargs):
