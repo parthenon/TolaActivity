@@ -763,8 +763,14 @@ class CollectedDataCreate(CreateView):
         return kwargs
 
     def form_invalid(self, form):
-        messages.error(self.request, _('Invalid Form'), fail_silently=False)
-        return self.render_to_response(self.get_context_data(form=form))
+        # this is not receiving a valid date
+        if self.request.is_ajax():
+            print(".....%s....." % form.errors)
+            return HttpResponse(status=400)
+        else:
+            messages.error(self.request, _('Invalid Form'), fail_silently=False)
+            print(".....%s....." % form.errors)
+            return self.render_to_response(self.get_context_data(form=form))
 
     def form_valid(self, form):
         indicator = self.request.POST['indicator']

@@ -7,7 +7,7 @@
         e.preventDefault();
         var isFormValid = true;
         $("#modalmessages").empty();
-        pts_valid = validatePeriodicTarget();
+        pts_valid = validatePeriodicTarget(); // calls formatDate()
         datecollected_valid = validateDateCollected();
         achieved_valid = validate_achieved();
         // if (pts_valid == false || datecollected_valid == false || achieved_valid == false) {
@@ -43,7 +43,7 @@
     $("#indicator_collecteddata_div").on("change", "#id_date_collected", function(e){
         // only validate periodicTarget dropdown if it is an existing record
         // if( parseInt(`{{object.id|safe}}`) > 0 ){
-            validatePeriodicTarget(onlyPeriodic = true);
+            validatePeriodicTarget(onlyPeriodic = true); // Calls formatDate()
         // }
         validateDateCollected();
     });
@@ -58,6 +58,7 @@
 
 
     function validatePeriodicTarget(onlyPeriodic = false) {
+        // Calls formatDate()
         const programId = $("#id_program").val();
         const program_reporting_start = formatDate($(`#id_link_reporting_period_${programId}`).data("rptstart"));
         const program_reporting_end = formatDate($(`#id_link_reporting_period_${programId}`).data("rptend"));

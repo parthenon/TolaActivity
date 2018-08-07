@@ -46,6 +46,8 @@ function isDate(dateVal) {
 }
 
 function formatDate(dateString, day=0) {
+    // TODO: replace this with localized dates
+    // Django can only consume dates in ISO format
     var months = new Array();
     months[1] = "Jan";
     months[2] = "Feb";
@@ -74,15 +76,22 @@ function formatDate(dateString, day=0) {
         }
         var month = months[(dateval.getMonth() + 1)];
         var ret = month.concat(' ').concat(day == 0 ? dateval.getDate() : day).concat(', ').concat(dateval.getFullYear());
+        //console.log('first try ret= ' + ret);
+        //console.log('first try month= ' + month);
+        //console.log('first try dateval= ' + dateval);
+        //console.log('first try dateString= ' + dateString);
         return ret;
     } catch (err) {
+        //console.log('catch');
         console.log(err);
         try {
             var dateArray = dateString.split('-');
             var month = months[parseInt(dateArray[1])]
+            //console.log('catch try dateArray= ' +  dateArray);
             return month.concat(' ').concat(day == 0 ? dateArray[2] : day).concat(', ').concat(dateArray[0]);
         }
         catch (err) {
+            //console.log('catch try catch dateString= ' + dateString);
             return dateString == null ? '' : dateString;
         }
     }
