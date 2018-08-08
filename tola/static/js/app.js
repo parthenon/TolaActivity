@@ -46,7 +46,11 @@ function isDate(dateVal) {
 }
 
 function formatDate(dateString, day=0) {
-    // TODO: replace this with localized dates
+    console.log('in: ' + dateString);
+    return dateString;
+    /*
+    console.log('in: ' + dateString);
+    // TODO: replace this with ISO
     // Django can only consume dates in ISO format
     var months = new Array();
     months[1] = "Jan";
@@ -74,27 +78,30 @@ function formatDate(dateString, day=0) {
             // alert("offsetting timezone tz=" + tz + " hrs = " + hrs);
             dateval.setMinutes(dateval.getMinutes() + tz);
         }
-        var month = months[(dateval.getMonth() + 1)];
-        var ret = month.concat(' ').concat(day == 0 ? dateval.getDate() : day).concat(', ').concat(dateval.getFullYear());
-        //console.log('first try ret= ' + ret);
-        //console.log('first try month= ' + month);
-        //console.log('first try dateval= ' + dateval);
-        //console.log('first try dateString= ' + dateString);
+        var year = dateval.getFullYear()
+        var month = dateval.getMonth() + 1;
+        var day = (day == 0 ? dateval.getDate() : day);
+        //var ret = month.concat(' ').concat(day == 0 ? dateval.getDate() : day).concat(', ').concat(dateval.getFullYear());
+        var ret = year + '-' + month + '-' + day
+        console.log('first try:' + ret)
         return ret;
     } catch (err) {
-        //console.log('catch');
         console.log(err);
         try {
             var dateArray = dateString.split('-');
-            var month = months[parseInt(dateArray[1])]
-            //console.log('catch try dateArray= ' +  dateArray);
-            return month.concat(' ').concat(day == 0 ? dateArray[2] : day).concat(', ').concat(dateArray[0]);
+            var year = dateArray[0];
+            var month = parseInt(dateArray[1]);
+            var day = (day == 0 ? dateArray[2] : day);
+            var ret = year + '-' + month + '-' + day
+            console.log('second try:' + ret)
+            return ret
+            //return month.concat(' ').concat(day == 0 ? dateArray[2] : day).concat(', ').concat(dateArray[0]);
         }
         catch (err) {
-            //console.log('catch try catch dateString= ' + dateString);
-            return dateString == null ? '' : dateString;
+            return dateString == (null ? '' : dateString);
         }
     }
+*/
 }
 
 
