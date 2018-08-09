@@ -44,8 +44,8 @@ class TrainingAttendanceForm(forms.ModelForm):
 
 class DistributionForm(forms.ModelForm):
 
-    start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
+    start_date = forms.DateField(required=False)
+    end_date = forms.DateField(required=False)
 
     class Meta:
         model = Distribution

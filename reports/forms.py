@@ -39,8 +39,8 @@ class FilterForm(forms.Form):
         empty_label = None,
         widget = forms.SelectMultiple(),
     )
-    start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
+    start_date = forms.DateField(required=False)
+    end_date = forms.DateField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()

@@ -136,16 +136,16 @@ class ProjectAgreementForm(forms.ModelForm):
     map = forms.CharField(widget=GoogleMapsWidget(
         attrs={'width': 700, 'height': 400, 'longitude': 'longitude', 'latitude': 'latitude'}), required=False)
 
-    expected_start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    expected_end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    estimation_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    reviewed_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    approved_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    me_reviewed_by_date = forms.DateField(label="M&E Reviewed by Date", widget=DatePicker.DateInput(), required=False)
-    checked_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    estimated_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    finance_reviewed_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    exchange_rate_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
+    expected_start_date = forms.DateField(required=False)
+    expected_end_date = forms.DateField(required=False)
+    estimation_date = forms.DateField(required=False)
+    reviewed_by_date = forms.DateField(required=False)
+    approved_by_date = forms.DateField(required=False)
+    me_reviewed_by_date = forms.DateField(label="M&E Reviewed by Date", required=False)
+    checked_by_date = forms.DateField(required=False)
+    estimated_by_date = forms.DateField(required=False)
+    finance_reviewed_by_date = forms.DateField(required=False)
+    exchange_rate_date = forms.DateField(required=False)
 
     documentation_government_approval = forms.FileField(required=False)
     documentation_community_approval = forms.FileField(required=False)
@@ -453,16 +453,16 @@ class ProjectAgreementSimpleForm(forms.ModelForm):
     map = forms.CharField(widget=GoogleMapsWidget(
         attrs={'width': 700, 'height': 400, 'longitude': 'longitude', 'latitude': 'latitude'}), required=False)
 
-    expected_start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    expected_end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    estimation_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    reviewed_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    approved_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    me_reviewed_by_date = forms.DateField(label="M&E Reviewed by Date", widget=DatePicker.DateInput(), required=False)
-    checked_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    estimated_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    finance_reviewed_by_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    exchange_rate_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
+    expected_start_date = forms.DateField(required=False)
+    expected_end_date = forms.DateField(required=False)
+    estimation_date = forms.DateField(required=False)
+    reviewed_by_date = forms.DateField(required=False)
+    approved_by_date = forms.DateField(required=False)
+    me_reviewed_by_date = forms.DateField(label="M&E Reviewed by Date", required=False)
+    checked_by_date = forms.DateField(required=False)
+    estimated_by_date = forms.DateField(required=False)
+    finance_reviewed_by_date = forms.DateField(required=False)
+    exchange_rate_date = forms.DateField(required=False)
 
     documentation_government_approval = forms.FileField(required=False)
     documentation_community_approval = forms.FileField(required=False)
@@ -707,10 +707,10 @@ class ProjectCompleteCreateForm(forms.ModelForm):
     map = forms.CharField(widget=GoogleMapsWidget(
         attrs={'width': 700, 'height': 400, 'longitude': 'longitude', 'latitude': 'latitude'}), required=False)
 
-    expected_start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    expected_end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    actual_start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    actual_end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
+    expected_start_date = forms.DateField(required=False)
+    expected_end_date = forms.DateField(required=False)
+    actual_start_date = forms.DateField(required=False)
+    actual_end_date = forms.DateField(required=False)
 
     program = forms.ModelChoiceField(queryset=Program.objects.filter(funding_status="Funded"))
 
@@ -776,12 +776,12 @@ class ProjectCompleteForm(forms.ModelForm):
     map = forms.CharField(widget=GoogleMapsWidget(
         attrs={'width': 700, 'height': 400, 'longitude': 'longitude', 'latitude': 'latitude'}), required=False)
 
-    expected_start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    expected_end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    actual_start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    actual_end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    actual_cost_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    exchange_rate_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
+    expected_start_date = forms.DateField(required=False)
+    expected_end_date = forms.DateField(required=False)
+    actual_start_date = forms.DateField(required=False)
+    actual_end_date = forms.DateField(required=False)
+    actual_cost_date = forms.DateField(required=False)
+    exchange_rate_date = forms.DateField(required=False)
 
     program2 =  forms.CharField( widget=forms.TextInput(attrs={'readonly':'readonly'}) )
     project_agreement2 = forms.CharField( widget=forms.TextInput(attrs={'readonly': 'readonly'}))
@@ -1051,10 +1051,10 @@ class ProjectCompleteSimpleForm(forms.ModelForm):
     map = forms.CharField(widget=GoogleMapsWidget(
         attrs={'width': 700, 'height': 400, 'longitude': 'longitude', 'latitude': 'latitude'}), required=False)
 
-    expected_start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    expected_end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    actual_start_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
-    actual_end_date = forms.DateField(widget=DatePicker.DateInput(), required=False)
+    expected_start_date = forms.DateField(required=False)
+    expected_end_date = forms.DateField(required=False)
+    actual_start_date = forms.DateField(required=False)
+    actual_end_date = forms.DateField(required=False)
 
     program2 =  forms.CharField( widget=forms.TextInput(attrs={'readonly':'readonly'}) )
     project_agreement2 = forms.CharField( widget=forms.TextInput(attrs={'readonly': 'readonly'}))
@@ -1296,7 +1296,7 @@ class SiteProfileForm(forms.ModelForm):
     map = forms.CharField(widget=GoogleMapsWidget(
         attrs={'width': 700, 'height': 400, 'longitude': 'longitude', 'latitude': 'latitude','country':'Find a city or village'}), required=False)
 
-    date_of_firstcontact = forms.DateField(widget=DatePicker.DateInput(), required=False)
+    date_of_firstcontact = forms.DateField(required=False)
 
     approval = forms.ChoiceField(
         choices=APPROVALS,
