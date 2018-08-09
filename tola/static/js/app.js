@@ -19,6 +19,13 @@ if (!Date.prototype.toISODate) {
            ('0'+ this.getDate()).slice(-2);
   }
 }
+
+
+function zeroPad(n, width) {
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(0) + n;
+}
+
 function isDate(dateVal) {
     /*
     var pattern = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -46,26 +53,8 @@ function isDate(dateVal) {
 }
 
 function formatDate(dateString, day=0) {
-    console.log('in: ' + dateString);
-    return dateString;
-    /*
-    console.log('in: ' + dateString);
-    // TODO: replace this with ISO
+    //console.log('in: ' + dateString);
     // Django can only consume dates in ISO format
-    var months = new Array();
-    months[1] = "Jan";
-    months[2] = "Feb";
-    months[3] = "Mar";
-    months[4] = "Apr";
-    months[5] = "May";
-    months[6] = "Jun";
-    months[7] = "Jul";
-    months[8] = "Aug";
-    months[9] = "Sep";
-    months[10] = "Oct";
-    months[11] = "Nov";
-    months[12] = "Dec";
-
 
     if (dateString == null || dateString == undefined || dateString.length == 0 || dateString == 'undefined' || dateString == 'null' ) {
         return '';
@@ -75,33 +64,29 @@ function formatDate(dateString, day=0) {
         tz = dateval.getTimezoneOffset();
         hrs = dateval.getHours();
         if (hrs > 0) {
-            // alert("offsetting timezone tz=" + tz + " hrs = " + hrs);
             dateval.setMinutes(dateval.getMinutes() + tz);
         }
         var year = dateval.getFullYear()
-        var month = dateval.getMonth() + 1;
-        var day = (day == 0 ? dateval.getDate() : day);
-        //var ret = month.concat(' ').concat(day == 0 ? dateval.getDate() : day).concat(', ').concat(dateval.getFullYear());
+        var month = zeroPad((dateval.getMonth() + 1), 2);
+        var day = zeroPad((day == 0 ? dateval.getDate() : day), 2);
         var ret = year + '-' + month + '-' + day
-        console.log('first try:' + ret)
+        //console.log('first try:' + ret)
         return ret;
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         try {
             var dateArray = dateString.split('-');
             var year = dateArray[0];
-            var month = parseInt(dateArray[1]);
-            var day = (day == 0 ? dateArray[2] : day);
+            var month = zeroPad(parseInt(dateArray[1]), 2);
+            var day = zeroPad((day == 0 ? dateArray[2] : day), 2);
             var ret = year + '-' + month + '-' + day
-            console.log('second try:' + ret)
+            //console.log('second try:' + ret)
             return ret
-            //return month.concat(' ').concat(day == 0 ? dateArray[2] : day).concat(', ').concat(dateArray[0]);
         }
         catch (err) {
             return dateString == (null ? '' : dateString);
         }
     }
-*/
 }
 
 
