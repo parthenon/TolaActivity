@@ -235,6 +235,7 @@
         <script type="text/javascript" src="{% static "js/bootstrap-multiselect.js" %}?v=w"></script>
         <link href="{% static "css/bootstrap-multiselect.css" %}?v=w" rel="stylesheet" type="text/css">
 
+        {% comment %}
         <!-- Add JQuery UI language files -->
         <script type="text/javascript" src="{% static 'js/datepicker-fr.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/datepicker-es.js' %}"></script>
@@ -248,6 +249,7 @@
             });
         </script>
         <!-- End JQuery UI language files -->
+        {% endcomment %}
 
 
         {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
