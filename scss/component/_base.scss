@@ -1,0 +1,51 @@
+// Components that apply to the site base, i.e. base.html
+
+// Footer
+// ------
+
+.page-footer {
+    bottom: 0px;
+    flex-grow: 0;
+    width: 100%;
+    border-top: 1px solid $gray-150;
+    background-color: $gray-300;
+    vertical-align: top;
+    color: $gray-800;
+    > .container-fluid {
+        padding: 15px;
+    }
+}
+
+
+
+// Sticky footer styles
+//--------------------------------------------------
+html {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    position: relative;
+    min-height: 100%;
+    font-size:  100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    font-family: Arial;
+    height: 100%;
+    justify-content: space-between;
+}
+
+
+#nonfooter {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.report-wide {
+    // margin-top: -16px;    regressions?
+}
+body > .container {
+    height: 100%;
+}
