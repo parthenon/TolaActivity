@@ -1,6 +1,6 @@
 // Components that apply to the site base, i.e. base.html
 
-// Overload HTML & Body to force footer to the bottom when viewing short pages on large viewports
+// Overload HTML & Body to force footer to the bottom & masthead to the top when viewing short pages on large viewports
 html {
     display: flex;
     flex-direction: column;
@@ -17,30 +17,39 @@ body {
     height: 100%;
     justify-content: space-between;
 }
-.page-nonfooter {
+
+// Page regions
+// ------------
+// These are stacked pancake-style
+
+.region-masthead {
+    // contains navigation, branding & utility links
+}
+
+.region-main {
+    // contains everything that isn't the footer or navbar
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
-// Footer
-// ------
 
-.page-footer {
-    bottom: 0px;
-    flex-grow: 0;
-    width: 100%;
-    border-top: 1px solid $gray-150;
+.region-footer {
+    // contains the usual footer elements, like address
     background-color: $gray-300;
-    vertical-align: top;
+    border-top: 1px solid $gray-150;
+    bottom: 0px;
     color: $gray-800;
-    > .container-fluid {
-        padding: 15px;
-    }
+    flex-grow: 0;
+    padding: 15px;
+    vertical-align: top;
+    width: 100%;
 }
 
 
 
-//--------------------------------------------------
+// Unsorted
+// --------
+
 .report-wide {
     // margin-top: -16px;    regressions?
 }
