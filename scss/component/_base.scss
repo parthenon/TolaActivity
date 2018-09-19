@@ -27,7 +27,9 @@ body {
     background: $gray-700;
     border-bottom: 1px solid $gray-150;
     display: flex;
-    flex-direction: column;
+    .navbar--masthead { // TODO: should be in the navigation component
+        width: 100%;
+    }
     .dropdown-menu { // TODO: should be in the navigation component
         background: $gray-700;
     }

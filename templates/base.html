@@ -63,8 +63,7 @@
             aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="d-flex flex-column" style="flex-grow:1;">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar--masthead navbar-collapse" id="navbarSupportedContent">
                 <div class="navbar-brand-wrapper">
                     <div class="navbar-brand--mc">
                         <img class="navbar-brand--mc-logo" src="{% static "img/mc_logo_bounded.svg" %}" />
@@ -131,7 +130,6 @@
                 </ul>
             </div>
 
-        </div>
     </nav>
         {% if report_wide %}
         <div class="region-main report-wide">
