@@ -1,5 +1,27 @@
 // Components that apply to the site base, i.e. base.html
 
+// Overload HTML & Body to force footer to the bottom when viewing short pages on large viewports
+html {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    position: relative;
+    min-height: 100%;
+    font-size:  100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    font-family: Arial;
+    height: 100%;
+    justify-content: space-between;
+}
+.page-nonfooter {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
 // Footer
 // ------
 
@@ -18,31 +40,7 @@
 
 
 
-// Sticky footer styles
 //--------------------------------------------------
-html {
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    position: relative;
-    min-height: 100%;
-    font-size:  100%;
-}
-body {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    font-family: Arial;
-    height: 100%;
-    justify-content: space-between;
-}
-
-
-#nonfooter {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
 .report-wide {
     // margin-top: -16px;    regressions?
 }
