@@ -52,10 +52,14 @@ body {
     border-top: 1px solid $gray-150;
     bottom: 0px;
     color: $gray-800;
-    flex-grow: 0;
+    justify-content: space-between;
     padding: 15px;
-    vertical-align: top;
-    width: 100%;
+    @include make-row();
+}
+.footer__branding,
+.footer__utility {
+    padding-left: $grid-gutter-width/2;
+    padding-right: $grid-gutter-width/2;
 }
 
 

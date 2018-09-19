@@ -446,8 +446,8 @@ pre {
 
 .container {
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 1rem;
+  padding-left: 1rem;
   margin-right: auto;
   margin-left: auto; }
   @media (min-width: 576px) {
@@ -465,16 +465,16 @@ pre {
 
 .container-fluid {
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 1rem;
+  padding-left: 1rem;
   margin-right: auto;
   margin-left: auto; }
 
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin-right: -15px;
-  margin-left: -15px; }
+  margin-right: -1rem;
+  margin-left: -1rem; }
 
 .no-gutters {
   margin-right: 0;
@@ -493,8 +493,8 @@ pre {
   position: relative;
   width: 100%;
   min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px; }
+  padding-right: 1rem;
+  padding-left: 1rem; }
 
 .col {
   flex-basis: 0;
@@ -3147,25 +3147,25 @@ input[type="button"].btn-block {
   display: flex;
   flex-direction: column; }
   .card-deck .card {
-    margin-bottom: 15px; }
+    margin-bottom: 1rem; }
   @media (min-width: 576px) {
     .card-deck {
       flex-flow: row wrap;
-      margin-right: -15px;
-      margin-left: -15px; }
+      margin-right: -1rem;
+      margin-left: -1rem; }
       .card-deck .card {
         display: flex;
         flex: 1 0 0%;
         flex-direction: column;
-        margin-right: 15px;
+        margin-right: 1rem;
         margin-bottom: 0;
-        margin-left: 15px; } }
+        margin-left: 1rem; } }
 
 .card-group {
   display: flex;
   flex-direction: column; }
   .card-group > .card {
-    margin-bottom: 15px; }
+    margin-bottom: 1rem; }
   @media (min-width: 576px) {
     .card-group {
       flex-flow: row wrap; }
@@ -7262,10 +7262,17 @@ body {
   border-top: 1px solid #f5f5f5;
   bottom: 0px;
   color: #343840;
-  flex-grow: 0;
+  justify-content: space-between;
   padding: 15px;
-  vertical-align: top;
-  width: 100%; }
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -1rem;
+  margin-left: -1rem; }
+
+.footer__branding,
+.footer__utility {
+  padding-left: 1rem;
+  padding-right: 1rem; }
 
 body > .container {
   height: 100%; }
