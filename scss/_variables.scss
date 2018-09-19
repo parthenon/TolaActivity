@@ -1,5 +1,3 @@
-$link-hover-opacity: 0.8; //todo move this where it makes sense
-
 // Color: Tola Palette as of 2018-08-27
 // These are cribbed from app.css and bootstrap-overrides.css
 // Consolidated Color Palette
@@ -91,51 +89,40 @@ $grays: map-merge((
     "900": $gray-900
 ), $grays);
 
-$indigo:  #6610f2;
-$purple:  #6f42c1;
-$pink:    #e83e8c;
-$orange:  #fd7e14;
-$green:   #28a745;
-$cyan:    #17a2b8;
 
-$colors: () !default;
-$colors: map-merge((
-    "blue":       $blue,
-    "indigo":     $indigo,
-    "purple":     $purple,
-    "pink":       $pink,
-    "red":        $red,
-    "orange":     $orange,
-    "yellow":     $yellow,
-    "green":      $green,
-    "teal":       $teal,
-    "cyan":       $cyan,
-    "white":      $white,
-    "gray":       $gray-600,
-    "gray-dark":  $gray-800
-), $colors);
+// Other Bootstrap variable overrides
 
 $primary:       $teal;
 $secondary:     $gray-600;
 $success:       $green;
-$info:          $cyan;
+$info:          $blue;
 $warning:       $yellow;
 $danger:        $red;
 $light:         $gray-100;
 $dark:          $gray-800;
 
-$theme-colors: () !default;
-$theme-colors: map-merge((
-    "primary":    $primary,
-    "secondary":  $secondary,
-    "success":    $success,
-    "info":       $info,
-    "warning":    $warning,
-    "danger":     $danger,
-    "light":      $light,
-    "dark":       $dark
-), $theme-colors);
-// stylelint-enable
+$font-size-base:              1rem;
+$font-weight-bold:            700;
 
+$yiq-text-dark: $gray-700;
+$yiq-text-light: $gray-150;
+$link-color: $blue;
+$border-radius: 0;
+$component-active-bg: $blue-400;
+$transition-base: all .2s ease-in-out;
+$transition-fade: opacity .15s linear;
+$transition-collapse: height .35s ease;
+$h1-font-size: $font-size-base * 1.75;
+$h2-font-size: $font-size-base * 1.5;
+$h3-font-size: $font-size-base * 1.3;
+$h4-font-size: $font-size-base * 1;
+$headings-font-weight: bold;
+$headings-color: $gray-700;
 
-
+$input-btn-padding-x: 1.25rem;
+$btn-padding-x: $input-btn-padding-x;
+$btn-font-weight: $font-weight-bold;
+$btn-disabled-opacity: .5;
+$input-disabled-bg: $gray-150;
+$navbar-dark-color: $gray-300;
+$navbar-dark-hover-color: $white;

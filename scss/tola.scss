@@ -1,10 +1,10 @@
 // /* css-style comments */ intentionally included here for build debugging
-@import 'mc_tola_primitives'; // MC primitive variables, LOAD FIRST
+@import 'variables'; // Local variables including primitives
 
 /* Bootstrap libraries */
 @import "../node_modules/bootstrap/scss/functions";
 @import "../node_modules/bootstrap/scss/mixins";
-@import 'bootstrap_variables'; // Local versions of BS variables
+@import "../node_modules/bootstrap/scss/variables";
 
 /* There should be NO selectors in compiled CSS above this comment */
 
