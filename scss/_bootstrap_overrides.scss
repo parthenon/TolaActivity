@@ -52,22 +52,6 @@
 }
 
 
-// add a small cleanline to the bottom of the navbar
-.navbar-dark {
-    border-bottom: 1px solid $gray-150;
-}
-
-// overload dropdown menus
-.navbar-dark .dropdown-menu {
-    background: $gray-700;
-}
-.navbar-dark .dropdown-item {
-    color: $white;
-    &:focus, &:hover {
-        background-color: $gray-600;
-    }
-}
-
 
 // Select 2 overloads
 // Not going to bother doing this the "right" way bc we are deprecating select2
