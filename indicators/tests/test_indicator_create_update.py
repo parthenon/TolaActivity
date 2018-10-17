@@ -1,3 +1,4 @@
+import json
 from django.test import RequestFactory, TestCase
 from django.urls import reverse_lazy
 
@@ -29,6 +30,7 @@ class IndicatorUpdateTests(TestBase, TestCase):
 
     def setUp(self):
         super(IndicatorUpdateTests, self).setUp()
+        self.url = reverse_lazy('indicator_update', args=[self.indicator.id])
 
     def test_get(self):
         url = reverse_lazy('indicator_update', args=[self.indicator.id])
@@ -38,7 +40,6 @@ class IndicatorUpdateTests(TestBase, TestCase):
         self.assertTemplateUsed(response, 'indicators/indicator_form.html')
 
     def test_post(self):
-
         # build form data using URL encoded form key value pairs
         data = {
             'name': 'Test+Name',
@@ -52,10 +53,32 @@ class IndicatorUpdateTests(TestBase, TestCase):
             'program': self.program.id,
             'direction_of_change': Indicator.DIRECTION_OF_CHANGE_NONE,
         }
-        request = RequestFactory()
-        request.user = self.user
 
-        url = reverse_lazy('indicator_update', args=[self.indicator.id])
-        response = self.client.post(url, data)
+        response = self.client.post(self.url, data)
 
         self.assertEqual(response.status_code, 200)
+        self.indicator = Indicator.objects.get(pk=self.indicator.id)
+        self.assertEqual(int(self.indicator.lop_target), 3223,
+                         "expected indicator lop target to update to 3223, got {0}".format(self.indicator.lop_target))
+
+    def test_post_ajax(self):
+        """ensures that an AJAX post returns a correct JSON response to update the indicator rows with JS"""
+        data = {
+            'name': 'Updated Name',
+            'level': 2,
+            'unit_of_measure': 'bananas',
+            'unit_of_measure_type': self.indicator.unit_of_measure_type,
+            'program': self.indicator.program.first().id,
+            'target_frequency': self.indicator.target_frequency,
+            'direction_of_change': self.indicator.direction_of_change,
+            'program2': self.indicator.program.first().id,
+        }
+        response = self.client.post(self.url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # HERE is where the keys/values assumptions for the JSON response as expected by JS should go
+        expected_response = json.dumps({
+            'key': 'expectedvalue',
+            'otherkey': ['listitem1', 'listitem2']
+        })
+        self.assertJSONEqual(response.content, expected_response,
+                             "expected:\n {0} but indicator_update returned:\n {1}".format(
+                                expected_response, response.content))
