@@ -7,7 +7,7 @@ from factories.indicators_models import IndicatorTypeFactory
 from factories.workflow_models import ProgramFactory
 from workflow.models import Country, Program
 from indicators.models import Indicator
-from tola.test.base_classes import TestBase, ScenarioBase, ScenarioBase2, IndicatorDetailsMixin, IndicatorStatsMixin
+from tola.test.base_classes import TestBase, ScenarioBase, ScenarioBase2, IndicatorDetailsMixin, IndicatorStatsMixin, FrontendBase
 from tola.test.scenario_definitions import indicator_scenarios
 from tola.test.utils import instantiate_scenario, generate_core_indicator_data
 
@@ -116,3 +116,8 @@ class PercentScenarioTest(ScenarioBase, IndicatorDetailsMixin, TestCase):
 class DefaultScenarioStatsTest(ScenarioBase2, IndicatorStatsMixin, TestCase):
     scenario = indicator_scenarios['scenario_1i-default_5pt_3cd_7ev']
     url_name = 'program_page'
+
+
+class IndicatorListHasIndicatorTest(FrontendBase, TestCase):
+    scenario = generate_core_indicator_data()
+    url_name = 'indicator_list'

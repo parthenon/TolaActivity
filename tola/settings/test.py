@@ -26,7 +26,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "tola_activity",
         "USER": "root",
-        "PASSWORD": "NewPassword",
+        "PASSWORD": "",
         "HOST": "localhost",
         "PORT": "",
     },

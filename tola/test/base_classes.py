@@ -37,6 +37,30 @@ class TestBase(object):
         self.client.login(username="IC", password='password')
 
 
+class FrontendBase(TestBase):
+
+    """
+    Stub class to test that I'm receiving valid document responses
+    """
+
+    @property
+    def scenario(self):
+        raise ImproperlyConfigured("A value for scenario hasn't been set")
+
+    @property
+    def url_name(self):
+        raise ImproperlyConfigured("A value for the url_name variable hasn't been set")
+
+    def setUp(self):
+        super(FrontendBase, self).setUp()
+        self.indicator.delete()
+        self.url = reverse_lazy(self.url_name, args=[self.program.id, 0, 0])
+        self.response = self.client.get(self.url)
+
+    def test_indicator_list_has_indicators(self):
+        print(self.response) # TODO: parse with BS4 for valid HTML
+
+
 class ScenarioBase(TestBase):
 
     """
