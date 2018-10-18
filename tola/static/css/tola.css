@@ -6396,6 +6396,109 @@ body > .container {
 .disable-span a {
   pointer-events: none; }
 
+.program__calendar-complete {
+  color: #79AD00;
+  display: flex;
+  align-items: center; }
+  .program__calendar-complete p {
+    line-height: 1.1;
+    margin: 0; }
+  .program__calendar-complete .fa-calendar {
+    font-size: 42px;
+    margin-right: 7.5px; }
+
+.program__status-gauges {
+  background-color: #fff;
+  border: 1px solid #dbdcde;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  padding-bottom: 15px;
+  padding-top: 15px; }
+
+.program-gauge {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  flex: 0 0 25%;
+  max-width: 25%; }
+  @media (max-width: 991.98px) {
+    .program-gauge {
+      flex: 0 0 100%;
+      max-width: 100%; }
+      .program-gauge + .program-gauge {
+        border-top: 1px solid #dbdcde;
+        margin-top: 15px;
+        padding-top: 15px; } }
+
+.program-page__main {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px; }
+
+.program-page__sidebar {
+  font-size: 0.875rem;
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  flex: 0 0 25%;
+  max-width: 25%; }
+  @media (max-width: 767.98px) {
+    .program-page__sidebar {
+      flex: 0 0 100%;
+      max-width: 100%;
+      order: 2; } }
+
+.sidebar__detail {
+  padding-bottom: 30px; }
+  .sidebar__detail + .sidebar__detail {
+    border-top: 1px solid #d2d5d9;
+    padding-top: 15px; }
+  .sidebar__detail h3 {
+    font-size: inherit;
+    text-transform: uppercase; }
+
+.pinned-reports {
+  list-style-type: none;
+  margin-left: 0;
+  padding-left: 0; }
+
+.pinned-report a {
+  color: inherit;
+  display: block;
+  padding-bottom: 15px;
+  padding-top: 15px; }
+
+.pinned-report h4 {
+  color: inherit;
+  font-size: inherit;
+  margin-bottom: 0; }
+
+.program-page__indicators {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  flex: 0 0 75%;
+  max-width: 75%; }
+  .program-page__indicators > table {
+    background: #fff; }
+  @media (max-width: 767.98px) {
+    .program-page__indicators {
+      flex: 0 0 100%;
+      max-width: 100%;
+      order: 1; } }
+
 /* Local custom CSS and overloads for non-BS libraries */
 .help-block {
   color: #71757b !important;
@@ -6815,109 +6918,6 @@ body.page_iptt_table {
 
 .float-right {
   float: right; }
-
-.program__calendar-complete {
-  color: #79AD00;
-  display: flex;
-  align-items: center; }
-  .program__calendar-complete p {
-    line-height: 1.1;
-    margin: 0; }
-  .program__calendar-complete .fa-calendar {
-    font-size: 42px;
-    margin-right: 7.5px; }
-
-.program__status-gauges {
-  background-color: #fff;
-  border: 1px solid #dbdcde;
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-  margin-top: 15px;
-  padding-bottom: 15px;
-  padding-top: 15px; }
-
-.program-gauge {
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  position: relative;
-  width: 100%;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-  flex: 0 0 25%;
-  max-width: 25%; }
-  @media (max-width: 991.98px) {
-    .program-gauge {
-      flex: 0 0 100%;
-      max-width: 100%; }
-      .program-gauge + .program-gauge {
-        border-top: 1px solid #dbdcde;
-        margin-top: 15px;
-        padding-top: 15px; } }
-
-.program-page__main {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -15px;
-  margin-left: -15px; }
-
-.program-page__sidebar {
-  font-size: 0.875rem;
-  position: relative;
-  width: 100%;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-  flex: 0 0 25%;
-  max-width: 25%; }
-  @media (max-width: 767.98px) {
-    .program-page__sidebar {
-      flex: 0 0 100%;
-      max-width: 100%;
-      order: 2; } }
-
-.sidebar__detail {
-  padding-bottom: 30px; }
-  .sidebar__detail + .sidebar__detail {
-    border-top: 1px solid #d2d5d9;
-    padding-top: 15px; }
-  .sidebar__detail h3 {
-    font-size: inherit;
-    text-transform: uppercase; }
-
-.pinned-reports {
-  list-style-type: none;
-  margin-left: 0;
-  padding-left: 0; }
-
-.pinned-report a {
-  color: inherit;
-  display: block;
-  padding-bottom: 15px;
-  padding-top: 15px; }
-
-.pinned-report h4 {
-  color: inherit;
-  font-size: inherit;
-  margin-bottom: 0; }
-
-.program-page__indicators {
-  position: relative;
-  width: 100%;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-  flex: 0 0 75%;
-  max-width: 75%; }
-  .program-page__indicators > table {
-    background: #fff; }
-  @media (max-width: 767.98px) {
-    .program-page__indicators {
-      flex: 0 0 100%;
-      max-width: 100%;
-      order: 1; } }
 
 @media print {
   a[href]:after {
