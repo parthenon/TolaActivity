@@ -17,21 +17,13 @@
     {% if indicator_count %}
         <aside class="program__status-gauges">
 
-            <section class="program-gauge">
-                {% gauge_band scope_percents.high scope_percents.on_scope scope_percents.low %}
-            </section>
+            {% gauge_band scope_percents.high scope_percents.on_scope scope_percents.low %}
 
-            <section class="program-gauge">
-                {% gauge_tank results_stats.targets_defined 'indicators have targets defined' 'of indicators have no targets' %}
-            </section>
+            {% gauge_tank results_stats.targets_defined 'indicators have targets defined' 'of indicators have no targets' %}
 
-            <section class="program-gauge">
-                {% gauge_tank results_stats.reported_results 'indicators have reported results' 'of indicators have no results' %}
-            </section>
+            {% gauge_tank results_stats.reported_results 'indicators have reported results' 'of indicators have no results' %}
 
-            <div class="program-gauge">
-                {% gauge_tank results_stats.results_evidence 'results are backed up with evidence' 'of results are missing evidence' %}
-            </div>
+            {% gauge_tank results_stats.results_evidence 'results are backed up with evidence' 'of results are missing evidence' %}
 
         </aside>
     {% endif %}

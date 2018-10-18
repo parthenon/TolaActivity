@@ -1,32 +1,37 @@
 {% load i18n %}
-<div class="status-gauge">
-    <div class="gauge__graphic gauge__graphic--performance-band">
-        <div class="graphic__tick-marks">
-            {% for i in ticks %}
-            <div class="graphic__tick"></div>
-            {% endfor %}
-        </div>
-        <div class="graphic__performance-band--above-target"
-             style="flex-basis: {{ high }}%"></div>
-        <div class="graphic__performance-band--on-target"
-             style="flex-basis: {{ on_scope }}%"></div>
-        <div class="graphic__performance-band--below-target"
-             style="flex-basis: {{ low }}%"></div>
-    </div>
-    <div class="gauge__labels gauge__labels--justified">
-        <div class="gauge__label--small">
-            <a href="#" class="text-dark">{% blocktrans %}{{ high }}% are &gt;15% above target{% endblocktrans %}</a>
-        </div>
-        <div class="gauge__labels">
-            <div class="gauge__value">
-                {{ on_scope }}%
+{# TODO: links filter the indicator list, apply a highlight class to the entire gauge, and alter the number of indicators displayed on the program page #}
+<div class="gauge">
+    <div class="gauge__overview">
+        <div class="gauge__graphic gauge__graphic--performance-band">
+            <div class="graphic__tick-marks">
+                {% for i in ticks %}
+                <div class="graphic__tick"></div>
+                {% endfor %}
             </div>
-            <h6 class="gauge__label">
-                <a href="#" class="text-dark">{% trans 'Indicators on track' %}</a>
-            </h6>
+            <div class="graphic__performance-band--above-target"
+                 style="flex-basis: {{ high }}%"></div>
+            <div class="graphic__performance-band--on-target"
+                 style="flex-basis: {{ on_scope }}%"></div>
+            <div class="graphic__performance-band--below-target"
+                 style="flex-basis: {{ low }}%"></div>
         </div>
-        <div class="gauge__label--small">
-            <a href="#" class="text-dark">{% blocktrans %}{{ low }}% are &gt;15% below target{% endblocktrans %}</a>
+        <div class="gauge__labels gauge__labels--justified">
+            <div class="gauge__label--small">
+                {% comment %}Translators: shows how many indicators are a certain percentage above target. Example: 31% are 15% above target.{% endcomment %}
+                <a href="#" class="text-dark">{% blocktrans %}{{ high }}% are &gt;{{ margin }}% above target{% endblocktrans %}</a>
+            </div>
+            <div class="gauge__labels">
+                <div class="gauge__value">
+                    {{ on_scope }}%
+                </div>
+                <h6 class="gauge__label">
+                    <a href="#" class="text-dark">{% trans 'Indicators on track' %}</a>
+                </h6>
+            </div>
+            <div class="gauge__label--small">
+                {% comment %}Translators: shows how many indicators are a certain percentage below target. Example: 31% are 15% below target.{% endcomment %}
+                <a href="#" class="text-dark">{% blocktrans %}{{ low }}% are &gt;{{ margin }}% below target{% endblocktrans %}</a>
+            </div>
         </div>
     </div>
 </div>

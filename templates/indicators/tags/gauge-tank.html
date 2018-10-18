@@ -1,5 +1,7 @@
 {% load i18n %}
-    <div class="status-gauge">
+{# TODO: links filter the indicator list, apply a highlight class to the entire gauge, and alter the number of indicators displayed on the program page #}
+<div class="gauge">
+    <div class="gauge__overview">
         <div class="gauge__graphic gauge__graphic--tank">
             <div class="graphic__tick-marks">
                 {% for i in ticks %}
@@ -24,4 +26,4 @@
             <a href="#" class="text-dark">{{ not_filled }}% {% trans detail %}</a>
         </div>
     {% endif %}
-
+</div>

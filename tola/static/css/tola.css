@@ -6265,7 +6265,27 @@ body > .container {
     display: flex;
     justify-content: space-between; } }
 
-.status-gauge {
+.gauge {
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  padding: 15px;
+  flex: 0 0 25%;
+  max-width: 25%; }
+  @media (max-width: 991.98px) {
+    .gauge {
+      flex: 0 0 100%;
+      max-width: 100%; }
+      .gauge + .gauge {
+        border-top: 1px solid #dbdcde;
+        margin-top: 15px;
+        padding-top: 15px; } }
+  .gauge.is-highlighted {
+    background: none;
+    border-color: #ffd100; }
+
+.gauge__overview {
   display: flex;
   flex-direction: row;
   flex-grow: 1; }
@@ -6414,28 +6434,7 @@ body > .container {
   flex-wrap: wrap;
   margin-bottom: 15px;
   margin-top: 15px;
-  padding-bottom: 15px;
-  padding-top: 15px; }
-
-.program-gauge {
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  position: relative;
-  width: 100%;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-  flex: 0 0 25%;
-  max-width: 25%; }
-  @media (max-width: 991.98px) {
-    .program-gauge {
-      flex: 0 0 100%;
-      max-width: 100%; }
-      .program-gauge + .program-gauge {
-        border-top: 1px solid #dbdcde;
-        margin-top: 15px;
-        padding-top: 15px; } }
+  padding: 15px; }
 
 .program-page__main {
   display: flex;
