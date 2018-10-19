@@ -44,24 +44,7 @@
             <p><a href="#">{% trans "View Program Sites" %}</a></p>
             <a href="#" class="btn-add"><i class="fas fa-plus-circle"></i> {% trans "Add site" %}</a>
         </section>
-        <section class="sidebar__detail">
-            <h3>{% trans "Pinned Reports" %}</h3>
-            <ul class="pinned-reports">
-                <li class="pinned-report">
-                    <a href="#">
-                        <h4>IPTT: Recent Progress for All Indicators</h4>
-                    Jun 1, 2018 – Jul 31, 2018
-                    </a>
-                </li>
-                <li class="pinned-report">
-                    <a href="#">
-                        <h4>IPTT: Donor indicators tracked quarterly</h4>
-                        Jan 1, 2018 – Mar 31, 2019
-                    </a>
-                </li>
-            </ul>
-            <a href="#" class="btn-add"><i class="fas fa-plus-circle"></i> {% trans "Create an IPTT report" %}</a>
-        </section>
+        {% sidebar_pinned_reports program.id %}
     </div>
     <div id="div-id-indicator-list" class="indicators-list program-page__indicators">
         <div class="indicators-list__header">

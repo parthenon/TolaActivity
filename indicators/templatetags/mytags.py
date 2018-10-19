@@ -120,3 +120,28 @@ def gauge_band(high, on_scope, low):
         'ticks': list(range(1,11)),
         'margin': int(Indicator.ONSCOPE_MARGIN * 100),
     }
+
+@register.inclusion_tag('indicators/tags/sidebar-pinned-reports.html')
+def sidebar_pinned_reports(context):
+    """
+    Returns a list of pinned reports filtered by context (probably a program)
+     """
+    iptt_reports = [
+        # (TODO) Sample data for the templatetag
+        {
+            'title': 'IPTT: Recent Progress for All Indicators',
+            'date_from': datetime.strptime('2018-06-01', '%Y-%m-%d'),
+            'date_to': datetime.strptime('2018-07-31', '%Y-%m-%d'),
+            'url': '#',
+        },
+        {
+            'title': 'IPTT: Donor indicators tracked quarterly',
+            'date_from': datetime.strptime('2018-01-01', '%Y-%m-%d'),
+            'date_to': datetime.strptime('2018-03-31', '%Y-%m-%d'),
+            'url': '#',
+        },
+    ]
+    return {
+        'reports': iptt_reports,
+    }
+

@@ -55,26 +55,6 @@
         text-transform: uppercase;
     }
 }
-.pinned-reports {
-    // probably needs to be a separate component
-    // or more generic
-    list-style-type: none;
-    margin-left: 0;
-    padding-left: 0;
-}
-.pinned-report {
-    a {
-        color: inherit;
-        display: block;
-        padding-bottom: $grid-gutter-width/2;
-        padding-top: $grid-gutter-width/2;
-    }
-    h4 { // TODO
-        color: inherit;
-        font-size: inherit;
-        margin-bottom: 0;
-    }
-}
 
 .program-page__indicators {
     // contains an instance of .indicators-list

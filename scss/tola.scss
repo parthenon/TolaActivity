@@ -76,6 +76,7 @@
 @import 'components/indicator_table';  // indicator list included on Program page and Indicators page
 @import 'components/collected_data_table';  // collected data table included in indicator list (& elsewhere?)
 @import 'components/program'; // Program Page & related components for Mangosteen
+@import 'components/iptt_pinned_reports'; // IPTT pinned reports on both the IPTT page & elsewhere
 
 /* Local custom CSS and overloads for non-BS libraries */
 @import 'mixins';

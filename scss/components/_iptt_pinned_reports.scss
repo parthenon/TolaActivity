@@ -1,0 +1,33 @@
+// IPTT Pinned reports
+// -------------------
+
+// Includes selectors for:
+// 1. elements related to pinning functionality on the IPTT page
+// 2. other components that display pins, e.g. on the program page
+
+
+.pinned-reports {
+    // probably needs to be a separate component
+    // or more generic
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+.pinned-report {
+    a {
+        color: inherit;
+        display: block;
+        padding-bottom: $grid-gutter-width/2;
+        padding-top: $grid-gutter-width/2;
+    }
+    h4 { // TODO
+        color: inherit;
+        font-size: inherit;
+        margin-bottom: 0;
+    }
+}
+.pinned-report__date {
+    // This might be a more generic selector
+    color: $body-color;
+    font-size: inherit;
+}

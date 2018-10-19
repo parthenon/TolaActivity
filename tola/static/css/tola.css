@@ -6466,6 +6466,22 @@ body > .container {
     font-size: inherit;
     text-transform: uppercase; }
 
+.program-page__indicators {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  flex: 0 0 75%;
+  max-width: 75%; }
+  .program-page__indicators > table {
+    background: #fff; }
+  @media (max-width: 767.98px) {
+    .program-page__indicators {
+      flex: 0 0 100%;
+      max-width: 100%;
+      order: 1; } }
+
 .pinned-reports {
   list-style-type: none;
   margin-left: 0;
@@ -6482,21 +6498,9 @@ body > .container {
   font-size: inherit;
   margin-bottom: 0; }
 
-.program-page__indicators {
-  position: relative;
-  width: 100%;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-  flex: 0 0 75%;
-  max-width: 75%; }
-  .program-page__indicators > table {
-    background: #fff; }
-  @media (max-width: 767.98px) {
-    .program-page__indicators {
-      flex: 0 0 100%;
-      max-width: 100%;
-      order: 1; } }
+.pinned-report__date {
+  color: #212429;
+  font-size: inherit; }
 
 /* Local custom CSS and overloads for non-BS libraries */
 .help-block {

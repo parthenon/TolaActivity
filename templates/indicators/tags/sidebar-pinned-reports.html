@@ -1,0 +1,15 @@
+{% load i18n l10n %}
+<section class="sidebar__detail">
+    <h3>{% trans "Pinned Reports" %}</h3>
+    <ul class="pinned-reports">
+        {% for report in reports %}
+        <li class="pinned-report">
+            <a href="{{ url }}">
+                <h4>{{ report.title }}</h4>
+                <div class="pinned-report__date">{{ report.date_from|date:"MEDIUM_DATE_FORMAT" }} – {{ report.date_to|date:"MEDIUM_DATE_FORMAT"}}</div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="#" class="btn-add"><i class="fas fa-plus-circle"></i> {% trans "Create an IPTT report" %}</a>
+</section>
