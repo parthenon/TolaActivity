@@ -121,8 +121,8 @@ def gauge_band(high, on_scope, low):
         'margin': int(Indicator.ONSCOPE_MARGIN * 100),
     }
 
-@register.inclusion_tag('indicators/tags/sidebar-pinned-reports.html')
-def sidebar_pinned_reports(context):
+@register.inclusion_tag('indicators/tags/iptt-pinned-reports.html')
+def iptt_pinned_reports(context):
     """
     Returns a list of pinned reports filtered by context (probably a program)
      """
