@@ -121,10 +121,10 @@ def gauge_band(high, on_scope, low):
         'margin': int(Indicator.ONSCOPE_MARGIN * 100),
     }
 
-@register.inclusion_tag('indicators/tags/iptt-pinned-reports.html')
+@register.inclusion_tag('indicators/tags/iptt-pinned-reports.html', takes_context=True)
 def iptt_pinned_reports(context):
     """
-    Returns a list of pinned reports filtered by context (probably a program)
+    Returns a list of pinned reports filtered by context (e.g. program.id)
      """
     iptt_reports = [
         # (TODO) Sample data for the templatetag
