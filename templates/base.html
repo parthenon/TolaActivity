@@ -275,6 +275,9 @@
             {% include "google_analytics.html" %}
         {% endif %}
 
+        <!-- Django i18n tools and translations -->
+        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+
         {% block extra_js_in_body %}
         {% endblock %}
         {% block debug %}

@@ -13,6 +13,7 @@ from feed.views import (
 )
 from django.conf.urls import include, url
 # Import i18n_patterns
+from django.views.i18n import JavaScriptCatalog
 from django.views.generic import TemplateView
 from rest_framework import routers
 from django.conf import settings
@@ -72,7 +73,10 @@ router.register(r'pindicators', PogramIndicatorReadOnlyViewSet, base_name='pindi
 router.register(r'periodictargets', PeriodicTargetReadOnlyViewSet, base_name='periodictargets')
 router.register(r'programtargetfrequencies', ProgramTargetFrequencies, base_name='programtargetfrequencies')
 
-urlpatterns = [ # rest framework
+urlpatterns = [
+                url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
+                # rest framework
                 url(r'^api/', include(router.urls)),
                 url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                 url(r'^api-token-auth/', auth_views.obtain_auth_token),
