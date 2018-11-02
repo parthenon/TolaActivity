@@ -24,11 +24,20 @@
         "cpx-pnotify-buttons-js": "cpx \"node_modules/pnotify/dist/iife/PNotifyButtons.{js,js.map}\" $npm_package_config_js",
         "copy": "npm-run-all cpx-*",
         "build-tola-css": "node-sass --source-map=true --include-path scss scss/tola.scss tola/static/css/tola.css",
-        "start": "nodemon -e scss -x \"npm run build-tola-css\""
+        "start": "nodemon -e scss -x \"npm run build-tola-css\"",
+        "build": "npm run build:prod",
+        "build:prod": "./node_modules/.bin/webpack --config webpack.prod.js --mode production",
+        "build:dev": "./node_modules/.bin/webpack --config webpack.dev.js --mode development",
+        "watch": "./node_modules/.bin/webpack-dev-server --config webpack.dev.js --mode development"
     },
     "devDependencies": {
+        "@babel/core": "^7.1.2",
+        "@babel/preset-env": "^7.1.0",
+        "@babel/preset-react": "^7.0.0",
+        "babel-loader": "^8.0.4",
         "bootstrap": "4.0.0",
         "bootstrap-multiselect": "git+ssh://git@github.com/davidstutz/bootstrap-multiselect.git",
+        "clean-webpack-plugin": "^0.1.19",
         "cpx": "*",
         "jquery": "3.3.1",
         "jquery-ui-dist": "1.12.1",
@@ -38,6 +47,13 @@
         "npm-run-all": "*",
         "pnotify": "^4.0.0-alpha.4",
         "popper.js": "1.12.9",
-        "select2": "4.0.0"
+        "react": "^16.6.0",
+        "react-dom": "^16.6.0",
+        "select2": "4.0.0",
+        "webpack": "^4.23.1",
+        "webpack-bundle-tracker": "^0.4.2-beta",
+        "webpack-cli": "^3.1.2",
+        "webpack-dev-server": "^3.1.10",
+        "webpack-merge": "^4.1.4"
     }
 }

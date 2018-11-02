@@ -117,7 +117,9 @@ STATIC_URL = '/static/'
 
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = ()
+STATICFILES_DIRS = (
+    join(SITE_ROOT, 'build'),
+)
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
@@ -264,6 +266,7 @@ THIRD_PARTY_APPS = (
     'simple_history',
     #'user_language_middleware',
     'widget_tweaks',
+    'webpack_loader',
 )
 
 # Apps specific for this project go here.
@@ -349,6 +352,15 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 GOOGLE_ANALYTICS_PROPERTY_ID = None # replaced in private settings file
 GOOGLE_ANALYTICS_DOMAIN = 'example.org' # replaced in private settings file
+
+# Webpack
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'dist/',
+        'STATS_FILE': os.path.join(SITE_ROOT, 'webpack-stats.json'),
+    }
+}
 
 ########## LOGGING CONFIGURATION
 LOGGING = {

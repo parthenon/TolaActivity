@@ -261,6 +261,51 @@ for this bug until the bug is well and truly crushed.
     $ mysql -u root -p tola_activity < demo_data.sql
     ```
 
+## Front-end development setup and dev server
+
+Tola uses Webpack and `npm` installed packages in `node_modules` to build javascript bundles.
+During development, you will need to run the webpack development server to have the latest JS
+bundles available, and to re-generate the bundles if you modify any JS handled by Webpack.
+
+Directions for installing `npm` can be found below. It can also be installed via homebrew on macOS
+
+```bash
+$ brew install npm
+```
+
+### Install all `node_module` package dependencies using `npm`
+
+```bash
+$ npm install
+```
+
+Note: You made need to periodiclly run this after doing a `git pull` if `package.json` has been
+updated with new dependencies. This is similar to running `pip install -r requements.txt` if
+the `requirements.txt` has been updated.
+
+### Start the webpack development server
+
+```bash
+$ npm run watch
+```
+
+This should be done along side `./manage.py runserver`
+
+### Build bundles for production
+
+When you are ready to deploy to an external server, you will need to build and check-in the
+production ready bundles. These are generated with:
+
+```bash
+$ npm run build:prod
+```
+
+or use the alias
+
+```bash
+$ npm run build
+```
+
 ## Installing and running the front-end harness
 
 *See also the [front-end architecture roadmap](https://github.com/mercycorps/TolaActivity/wiki/Proposal-for-front-end-architecture).*

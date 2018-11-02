@@ -12,9 +12,6 @@
 *.swo
 *~
 
-# Sphinx docs:
-build
-
 # SQLite3 database files:
 *.db
 
@@ -52,3 +49,6 @@ tola/settings/test_local.py
 
 # node modules
 node_modules
+
+webpack-stats-dev.json
+build/dev-dist
