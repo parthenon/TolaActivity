@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n mathfilters mytags static %}
+{% load render_bundle from webpack_loader %}
 {% block title %}{% trans "Program indicators" %} | {% endblock %}
 {% block page_title %}{{ program.name }}{% endblock %}
 {% block header_extras %}
@@ -117,30 +118,7 @@
         let jsContext = {{ js_context|js }};
     </script>
 
-    <script>
-        // On pinned report delete btn click
-        $('[data-delete-pinned-report]').click(function (e) {
-            e.preventDefault();
-
-            let prId = $(this).data('deletePinnedReport');
-            let pinnedReport = $(this).closest('.pinned-report');
-
-            if (window.confirm(jsContext.delete_pinned_report_confirmation_msg)) {
-                $.ajax({
-                    type: "POST",
-                    url: jsContext.delete_pinned_report_url,
-                    data: {
-                        pinned_report_id: prId,
-                    },
-                    success: function () {
-                        pinnedReport.remove();
-                    },
-                    error: function () {
-                        console.log('AJAX error')
-                    }
-                });
-            }
-        });
-    </script>
     <script src="{% static "js/program_page_filters.js" %}"></script>
+
+    {% render_bundle 'program_page' %}
 {% endblock %}

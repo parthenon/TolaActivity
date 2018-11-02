@@ -1489,8 +1489,6 @@ class ProgramPage(ListView):
 
         js_context = {
             'delete_pinned_report_url': str(reverse_lazy('delete_pinned_report')),
-            'delete_pinned_report_confirmation_msg':
-                _('Warning: This action connot be undone. Are you sure you want to delete this pinned report?'),
         }
 
         c_data = {
