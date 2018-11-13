@@ -9,7 +9,7 @@ $( document )
         $('#ajaxloading').show();
     })
     .ajaxStop( function() {
-         $('#ajaxloading').hide();
+        $('#ajaxloading').hide();
     })
     .ajaxError(function( event, jqxhr, settings, thrownError ) {
         if (jqxhr.readyState === 4) {

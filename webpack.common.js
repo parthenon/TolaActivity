@@ -8,7 +8,7 @@ const webpack = require('webpack');
 module.exports = {
 
     entry: {
-        program_page: './js/program_page.js' ,
+        program_page: './js/pages/program_page/index.js' ,
     },
 
     output: {

@@ -28,6 +28,8 @@ from weasyprint import HTML, CSS
 
 from feed.serializers import FlatJsonSerializer
 from util import getCountry, group_excluded, get_table
+
+from indicators.serializers import IndicatorSerializer, ProgramSerializer
 from workflow.forms import FilterForm
 from workflow.mixins import AjaxableResponseMixin
 from workflow.models import (
@@ -40,7 +42,7 @@ from ..models import (
     CollectedData, IndicatorType, Level, ExternalServiceRecord,
     ExternalService, TolaTable, PinnedReport
 )
-from indicators.queries import ProgramWithMetrics
+from indicators.queries import ProgramWithMetrics, IPTTIndicator
 from .views_reports import IPTT_ReportView
 
 
@@ -1489,6 +1491,9 @@ class ProgramPage(ListView):
 
         js_context = {
             'delete_pinned_report_url': str(reverse_lazy('delete_pinned_report')),
+            'program': ProgramSerializer(program).data,
+            'indicators': IndicatorSerializer(indicators, many=True).data,
+            'indicator_on_scope_margin': Indicator.ONSCOPE_MARGIN,
         }
 
         c_data = {
@@ -1770,6 +1775,17 @@ class IndicatorDataExport(View):
         response['Content-Disposition'] = 'attachment; \
             filename=indicator_data.csv'
         return response
+
+
+def api_indicator_view(request, indicator_id):
+    """
+    API call for viewing an indicator for the program page
+    """
+    indicator = Indicator.objects.values('program_id').get(id=indicator_id)
+    program = ProgramWithMetrics.with_metrics.get(pk=indicator['program_id'])
+    indicator = IPTTIndicator.with_metrics.with_filter_labels(program).get(id=indicator_id)
+    return JsonResponse(IndicatorSerializer(indicator).data)
+
 
 
 """

@@ -25,8 +25,8 @@ from .views.views_indicators import (
     TVAReport,
     DisaggregationReport,
     TVAPrint,
-    DisaggregationPrint
-)
+    DisaggregationPrint,
+    api_indicator_view)
 
 from .views.views_reports import (
     IPTTReportQuickstartView,
@@ -126,4 +126,6 @@ urlpatterns = [
 
     url(r'^iptt_csv/(?P<program_id>\d+)/(?P<reporttype>\w+)/$', IPTT_CSVExport.as_view(), name='iptt_csv'),
 
+    # API call for program page
+    url(r'^api/indicator/(?P<indicator_id>\d+)', api_indicator_view, name='api_indicator_view'),
 ]

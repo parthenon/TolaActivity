@@ -31,6 +31,8 @@
         </aside>
     {% endif %}
 
+    <div id="program-metrics-react-component"></div>
+
 <div class="program-page__main">
     <div class="program-page__sidebar">
         <section class="sidebar__detail">
@@ -96,15 +98,9 @@
             <a href="{% url 'iptt_quickstart' %}?program_id={{ program.id }}" class="btn-add"><i class="fas fa-plus-circle"></i> {% trans "Create an IPTT report" %}</a>
         </section>
     </div>
-    <div id="div-id-indicator-list" class="indicators-list program-page__indicators">
-        <div class="indicators-list__header">
-            <h3 class="no-bold"><span id="indicators-list-title">{% blocktrans %}{{ indicator_count }} indicators{% endblocktrans %} </span> <a href="#" id="show-all-indicators" class="is-display-none"><small>Show all</small></a></h3>
-            <div>
-                <a href="{% url 'indicator_create' program.id %}" role="button" class="btn-link btn-add"><i class="fas fa-plus-circle"></i> {% trans "Add indicator" %}</a>
-            </div>
-        </div>
-        {% include "indicators/program_indicators_table.html" %}
-    </div>
+
+    <div id="indicator-list-react-component" class="indicators-list program-page__indicators"></div>
+
 </div>
 
 {% include "indicators/indicator_list_modals.html" %}
@@ -118,7 +114,7 @@
         let jsContext = {{ js_context|js }};
     </script>
 
-    <script src="{% static "js/program_page_filters.js" %}"></script>
+{#    <script src="{% static "js/program_page_filters.js" %}"></script>#}
 
     {% render_bundle 'program_page' %}
 {% endblock %}
