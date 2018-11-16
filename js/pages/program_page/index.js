@@ -4,6 +4,7 @@ import eventBus from '../../eventbus';
 
 import {IndicatorList} from './components/indicator_list';
 import {ProgramMetrics} from './components/program_metrics';
+import {IndicatorFilters} from './components/indicator_filters';
 import {ProgramPageStore, ProgramPageUIStore} from './models';
 
 import './pinned_reports';
@@ -54,16 +55,27 @@ eventBus.on('reload-indicator', indicatorId => {
 
 // apply a gas gauge filter. Takes in IndicatorFilter enum value
 eventBus.on('apply-gauge-tank-filter', indicatorFilter => {
-    // TODO: Clear side filters
     uiStore.setIndicatorFilter(indicatorFilter);
+    // clear sidebar filters as well
+    eventBus.emit('select-indicators-to-filter', []);
 });
 
 // clear all gas tank filters
 eventBus.on('clear-gauge-tank-filter', () => {
-    // TODO: Clear side filters
     uiStore.clearIndicatorFilter();
+    // clear sidebar filters as well
+    eventBus.emit('select-indicators-to-filter', []);
 });
 
+// filter down by selecting individual indicators
+eventBus.on('select-indicators-to-filter', (selectedIndicatorIds) => {
+    uiStore.setSelectedIndicatorIds(selectedIndicatorIds);
+});
+
+// filter down by selecting individual indicator levels
+eventBus.on('select-indicator-levels-to-filter', (selectedIndicatorLevelIds) => {
+    uiStore.setSelectedIndicatorLevelIds(selectedIndicatorLevelIds);
+});
 
 /*
  * React components on page
@@ -76,6 +88,10 @@ ReactDOM.render(<ProgramMetrics rootStore={rootStore}
                                 uiStore={uiStore}
                                 indicatorOnScopeMargin={jsContext.indicator_on_scope_margin}/>,
     document.querySelector('#program-metrics-react-component'));
+
+ReactDOM.render(<IndicatorFilters rootStore={rootStore}
+                                  uiStore={uiStore} indicatorLevels={jsContext.indicator_levels}/>,
+    document.querySelector('#indicator-filters-react-component'));
 
 /*
  * Copied and modified JS from indicator_list_modals.js to allow modals to work

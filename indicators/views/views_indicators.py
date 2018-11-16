@@ -29,7 +29,7 @@ from weasyprint import HTML, CSS
 from feed.serializers import FlatJsonSerializer
 from util import getCountry, group_excluded, get_table
 
-from indicators.serializers import IndicatorSerializer, ProgramSerializer
+from indicators.serializers import IndicatorSerializer, ProgramSerializer, LevelSerializer
 from workflow.forms import FilterForm
 from workflow.mixins import AjaxableResponseMixin
 from workflow.models import (
@@ -1493,6 +1493,7 @@ class ProgramPage(ListView):
             'delete_pinned_report_url': str(reverse_lazy('delete_pinned_report')),
             'program': ProgramSerializer(program).data,
             'indicators': IndicatorSerializer(indicators, many=True).data,
+            'indicator_levels': LevelSerializer(indicator_levels, many=True).data,
             'indicator_on_scope_margin': Indicator.ONSCOPE_MARGIN,
         }
 

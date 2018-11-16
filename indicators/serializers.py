@@ -3,7 +3,7 @@ from django.db.models import Sum
 from rest_framework import serializers
 
 from workflow.models import Program
-from .models import PeriodicTarget, CollectedData, Indicator
+from .models import PeriodicTarget, CollectedData, Indicator, Level
 
 
 class CollecteddataSerializer(serializers.ModelSerializer):
@@ -81,4 +81,16 @@ class ProgramSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'does_it_need_additional_target_periods',
+        ]
+
+
+class LevelSerializer(serializers.ModelSerializer):
+    """
+    Serializer specific to the Program Page
+    """
+    class Meta:
+        model = Level
+        fields = [
+            'id',
+            'name'
         ]

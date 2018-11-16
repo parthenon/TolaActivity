@@ -184,11 +184,27 @@ export const IndicatorList = observer(function (props) {
     // const indicators = props.rootStore.indicatorStore.indicators;
     const resultsMap = props.rootStore.resultsMap;
     const currentIndicatorFilter = props.uiStore.currentIndicatorFilter;
+    const selectedIndicatorIds = this.props.uiStore.selectedIndicatorIds;
+    const selectedIndicatorLevelIds = this.props.uiStore.selectedIndicatorLevelIds;
 
-    const filteredIndicators = indicatorStore.filterIndicators(currentIndicatorFilter);
+    // apply gas gauge filter
+    let metricsFilteredIndicators = indicatorStore.filterIndicators(currentIndicatorFilter);
+
+    // Further filter down indicators based on selected indicators and levels (left side filters)
+    // No selections == select all
+    // Note: should this be done on the store?
+    let filteredIndicators = metricsFilteredIndicators;
+
+    if (selectedIndicatorIds.length > 0) {
+        filteredIndicators = filteredIndicators.filter((i) => selectedIndicatorIds.indexOf(i.id) > -1);
+    }
+
+    if (selectedIndicatorLevelIds.length > 0) {
+        filteredIndicators = filteredIndicators.filter((i) => selectedIndicatorLevelIds.indexOf(i.level) > -1);
+    }
 
     return <React.Fragment>
-        <StatusHeader indicatorCount={filteredIndicators.length}
+        <StatusHeader indicatorCount={metricsFilteredIndicators.length}
                       programId={program.id}
                       currentIndicatorFilter={currentIndicatorFilter}
         />

@@ -35,33 +35,9 @@
 
 <div class="program-page__main">
     <div class="program-page__sidebar">
-        <section class="sidebar__detail">
-            <div class="form-group" id="id_div_indicators">
-                <label for="id_indicators" class="col-form-label text-uppercase">
-                    {% trans 'Indicators' %}
-                </label>
-                <div class="form-group-row">
-                    <select name="indicators" id="id_indicators" class="form-control" multiple="multiple">
-                        {% for ind in indicators %}
-                            <option value="{{ ind.id }}">{{ ind.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
 
-            <div class="form-group" id="id_div_levels">
-                <label for="id_levels" class="col-form-label text-uppercase">
-                    {% trans 'Levels' %}
-                </label>
-                <div class="form-group-row">
-                    <select name="levels" id="id_levels" class="form-control" multiple="multiple">
-                        {% for level in indicator_levels %}
-                            <option value="{{ level.id }}">{{ level.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </section>
+        <section class="sidebar__detail" id="indicator-filters-react-component"></section>
+
         <section class="sidebar__detail">
             <h3>{% trans "Program Details" %}</h3>
             <p><a href="{% url 'programIndicatorReport' program.id %}">{% trans "Indicator Plan" %}</a></p>
