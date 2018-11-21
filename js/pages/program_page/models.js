@@ -12,7 +12,7 @@ export const IndicatorFilter = Object.freeze({
     onTarget: 7,
 });
 
-class IndicatorStore {
+export class IndicatorStore {
     @observable indicators = [];
 
     constructor(indicators) {

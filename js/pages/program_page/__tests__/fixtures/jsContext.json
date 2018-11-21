@@ -1,0 +1,104 @@
+{
+    "indicators": [
+        {
+            "id": 4988,
+            "name": "% of program participants segregated by gender who report increased income attributable to the project",
+            "number": "So1",
+            "level": 3,
+            "unit_of_measure": "%",
+            "baseline_display": "0%",
+            "lop_target_display": "75%",
+            "key_performance_indicator": false,
+            "just_created": false,
+            "reporting": false,
+            "defined_targets": 0,
+            "reported_results": 2,
+            "all_results_backed_up": false,
+            "over_under": null
+        },
+        {
+            "id": 4989,
+            "name": "% of program participants securing full-time/part-time/short-term/seasonal employment, segregated by gender",
+            "number": "SO2",
+            "level": 3,
+            "unit_of_measure": "%",
+            "baseline_display": "0%",
+            "lop_target_display": "75%",
+            "key_performance_indicator": false,
+            "just_created": false,
+            "reporting": true,
+            "defined_targets": 2,
+            "reported_results": 1,
+            "all_results_backed_up": true,
+            "over_under": -1
+        },
+        {
+            "id": 4990,
+            "name": "Number of small businesses that have been retained, started, restarted or expanded, segregated by gender",
+            "number": "SO3",
+            "level": 3,
+            "unit_of_measure": "#",
+            "baseline_display": "0",
+            "lop_target_display": "1350",
+            "key_performance_indicator": false,
+            "just_created": false,
+            "reporting": false,
+            "defined_targets": 2,
+            "reported_results": 0,
+            "all_results_backed_up": true,
+            "over_under": null
+        },
+        {
+            "id": 4991,
+            "name": "Perceptions of Porgram participants on importance of intervention on promoting inclusive social reintegration",
+            "number": "SO4",
+            "level": 3,
+            "unit_of_measure": "5",
+            "baseline_display": "0",
+            "lop_target_display": "5",
+            "key_performance_indicator": false,
+            "just_created": false,
+            "reporting": false,
+            "defined_targets": 2,
+            "reported_results": 0,
+            "all_results_backed_up": true,
+            "over_under": null
+        },
+        {
+            "id": 4992,
+            "name": "One labour market assessment per target province per year",
+            "number": "Result 1.1",
+            "level": 2,
+            "unit_of_measure": "#",
+            "baseline_display": "3",
+            "lop_target_display": "3",
+            "key_performance_indicator": false,
+            "just_created": false,
+            "reporting": false,
+            "defined_targets": 1,
+            "reported_results": 0,
+            "all_results_backed_up": true,
+            "over_under": null
+        }
+    ],
+    "indicator_levels": [
+        {
+            "id": 1,
+            "name": "Goal"
+        },
+        {
+            "id": 3,
+            "name": "Outcome"
+        },
+        {
+            "id": 2,
+            "name": "Output"
+        }
+    ],
+    "program": {
+        "id": 512,
+        "does_it_need_additional_target_periods": false
+    },
+    "indicator_on_scope_margin": 0.15,
+    "delete_pinned_report_url": "/indicators/pinned_report/delete/"
+}

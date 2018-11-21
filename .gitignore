@@ -42,6 +42,7 @@ assets/
 templates/links.html
 coverage_html
 .coverage
+coverage/
 tola/settings/test_local.py
 
 # SASS Source Map
