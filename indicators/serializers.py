@@ -46,8 +46,8 @@ class IndicatorSerializer(serializers.ModelSerializer):
     """
     reporting = serializers.BooleanField()
     defined_targets = serializers.IntegerField()
-    reported_results = serializers.IntegerField()
-    all_results_backed_up = serializers.BooleanField()
+    results_count = serializers.IntegerField()
+    results_with_evidence_count = serializers.IntegerField()
     over_under = serializers.IntegerField()
 
     class Meta:
@@ -66,8 +66,8 @@ class IndicatorSerializer(serializers.ModelSerializer):
             # DB annotations
             'reporting',  # whether indicator progress towards targets is reported (min. one target period complete, one result reported)
             'defined_targets',  # whether all targets are defined for this indicator
-            'reported_results',  # whether any collecteddata is reported for this indicator
-            'all_results_backed_up',
+            'results_count',
+            'results_with_evidence_count',
             'over_under',  # indicator progress towards targets (1: over, 0: within 15% of target, -1: under, "None": non reporting
         ]
 

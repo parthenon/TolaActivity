@@ -37,12 +37,12 @@ export class IndicatorStore {
 
     @computed
     get getIndicatorsNeedingResults() {
-        return this.indicators.filter(i => i.reported_results === 0);
+        return this.indicators.filter(i => i.results_count === 0);
     }
 
     @computed
     get getIndicatorsNeedingEvidence() {
-        return this.indicators.filter(i => i.all_results_backed_up === false);
+        return this.indicators.filter(i => i.results_count !== i.results_with_evidence_count);
     }
 
     @computed
@@ -95,6 +95,16 @@ export class IndicatorStore {
         }
 
         return indicators
+    }
+
+    @computed
+    get getTotalResultsCount() {
+        return this.indicators.reduce((acc, i) => acc + i.results_count, 0);
+    }
+
+    @computed
+    get getTotalResultsWithEvidenceCount() {
+        return this.indicators.reduce((acc, i) => acc + i.results_with_evidence_count, 0);
     }
 }
 

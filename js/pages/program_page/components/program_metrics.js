@@ -213,8 +213,9 @@ export const ProgramMetrics = observer(function (props) {
                        filterType={IndicatorFilter.missingEvidence}
                        currentIndicatorFilter={currentIndicatorFilter}
 
-                       allIndicatorsLength={indicators.length - indicatorStore.getIndicatorsNeedingResults.length} // TODO: needs to be num results, not indicators
-                       filteredIndicatorsLength={indicatorStore.getIndicatorsNeedingEvidence.length} // TODO: needs to be # of results w/ evidence
+                       // The names below are misleading as this gauge is measuring *results*, not indicators
+                       allIndicatorsLength={indicatorStore.getTotalResultsCount}
+                       filteredIndicatorsLength={indicatorStore.getTotalResultsCount - indicatorStore.getTotalResultsWithEvidenceCount}
                        />
 
         </div>

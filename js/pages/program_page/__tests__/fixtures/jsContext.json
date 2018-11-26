@@ -12,8 +12,8 @@
             "just_created": false,
             "reporting": false,
             "defined_targets": 0,
-            "reported_results": 2,
-            "all_results_backed_up": false,
+            "results_count": 2,
+            "results_with_evidence_count": 1,
             "over_under": null
         },
         {
@@ -28,8 +28,8 @@
             "just_created": false,
             "reporting": true,
             "defined_targets": 2,
-            "reported_results": 1,
-            "all_results_backed_up": true,
+            "results_count": 1,
+            "results_with_evidence_count": 1,
             "over_under": -1
         },
         {
@@ -44,8 +44,8 @@
             "just_created": false,
             "reporting": false,
             "defined_targets": 2,
-            "reported_results": 0,
-            "all_results_backed_up": true,
+            "results_count": 0,
+            "results_with_evidence_count": 0,
             "over_under": null
         },
         {
@@ -60,8 +60,8 @@
             "just_created": false,
             "reporting": false,
             "defined_targets": 2,
-            "reported_results": 0,
-            "all_results_backed_up": true,
+            "results_count": 0,
+            "results_with_evidence_count": 0,
             "over_under": null
         },
         {
@@ -76,8 +76,8 @@
             "just_created": false,
             "reporting": false,
             "defined_targets": 1,
-            "reported_results": 0,
-            "all_results_backed_up": true,
+            "results_count": 0,
+            "results_with_evidence_count": 0,
             "over_under": null
         }
     ],
