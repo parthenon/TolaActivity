@@ -139,6 +139,10 @@ class CollectedDataForm(forms.ModelForm):
             .filter(program=self.program)
         self.fields['complete'].label = _("Project")
 
+        # only display Project field to existing users
+        if not self.request.user.tola_user.allow_projects_access:
+            self.fields.pop('complete')
+
         # override the program queryset to use request.user for country
         countries = getCountry(self.request.user)
         # self.fields['program'].queryset = Program.objects\
@@ -269,7 +273,7 @@ class IPTTReportFilterForm(ReportFormCommon):
         periods_choices_start = kwargs.get('initial').get('period_choices_start') # TODO: localize this date
         periods_choices_end = kwargs.get('initial').get('period_choices_end') # TODO: localize this date
 
-        target_frequencies = Indicator.objects.filter(program__in=[program.id], target_frequency__isnull=False) \
+        target_frequencies = program.indicator_set.filter(target_frequency__isnull=False) \
             .exclude(target_frequency=Indicator.EVENT) \
             .values('target_frequency') \
             .distinct() \

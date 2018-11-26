@@ -22,7 +22,7 @@
       <h3 class="filter-title">{% trans "Report Options" %}</h3>
       <div class="form-row mb-3" id="id_div_program">
         <label for="id_program" class="col-form-label">
-          {{ form.program.label }}
+          {{ form.program.label|upper }}
         </label>
         {% render_field form.program class+="form-control" %}
       </div>
@@ -30,7 +30,7 @@
       <div class="form-row mb-3" id="id_div_{{ reporttype }}">
         <label for="id_{{ reporttype }}" class="col-form-label">
           {% if reporttype == 'timeperiods' %}
-            {{ form.timeperiods.label }}
+            {{ form.timeperiods.label|upper }}
             </label>
             {% render_field form.timeperiods class+="form-control" %}
           {% else %}

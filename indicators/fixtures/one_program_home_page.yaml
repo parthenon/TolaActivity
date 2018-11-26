@@ -1,0 +1,526 @@
+- model: workflow.country
+  pk: 1
+  fields:
+    country: Afghanistan
+    code: AF
+    description: ''
+    latitude: '33.9391'
+    longitude: '67.7100'
+    zoom: 5
+- model: workflow.program
+  pk: 1
+  fields:
+    gaitid: '1'
+    name: Basic One Year Program
+    funding_status: Funded
+    cost_center: null
+    description: ''
+    budget_check: false
+    public_dashboard: false
+    start_date: 2015-01-01
+    end_date: 2016-12-31
+    reporting_period_start: 2015-01-01
+    reporting_period_end: 2016-12-31
+    fund_code: []
+    sector: []
+    country: [1]
+    user_access: []
+- model: indicators.indicator
+  pk: 1
+  fields:
+    name: LOP +/#/cum with target and data (1/2) target 500 sum 550 on_scope
+    lop_target: 500
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 1
+  fields:
+    indicator: 1
+    target: 500
+    customsort: 0
+- model: workflow.documentation
+  pk: 1
+  fields:
+    program: 1
+- model: indicators.collecteddata
+  pk: 1
+  fields:
+    indicator: 1
+    date_collected: '2015-05-01'
+    achieved: 550
+    evidence: 1
+- model: indicators.indicator
+  pk: 2
+  fields:
+    name: LOP +/#/cum with target and data (2/2) target 1000 sum 800 under
+    lop_target: 1000
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 2
+  fields:
+    indicator: 2
+    target: 1000
+    customsort: 0
+- model: workflow.documentation
+  pk: 2
+  fields:
+    program: 1
+- model: indicators.collecteddata
+  pk: 2
+  fields:
+    indicator: 2
+    date_collected: '2015-01-10'
+    achieved: 450
+    evidence: 2
+- model: indicators.collecteddata
+  pk: 3
+  fields:
+    indicator: 2
+    date_collected: '2016-01-10'
+    achieved: 350
+- model: indicators.indicator
+  pk: 3
+  fields:
+    name: LOP -/#/cum with target and data target 400 sum 300 over
+    lop_target: 400
+    direction_of_change: 3
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 3
+  fields:
+    indicator: 3
+    target: 400
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 4
+  fields:
+    indicator: 3
+    date_collected: '2015-01-10'
+    achieved: 300
+- model: indicators.indicator
+  pk: 4
+  fields:
+    name: LOP +/%/cum with target and data target 45 sum 65 over
+    lop_target: 45
+    direction_of_change: 2
+    unit_of_measure_type: 2
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 4
+  fields:
+    indicator: 4
+    target: 45
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 5
+  fields:
+    indicator: 4
+    date_collected: '2015-01-10'
+    achieved: 65
+- model: indicators.indicator
+  pk: 5
+  fields:
+    name: LOP -/%/cum with target and data target 85 sum 82 on scope
+    lop_target: 85
+    direction_of_change: 3
+    unit_of_measure_type: 2
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 5
+  fields:
+    indicator: 5
+    target: 85
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 6
+  fields:
+    indicator: 5
+    date_collected: '2015-01-10'
+    achieved: 82
+- model: indicators.indicator
+  pk: 6
+  fields:
+    name: LOP +/%/cum with target and data (1/2) target 35 latest 25 under
+    lop_target: 35
+    direction_of_change: 2
+    unit_of_measure_type: 2
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 6
+  fields:
+    indicator: 6
+    target: 35
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 7
+  fields:
+    indicator: 6
+    date_collected: '2015-01-10'
+    achieved: 40
+- model: indicators.collecteddata
+  pk: 8
+  fields:
+    indicator: 6
+    date_collected: '2016-01-10'
+    achieved: 25
+- model: indicators.indicator
+  pk: 7
+  fields:
+    name: LOP +/#/noncum with target and data (2/2) target 10000 latest 8000 under
+    lop_target: 10000
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: false
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 7
+  fields:
+    indicator: 7
+    target: 10000
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 9
+  fields:
+    indicator: 7
+    date_collected: '2015-01-10'
+    achieved: 8000
+- model: indicators.indicator
+  pk: 8
+  fields:
+    name: LOP -/#/noncum with target and data tgt 400 sum 500 under
+    lop_target: 400
+    direction_of_change: 3
+    unit_of_measure_type: 1
+    is_cumulative: false
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 8
+  fields:
+    indicator: 8
+    target: 400
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 10
+  fields:
+    indicator: 8
+    date_collected: '2015-01-10'
+    achieved: 500
+- model: indicators.indicator
+  pk: 9
+  fields:
+    name: MID_END +/#/cum with targets and data on_scope
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 2
+    program: 1
+- model: indicators.periodictarget
+  pk: 9
+  fields:
+    indicator: 9
+    target: 100
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 11
+  fields:
+    indicator: 9
+    periodic_target: 9
+    date_collected: '2015-01-10'
+    achieved: 125
+- model: indicators.periodictarget
+  pk: 10
+  fields:
+    indicator: 9
+    target: 200
+    customsort: 1
+- model: indicators.collecteddata
+  pk: 12
+  fields:
+    indicator: 9
+    periodic_target: 10
+    date_collected: '2016-01-10'
+    achieved: 175
+- model: indicators.indicator
+  pk: 10
+  fields:
+    name: MID_END -/#/cum with targets and data on scope
+    direction_of_change: 3
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 2
+    program: 1
+- model: indicators.periodictarget
+  pk: 11
+  fields:
+    indicator: 10
+    target: 300
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 13
+  fields:
+    indicator: 10
+    periodic_target: 11
+    date_collected: '2015-01-10'
+    achieved: 300
+- model: indicators.periodictarget
+  pk: 12
+  fields:
+    indicator: 10
+    target: 100
+    customsort: 1
+- model: indicators.collecteddata
+  pk: 14
+  fields:
+    indicator: 10
+    periodic_target: 12
+    date_collected: '2016-01-10'
+    achieved: 100
+- model: indicators.indicator
+  pk: 11
+  fields:
+    name: SEMIANNUAL +/#/cum with targets and data overtarget
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 4
+    program: 1
+- model: indicators.periodictarget
+  pk: 13
+  fields:
+    indicator: 11
+    target: 20
+    start_date: '2015-01-01'
+    end_date: '2015-06-30'
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 15
+  fields:
+    indicator: 11
+    date_collected: '2015-01-04'
+    achieved: 25
+- model: indicators.periodictarget
+  pk: 14
+  fields:
+    indicator: 11
+    target: 30
+    start_date: '2015-07-01'
+    end_date: '2015-12-31'
+    customsort: 1
+- model: indicators.collecteddata
+  pk: 16
+  fields:
+    indicator: 11
+    date_collected: '2015-07-04'
+    achieved: 35
+- model: indicators.periodictarget
+  pk: 15
+  fields:
+    indicator: 11
+    target: 40
+    start_date: '2016-01-01'
+    end_date: '2016-06-30'
+    customsort: 2
+- model: indicators.collecteddata
+  pk: 17
+  fields:
+    indicator: 11
+    date_collected: '2016-01-04'
+    achieved: 45
+- model: indicators.periodictarget
+  pk: 16
+  fields:
+    indicator: 11
+    target: 50
+    start_date: '2016-07-01'
+    end_date: '2016-12-31'
+    customsort: 3
+- model: indicators.collecteddata
+  pk: 18
+  fields:
+    indicator: 11
+    date_collected: '2016-07-04'
+    achieved: 55
+- model: indicators.indicator
+  pk: 12
+  fields:
+    name: SEMIANNUAL +/#/noncum with targets and data undertarget
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: false
+    target_frequency: 4
+    program: 1
+- model: indicators.periodictarget
+  pk: 17
+  fields:
+    indicator: 12
+    target: 100
+    start_date: '2015-01-01'
+    end_date: '2015-06-30'
+    customsort: 0
+- model: indicators.collecteddata
+  pk: 19
+  fields:
+    indicator: 12
+    date_collected: '2015-01-04'
+    achieved: 85
+- model: indicators.periodictarget
+  pk: 18
+  fields:
+    indicator: 12
+    target: 100
+    start_date: '2015-07-01'
+    end_date: '2015-12-31'
+    customsort: 1
+- model: indicators.collecteddata
+  pk: 20
+  fields:
+    indicator: 12
+    date_collected: '2015-07-04'
+    achieved: 85
+- model: indicators.periodictarget
+  pk: 19
+  fields:
+    indicator: 12
+    target: 100
+    start_date: '2016-01-01'
+    end_date: '2016-06-30'
+    customsort: 2
+- model: indicators.collecteddata
+  pk: 21
+  fields:
+    indicator: 12
+    date_collected: '2016-01-04'
+    achieved: 85
+- model: indicators.periodictarget
+  pk: 20
+  fields:
+    indicator: 12
+    target: 100
+    start_date: '2016-07-01'
+    end_date: '2016-12-31'
+    customsort: 3
+- model: indicators.collecteddata
+  pk: 22
+  fields:
+    indicator: 12
+    date_collected: '2016-07-04'
+    achieved: 85
+- model: indicators.indicator
+  pk: 13
+  fields:
+    name: LOP +/#/cum with target and no data (1/2) nonrep
+    lop_target: 500
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 21
+  fields:
+    indicator: 13
+    target: 500
+    customsort: 0
+- model: indicators.indicator
+  pk: 14
+  fields:
+    name: LOP +/#/cum with target and no data (2/2) nonrep
+    lop_target: 1000
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.periodictarget
+  pk: 22
+  fields:
+    indicator: 14
+    target: 1000
+    customsort: 0
+- model: indicators.indicator
+  pk: 15
+  fields:
+    name: LOP +/#/cum with no targets and no data nonrep
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 1
+    program: 1
+- model: indicators.indicator
+  pk: 16
+  fields:
+    name: MID_END +/#/cum with targets and no data nonrep
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 2
+    program: 1
+- model: indicators.periodictarget
+  pk: 23
+  fields:
+    indicator: 16
+    target: 45
+    customsort: 0
+- model: indicators.periodictarget
+  pk: 24
+  fields:
+    indicator: 16
+    target: 55
+    customsort: 1
+- model: indicators.indicator
+  pk: 17
+  fields:
+    name: MID_END +/#/cum with no targets and no data nonrep
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 2
+    program: 1
+- model: indicators.indicator
+  pk: 18
+  fields:
+    name: MID_END -/#/cum with no targets and no data nonrep
+    direction_of_change: 3
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 2
+    program: 1
+- model: indicators.indicator
+  pk: 19
+  fields:
+    name: SEMIANNUAL +/#/cum with no targets and no data nonrep
+    direction_of_change: 2
+    unit_of_measure_type: 1
+    is_cumulative: true
+    target_frequency: 4
+    program: 1
+
+# program: 1
+# indicators: 19
+# reporting indicators: 12
+# low: 5
+# on: 3
+# over: 4
+# defined targets: 15
+# rep results: 12
+# res count: 22
+# evidence count: 2
+

@@ -93,8 +93,7 @@ class TestIPTTTargetReportsI18N(test.TestCase):
 
         # setting up an indicator of each target type should allow the view to load w/ that target period (I think...)
         for indicator_frequency in self.test_target_periods:
-            indicator = IndicatorFactory(target_frequency=indicator_frequency)
-            indicator.program.add(self.program)
+            indicator = IndicatorFactory(target_frequency=indicator_frequency, program=self.program)
 
             # make periodic target w/ unicode in the period names - this was causing an exception!
             PeriodicTargetFactory(period='Año unicode name', indicator=indicator, start_date=startdate, end_date=enddate)

@@ -248,6 +248,7 @@
                 </div>
             </div>
 
+            {% if user.tola_user.allow_projects_access %}
             <div class="form-group" id="div_id_project">
                 <label for="id_project" class="" >
                     {{ form.project.label }}
@@ -257,6 +258,7 @@
                     <small class="form-text text-muted">{{ form.project.help_text }}</small>
                 </div>
             </div>
+            {% endif %}
 
             <div class="form-group" id="div_id_program">
                 <label for="id_program" class="" >

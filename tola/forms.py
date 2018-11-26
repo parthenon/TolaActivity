@@ -3,31 +3,27 @@ from crispy_forms.layout import *
 from crispy_forms.bootstrap import *
 from crispy_forms.layout import Layout, Submit, Reset, Div
 from django import forms
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import UserCreationForm
 from workflow.models import TolaUser, TolaBookmarks
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 
-
-class RegistrationForm(UserChangeForm):
+class ProfileUpdateForm(forms.ModelForm):
     """
     Form for registering a new account.
     """
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('initial')
-        super(RegistrationForm, self).__init__(*args, **kwargs)
-        del self.fields['password']
-        print user['username'].is_superuser
+        user = kwargs.pop('user')
+        super(ProfileUpdateForm, self).__init__(*args, **kwargs)
         # if they aren't a super user or User Admin don't let them change countries form field
-        if 'User Admin' not in user['username'].groups.values_list('name', flat=True) and not user['username'].is_superuser:
-            self.fields['countries'].widget.attrs['disabled'] = "disabled"
-            self.fields['country'].widget.attrs['disabled'] = "disabled"
+        if 'User Admin' not in user.groups.values_list('name', flat=True) and not user.is_superuser:
+            self.fields['countries'].disabled = True
+            self.fields['country'].disabled = True
 
     class Meta:
         model = TolaUser
         fields = '__all__'
-
 
     helper = FormHelper()
     helper.form_method = 'post'
@@ -40,8 +36,7 @@ class RegistrationForm(UserChangeForm):
     helper.html5_required = True
     helper.layout = Layout(
         Fieldset(
-            '','title', 'name', 'employee_number', 'user', 'username', 'country', 'language', 'countries','modified_by','created','updated'
-        ),
+            '', 'title', 'name', 'employee_number', 'user', 'country', 'language', 'countries'),
         Div(
             FormActions(
                 Submit('submit', 'Save changes', css_class=''),

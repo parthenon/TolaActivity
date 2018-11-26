@@ -1,0 +1,5 @@
+# tags used in indicator.tests module (for excluding/including)
+- fast: test runs in under 1s consistently
+- slow: test runs in over 2s in some cases
+- targets: test related to periodic target creation/validation/retrieval
+- iptt: test related to iptt report generation/selection

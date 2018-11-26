@@ -50,7 +50,7 @@ $(document).ready(function() {
                 data-target="#hidden-indicator-{{ indicator.id }}">
                 <i class="fas fa-caret-right"></i>
                 <strong>{{ indicator.number|default_if_none:''}}</strong>
-                <span class="indicator_name">{{ indicator.name}}{#{% if indicator.data_count > 0 %}({{ indicator.data_count }} results){% endif %}#}</span>
+                <span class="indicator_name">{{ indicator.name}}{#{% if indicator.cached_data_count > 0 %}({{ indicator.cached_data_count }} results){% endif %}#}</span>
             </a>
             {% if indicator.key_performance_indicator %}
                 <span class="badge">KPI</span>

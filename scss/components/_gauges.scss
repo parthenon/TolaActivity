@@ -21,6 +21,11 @@
         border-color: $yellow;
     }
 }
+.gauge--small {
+    display: flex;
+    flex-direction: columns;
+    margin-bottom: $grid-gutter-width;
+}
 .gauge__title {}
 .gauge__overview {
     // has no external layout.
@@ -39,6 +44,11 @@
     min-width: 40px;
     min-height: 120px;
     position: relative;
+}
+.gauge__icon {}
+.gauge__icon--error {
+    color: $gray-400;
+    font-size: 56px;
 }
 .gauge__labels {
     // wraps labels on the same row as the gauge__graphic
@@ -61,7 +71,14 @@
     //border-bottom: 1px solid $white;
     //border-top: 1px solid $white;
 }
+.gauge__graphic--empty {
+    opacity: 0.3;
+}
 .gauge__graphic--tank {
+}
+.gauge__graphic--tank--small {
+    min-height: 52px;
+    min-width: 24px;
 }
 .graphic__tick-marks {
     display: flex;
@@ -93,6 +110,13 @@
     color: $green-700;
     font-weight: bold;
 }
+.gauge__value--small {
+}
+.gauge__value__value { // only used on small gauges
+    color: $success;
+    font-size: $font-size-lg;
+    font-weight: normal;
+}
 .gauge__value--above,
 .gauge__value--below {
     strong {
@@ -115,7 +139,7 @@
 
 // filter triggers
 // TODO: should be mroe generic?
-.filter-trigger {
+.filter-trigger, .filter-trigger--band {
     &:hover {
         cursor: pointer;
     }

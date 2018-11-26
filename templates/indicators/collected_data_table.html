@@ -2,7 +2,7 @@
 {% load assign %}
 
 <script type="text/javascript">
-    $("#id_indicator_data_span_count_" + `{{indicator.id}}`).text("{% trans 'Results'|escapejs %} ({{ indicator.collecteddata_set.count|default:0 }})" );
+    $("#id_indicator_data_span_count_" + `{{indicator.id}}`).text("{% trans 'Results'|escapejs %} ({{ indicator.cached_data_count|default:0 }})" );
 </script>
 
 <div class="collected-data-table__wrapper">
@@ -16,7 +16,7 @@
               <span aria-hidden="true" class="x-modal">&times;</span>
         </button>
     </h3>
-{% if indicator.collecteddata_set.count > 0 or indicator.target_frequency %}
+{% if indicator.cached_data_count > 0 or indicator.target_frequency %}
     <table class="table collected-data-table">
         <thead>
             <tr class="table-header">

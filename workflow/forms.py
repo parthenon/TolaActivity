@@ -1451,6 +1451,10 @@ class DocumentationForm(forms.ModelForm):
         self.fields['project'].queryset = ProjectAgreement.objects.filter(program__country__in=countries)
         self.fields['program'].queryset = Program.active_programs.filter(country__in=countries)
 
+        # only display Project field to existing users
+        if not self.request.user.tola_user.allow_projects_access:
+            self.fields.pop('project')
+
 
 class QuantitativeOutputsForm(forms.ModelForm):
     is_it_project_complete_form = forms.CharField(required=False)

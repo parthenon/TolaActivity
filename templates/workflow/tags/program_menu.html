@@ -11,7 +11,9 @@
     {% for country_name, programs in programs_by_country.items %}
         <optgroup label="{{ country_name }}">
             {% for program in programs %}
-                <option value="{% url 'program_page' program.id 0 0 %}" class="">{{ program }}</option>
+                {% if program.reporting_period_start or program.reporting_period_end %}
+                    <option value="{% url 'program_page' program.id 0 0 %}" class="">{{ program }}</option>
+                {% endif %}
             {% endfor %}
         </optgroup>
     {% endfor %}

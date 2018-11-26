@@ -1,0 +1,76 @@
+Functional:
+    -  home_page_integration_tests:
+        - for a given scenario, program queryset provides:
+            - qs.targets_defined_count
+            - qs.has_reported_results_count
+            - qs.total_results_count
+            - qs.total_results_with_evidence_count
+            - each program in qs provides: 
+                - program.percent_complete
+                - program.scope_counts:
+                    - indicator_count
+                    - nonreporting_count
+                    - reporting_count
+                    - low
+                    - on_scope
+                    - high
+                - program.metrics:
+                    - indicator_count
+                    - targets_defined
+                    - reported_results
+                    - results_count
+                    - results_evidence
+    - program_page_integration_tests:
+        - for a given scenario, program object provides:
+            - program.percent_complete
+            - each indicator in program.annotated_indicators provides:
+                - reporting T/F
+                - over_under (1/0/-1/None)
+                - all_targets_defined
+                - has_reported_results
+                - results_count
+                - results_with_evidence_count
+Indicator Unit:
+    - all_targets_defined_queries_unit_tests
+        - for one/many indicators report indicator.all_targets_defined true/false
+    - has_reported_results_queries_unit_tests
+        - for one/many indicators report indicator.has_reported_results true/false
+        - for one/many indicators report count of results as indicator.results_count
+    - results_with_evidence_count_queries_unit_tests
+        - for one/many indicators report indicator.results_with_evidence_count #
+    - reporting_queries_unit_tests
+        - for one/many indicators report indicator.reporting true/false
+    - over_under_queries_unit_tests
+        - for one/many indicators report indicator.over_under (1/0/-1)
+        
+Program QS Unit:
+    - targets_defined_queries_unit_tests
+        - for one/many programs report qs.targets_defined_count #
+    - has_reported_results_queries_unit_tests
+        - for one/many programs report qs.has_reported_results_count #
+    - results_count_queries_unit_tests
+        - for one/many programs report qs.total_results_count #
+        - for one/many programs report qs.total_results_with_evidence_count #
+Program Unit:
+    - percent_complete_queries_unit_tests
+        - program.percent_complete
+    - program_metrics_queries_unit_tests
+        - program.metrics['indicator_count']
+        - program.metrics['targets_defined']
+        - program.metrics['reported_results']
+        - program.metrics['results_count']
+        - program.metrics['results_evidence']
+    - program_scope_queries_unit_tests
+        - program.scope_counts['indicator_count']
+        - program.scope_counts['nonreporting_count']
+        - program.scope_counts['low']
+        - program.scope_counts['on_scope']
+        - program.scope_counts['high']
+Query Optimization:
+    - one_annotated_program_optimization_tests:
+        - program.percent_complete, program.metrics, program.scope_counts query count
+    - annotated_program_queryset_optimization_tests:
+        - qs.targets_defined_count, qs.has_reported_results, qs.total_results_count, qs.total_results_with_evidence_count query count
+        - program.percent_complete, program.metrics, program.scope_counts for each program in qs query count
+            
+            

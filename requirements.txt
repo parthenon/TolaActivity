@@ -84,6 +84,7 @@ simplejson==3.11.1
 six==1.11.0
 social-auth-app-django==1.2.0
 social-auth-core==1.7.0
+sqlparse==0.2.4
 tablib==0.12.1
 text-unidecode==1.2
 tinycss2==0.6.1

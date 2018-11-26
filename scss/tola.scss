@@ -80,6 +80,10 @@
 @import 'components/gauges';  // status gauges, e.g. on Program landing page
 @import 'components/indicator_table';  // indicator list included on Program page and Indicators page
 @import 'components/collected_data_table';  // collected data table included in indicator list (& elsewhere?)
+@import 'components/program'; // Program Page & related components for Mangosteen
+@import 'components/program_complete'; // Program percent complete with wee calendar icon
+@import 'components/home'; // Home page
+@import 'components/list_filters'; // List filters
 
 /* Local custom CSS and overloads for non-BS libraries */
 @import 'mixins';
@@ -90,9 +94,7 @@
 @import 'iptt_table'; // the IPTT table & page
 @import 'sidebar'; // IPTT sidebar
 @import 'misc_utilities'; // small utility/helper selectors that should probably be bootstrap classes
-@import 'program'; // Program Page & related components for Mangosteen
 @import 'custom'; // misc. elements & unsorted selectors
 
 /* Unsorted custom selectors */
-
 

@@ -55,8 +55,7 @@ def generate_periodic_target_single(tf, start_date, nthTargetPeriod, event_name=
         period_num = j
 
     if tf == Indicator.LOP:
-        lop_target = Indicator.TARGET_FREQUENCIES[Indicator.LOP - 1][1]
-        return {'period': lop_target}
+        return {'period': PeriodicTarget.LOP_PERIOD}
     elif tf == Indicator.MID_END:
         return [{'period': PeriodicTarget.MIDLINE}, {'period': PeriodicTarget.ENDLINE}]
     elif tf == Indicator.EVENT:
@@ -68,22 +67,34 @@ def generate_periodic_target_single(tf, start_date, nthTargetPeriod, event_name=
     if tf == Indicator.ANNUAL:
         start = ((start_date + relativedelta(years=+i)).replace(day=1)).strftime('%Y-%m-%d')
         end = ((start_date + relativedelta(years=+j)) + relativedelta(days=-1)).strftime('%Y-%m-%d')
-        target_period = {'period': _('Year %s') % period_num, 'start_date': start, 'end_date': end}
+        period_label = '{period} {period_num}'.format(
+            period=PeriodicTarget.ANNUAL_PERIOD, period_num=period_num
+        )
+        target_period = {'period': period_label, 'start_date': start, 'end_date': end}
 
     elif tf == Indicator.SEMI_ANNUAL:
         start = ((start_date + relativedelta(months=+(i * 6))).replace(day=1)).strftime('%Y-%m-%d')
         end = ((start_date + relativedelta(months=+(j * 6))) + relativedelta(days=-1)).strftime('%Y-%m-%d')
-        target_period = {'period': _('Semi-annual period %s') % period_num, 'start_date': start, 'end_date': end}
+        period_label = '{period} {period_num}'.format(
+            period=PeriodicTarget.SEMI_ANNUAL_PERIOD, period_num=period_num
+        )
+        target_period = {'period': period_label, 'start_date': start, 'end_date': end}
 
     elif tf == Indicator.TRI_ANNUAL:
         start = ((start_date + relativedelta(months=+(i * 4))).replace(day=1)).strftime('%Y-%m-%d')
         end = ((start_date + relativedelta(months=+(j * 4))) + relativedelta(days=-1)).strftime('%Y-%m-%d')
-        target_period = {'period': _('Tri-annual period %s') % period_num, 'start_date': start, 'end_date': end}
+        period_label = '{period} {period_num}'.format(
+            period=PeriodicTarget.TRI_ANNUAL_PERIOD, period_num=period_num
+        )
+        target_period = {'period': period_label, 'start_date': start, 'end_date': end}
 
     elif tf == Indicator.QUARTERLY:
         start = ((start_date + relativedelta(months=+(i * 3))).replace(day=1)).strftime('%Y-%m-%d')
         end = ((start_date + relativedelta(months=+(j * 3))) + relativedelta(days=-1)).strftime('%Y-%m-%d')
-        target_period = {'period': _('Quarter %s') % period_num, 'start_date': start, 'end_date': end}
+        period_label = '{period} {period_num}'.format(
+            period=PeriodicTarget.QUARTERLY_PERIOD, period_num=period_num
+        )
+        target_period = {'period': period_label, 'start_date': start, 'end_date': end}
 
     elif tf == Indicator.MONTHLY:
         month = (start_date + relativedelta(months=+i)).strftime("%B")
@@ -179,25 +190,20 @@ def import_indicator(service=1, deserialize=True):
 
 def indicator_create(request, id=0):
     """
-    Step one in Inidcator creation.
-    Passed on to IndicatorCreate to do the creation
+    Step one in Indicator creation.
+    Passed on to IndicatorCreate to do the creation [or  not]
     """
     get_indicator_types = IndicatorType.objects.all()
-    get_countries = Country.objects.all()
-    countries = getCountry(request.user)
-    country_id = Country.objects.get(country=countries[0]).id
-    get_programs = Program.objects.filter(funding_status="Funded",
-                                          country__in=countries).distinct()
+    program = Program.objects.get(pk=id)
+    countries = ', '.join(program.country.all().order_by('country').values_list('country', flat=True))
     get_services = ExternalService.objects.all()
-    program_id = id
 
     if request.method == 'POST':
         indicator_type = IndicatorType.objects.get(indicator_type="custom")
-        # country = Country.objects.get(id=request.POST['country'])
         program = Program.objects.get(id=request.POST['program'])
         service = request.POST['services']
         level = Level.objects.first()
-        node_id = request.POST['service_indicator']
+        node_id = request.POST.get('service_indicator')
         sector = None
         # add a temp name for custom indicators
         name = request.POST.get('name', _("Temporary"))
@@ -205,8 +211,8 @@ def indicator_create(request, id=0):
         definition = None
         external_service_record = None
 
-        # checkfor service indicator and update based on values
-        if node_id is not None and int(node_id) != 0:
+        # check for service indicator and update based on values
+        if node_id is not None and node_id != "" and int(node_id) != 0:
             get_imported_indicators = import_indicator(service)
             for item in get_imported_indicators:
                 if item['nid'] == node_id:
@@ -244,8 +250,7 @@ def indicator_create(request, id=0):
     # send the keys and vars from the json data to the template along with
     # submitted feed info and silos for new form
     return render(request, "indicators/indicator_create.html",
-                  {'country_id': country_id, 'program_id': int(program_id),
-                   'getCountries': get_countries, 'getPrograms': get_programs,
+                  {'country': countries, 'program': program,
                    'getIndicatorTypes': get_indicator_types,
                    'getServices': get_services})
 
@@ -1070,6 +1075,9 @@ def service_json(request, service):
     :param service: The remote data service
     :return: JSON object of the indicators from the service
     """
+    if service == 0:
+        # no service (this is selecting a custom indicator)
+        return HttpResponse(status=204)
     service_indicators = import_indicator(service, deserialize=False)
     return HttpResponse(service_indicators, content_type="application/json")
 
@@ -1449,46 +1457,53 @@ class ProgramPage(ListView):
     def get(self, request, *args, **kwargs):
         countries = request.user.tola_user.countries.all()
         program_id = int(self.kwargs['program_id'])
-        indicator_filters = {'program__id': program_id}
+        unannotated_program = Program.objects.only(
+            'reporting_period_start', 'reporting_period_end',
+            'start_date', 'end_date'
+            ).get(pk=program_id)
+        if unannotated_program.reporting_period_start is None or unannotated_program.reporting_period_end is None:
+            context = {
+                'program': unannotated_program,
+                'redirect_url': request.path
+            }
+            return render(
+                request, 'indicators/program_setup_incomplete.html', context
+                )
+        #indicator_filters = {'program__id': program_id}
+        indicator_filters = {}
         type_filter_id = None
         indicator_filter_id = None
         type_filter_name = None
         indicator_filter_name = None
         #was this for eventually showing more than one program?  Because pk already limits to 1:
         #program = ProgramWithMetrics.with_metrics.get(pk=program_id, funding_status="Funded", country__in=countries)
-        program = ProgramWithMetrics.with_metrics.get(pk=program_id)
+        program = ProgramWithMetrics.program_page.get(pk=program_id)
         if self.metrics:
             json_context = {
                 'metrics': program.metrics,
                 'scope_counts': program.scope_counts
             }
             return JsonResponse(json_context)
-        indicators = program.get_annotated_indicators()
+        
 
         if int(self.kwargs['type_id']):
             type_filter_id = self.kwargs['type_id']
             type_filter_name = IndicatorType.objects.get(id=type_filter_id)
-            indicator_filters['indicator_type'] = type_filter_id
+            program.indicator_filters['indicator_type'] = type_filter_id
 
         if int(self.kwargs['indicator_id']):
             indicator_filter_id = self.kwargs['indicator_id']
-            indicators = indicators.filter(pk=indicator_filter_id)
-            indicator_filter_name = indicators.first()
-            indicator_filters['id'] = indicator_filter_id
-        else:
-            indicators = indicators.filter(**indicator_filters)
-        type_ids = set(indicators.values_list('indicator_type', flat=True))
-        indicator_types = IndicatorType.objects.filter(id__in=list(type_ids))
-        indicator_count = indicators.count()
+            program.indicator_filters['id'] = indicator_filter_id
+            indicator_filter_name = program.annotated_indicators.first()
+            
+        indicators = program.annotated_indicators
+        indicator_count = program.indicator_count
 
-        #indicator_level_ids = Indicator.level.through.objects.filter(indicator__in=indicators)\
-        #    .values_list('level', flat=True).distinct()
-        indicator_level_ids = indicators.values_list('level_id', flat=True).distinct()
-        indicator_levels = Level.objects.filter(id__in=indicator_level_ids)
+        indicator_types = IndicatorType.objects.filter(indicator__program__id=program_id)
+        indicator_levels = Level.objects.filter(indicator__program__id=program_id)
 
         pinned_reports = list(program.pinned_reports.filter(tola_user=request.user.tola_user)) + \
                          [PinnedReport.default_report(program.id)]
-
         js_context = {
             'delete_pinned_report_url': str(reverse_lazy('delete_pinned_report')),
             'program': ProgramSerializer(program).data,
@@ -1496,7 +1511,7 @@ class ProgramPage(ListView):
             'indicator_levels': LevelSerializer(indicator_levels, many=True).data,
             'indicator_on_scope_margin': Indicator.ONSCOPE_MARGIN,
         }
-
+        #program.set_metrics(indicators)
         c_data = {
             'program': program,
             'indicators': indicators,

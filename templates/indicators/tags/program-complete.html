@@ -1,0 +1,21 @@
+{% load i18n %}
+<div class="program__calendar-complete">
+    <div class="fas fa-calendar"></div>
+    <p>
+    {% blocktrans %}
+    <a
+        id="id_link_reporting_period_{{ program.id }}"
+        class=""
+        href="#"
+        data-toggle="modal"
+        data-program="{{ program.id }}"
+        data-progstart="{{ program.start_date }}"
+        data-progend="{{ program.end_date }}"
+        data-rptstart="{{ program.reporting_period_start }}"
+        data-rptend="{{ program.reporting_period_end }}"
+        data-target="#id_reporting_period_modal">
+        Program period
+    </a>
+    is <br><strong class="text-dark">{{ program.percent_complete }}% complete</strong>{% endblocktrans %}
+    </p>
+</div>

@@ -404,3 +404,13 @@ select.listoption_filters {
 .is-highlighted {
     background: $yellow-100;
 }
+
+// to replace bootstrap's float classes
+.float--left {
+    float: left;
+    margin-right: $grid-gutter-width/2;
+}
+.float--right {
+    float: right;
+    margin-left: $grid-gutter-width/2;
+}

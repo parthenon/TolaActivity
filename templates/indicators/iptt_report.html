@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% load i18n %}
 {% load mytags %}
-{% block title %}Indicator Performance Tracking Table{% endblock %}
+{% block title %}{% trans "Indicator Performance Tracking Table" %}{% endblock %}
 {% block page_title %}{% endblock %}
 {% block bodyclasses %}page_iptt_table{% endblock %}
 
@@ -21,7 +21,7 @@
     <div id="id_div_top_iptt_report">
         <div class="d-flex justify-content-between">
             <div id="id_span_iptt_date_range">
-              <h2 class="pt-3">Indicator Performance Tracking Table</h2>
+              <h2 class="pt-3">{% trans "Indicator Performance Tracking Table" %}</h2>
               <h4 class="pb-3">{{ report_start_date|date:"MEDIUM_DATE_FORMAT" }} - {{ report_end_date_actual|date:"MEDIUM_DATE_FORMAT" }}</h4>
             </div>
             <div class="p-3">
@@ -48,13 +48,13 @@
             <td scope="colgroup" colspan="3" class="text-center align-bottom text-uppercase">
               {% trans "Life of program" %}
             </td>
-              {% for k, v in report_date_ranges.items %}
+              {% for date_range in report_date_ranges %}
                 <td scope="col"
                     {% if reporttype == 'targetperiods' %} colspan="3" {% endif %}
                     class="text-center lopCols text-nowrap align-bottom">
-                  {{ k|upper }}<br>
-                  {% if v.0 is not None and v.1 is not None %}
-                    <small>{{ v.0|date:"MEDIUM_DATE_FORMAT" }} - {{ v.1|date:"MEDIUM_DATE_FORMAT" }}</small>
+                  {{ date_range.name|upper }}<br>
+                  {% if date_range.label is not None %}
+                    <small>{{ date_range.label }}</small>
                   {% endif %}
                 </td>
               {% endfor %}
@@ -73,13 +73,13 @@
             <th scope="col" class="align-bottom text-uppercase text-right td-no-side-borders" style="min-width: 110px;">{% trans "Actual" %}</th>
             <th scope="col" class="align-bottom text-uppercase text-right td-no-side-borders" style="min-width: 110px;">{% trans "% Met" %}</th>
             {% if reporttype == 'targetperiods' %}
-              {% for pt in report_date_ranges %}
+              {% for _ in report_date_ranges %}
                 <th scope="col" class="text-uppercase text-right" style="min-width: 110px;">{% trans "Target" %}</th>
                 <th scope="col" class="text-uppercase text-right" style="min-width: 110px;">{% trans "Actual" %}</th>
                 <th scope="col" class="text-uppercase text-right" style="min-width: 110px;">{% trans "% Met" %}</th>
               {% endfor %}
             {% else %}
-              {% for _ in report_date_ranges.items %}
+              {% for _ in report_date_ranges %}
                 <th scope="col" class="text-uppercase text-right">{% trans "Actual" %}</th>
               {% endfor %}
             {% endif %}
@@ -129,27 +129,27 @@
                 {{ indicator.lop_percent_met }}
               </td>
               {% if reporttype == 'targetperiods' %}
-                {% for k,v in report_date_ranges.items %}
+                {% for date_range in report_date_ranges %}
                   <td align="right" class="border-right-0">
-                    {% with k|concat_string:"_period_target" as target %}
+                    {% with forloop.counter0|concat_string:"_period_target" as target %}
                       {{ indicator|hash:target }}
                     {% endwith %}
                   </td>
                   <td align="right" class="border-right-0 border-left-0">
-                    {% with k|concat_string:"_actual" as actual %}
+                    {% with forloop.counter0|concat_string:"_actual" as actual %}
                       {{ indicator|hash:actual }}
                     {% endwith %}
                   </td>
                   <td align="right" class="border-left-0">
-                    {% with k|concat_string:"_percent_met" as percent_met %}
+                    {% with forloop.counter0|concat_string:"_percent_met" as percent_met %}
                       {{ indicator|hash:percent_met }}
                     {% endwith %}
                   </td>
                 {% endfor %}
               {% else %} <!-- if it is a NUMBER indicator -->
-                {% for k, v in report_date_ranges.items %}
+                {% for date_range in report_date_ranges %}
                   <td align="right">
-                    {% with k|concat_string:"_actual" as actual %}
+                    {% with forloop.counter0|concat_string:"_actual" as actual %}
                       {{ indicator|hash:actual }}
                     {% endwith %}
                   </td>

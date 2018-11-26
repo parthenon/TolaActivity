@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load i18n mytags %}
+{% block title %}{{ active_country|default:_("No active country") }} | {% endblock %}
+{% block page_title %}{{ active_country|default:_("No active country") }}{% endblock %}
+
+{% block bodyclasses %}home{% endblock %}
+
+{% block header_extras %}
+{% if user_countries.count > 1 %}
+<nav class="country-selector">
+    <button class="btn btn-sm btn-link text-muted dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        {% trans "change country" %}
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        {% for country in user_countries  %}
+        <li><a href="/{{ country.id }}/" class="dropdown-item">{{ country.country }}</a></li>
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if active_country %}
+<section class="home__featured-country">
+    <div class="featured-country__map">
+        {% include "home_country_map.html" %}
+    </div>
+    <div class="featured-country__overview-gauges">
+        <h3>{% trans "Monitoring and Evaluation Status" %}</h3>
+        <p>{% trans "Are programs trackable and backed up with evidence?" %}</p>
+        <div class="overview-gauges__gauges">
+
+            {% gauge_tank_small "targets_defined" %}
+
+            {% gauge_tank_small "reported_results" %}
+
+            {% gauge_tank_small "results_evidence" %}
+
+        </div>
+    </div>
+</section><!--/.home__featured-country-->
+{% endif %}
+
+<section class="home__program-list">
+    <h2>{% blocktrans %}{{ no_programs }} active programs{% endblocktrans %}</h2>
+    {% for program in programs %}
+        <article class="program-list__program card">
+            <div class="card-header">
+                <div class="program-header__info">
+                    <h4><a href="{% url "program_page" program.id 0 0 %}" class="text-dark">{{ program.name }}</a></h4>
+                    {% if program.reporting_period_start and program.reporting_period_end %}
+                        <ul class="nav nav--text-list">
+                            <li class="nav-item">
+                                <small><a href="{% url "program_page" program.id 0 0 %}" class="">{% trans "Program page" %}</a></small>
+                            </li>
+                            <li class="nav-item">
+                                {# TODO: is this querystring always the same? #}
+                                <small><a href="{% url "iptt_report" program.id "timeperiods" %}?timeperiods=7&timeframe=2&numrecentperiods=2" class="">{% trans "Recent progress report" %}</a></small>
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+                {% if program.reporting_period_start and program.reporting_period_end %}
+                    {% program_complete %}
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if not program.reporting_period_start or not program.reporting_period_end %}
+                    <p>Before adding indicators and performance results, we need to know your program's
+                        <a
+                            id="id_link_reporting_period_{{ program.id }}"
+                            class=""
+                            href="#"
+                            data-toggle="modal"
+                            data-program="{{ program.id }}"
+                            data-progstart="{{ program.start_date }}"
+                            data-progend="{{ program.end_date }}"
+                            data-rptstart="{{ program.reporting_period_start }}"
+                            data-rptend="{{ program.reporting_period_end }}"
+                            data-target="#id_reporting_period_modal"
+                            >reporting start and end dates.</a>
+                    </p>
+                {% elif program.metrics.indicator_count == 0 %}
+                    <h4>No indicators have been entered for this program.</h4>
+                    <a href="{% url 'indicator_create' program.id %}" role="button" class="btn-link btn-add"><i class="fas fa-plus-circle"></i> {% trans "Add indicator" %}</a>
+                {% elif program.metrics.targets_defined == 0 %}
+                    <div class="float--left">
+                        <i class="gauge__icon gauge__icon--error fas fa-frown"></i>
+                    </div>
+                    <h4>All indicators are missing targets.</h4>
+                    <p>Visit the <a href="{% url "program_page" program.id 0 0 %}">Program page</a> to set up targets.
+                {% else %}
+                    <div class="status__gauges">
+                        {% gauge_band False %}
+
+                        {% gauge_tank "targets_defined" False %}
+
+                        {% gauge_tank "reported_results" False %}
+
+                        {% gauge_tank "results_evidence" False %}
+                    </div>
+                {% endif %}
+            </div>
+        </article><!--/.program-list__program-->
+    {% endfor %}
+    <!--/.program-list__program-->
+</section>
+{% include "indicators/indicator_list_modals.html" %}
+
+{% endblock content %}

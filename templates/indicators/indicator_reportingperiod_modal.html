@@ -16,9 +16,13 @@
                             <div id="id-reportingperiod-title" class="mb-4"><h2>{% trans 'Reporting period' %}</h2></div>
                                 <div id="div-id-reportingperiod-alert">
                                 </div>
+                            {% if close_only %} {# display only when the modal is required in order to show the program page #}
+                                <div>{% trans "Program reporting dates are required in order to view program metrics" %}</div>
+                            {% endif %}
                             <div>{% trans "The program reporting period is used in the setup of periodic targets and in Indicator Performance Tracking Tables (IPTT). TolaActivity initially sets the reporting period to include the program’s official start and end dates, as recorded in the Grant and Award Information Tracker (GAIT) system. The reporting period may be adjusted to align with the program’s indicator plan." %}</div>
                         </div>
                         <button
+                            id="reporting_modal_close_btn"
                             type="button"
                             class="close"
                             data-dismiss="modal"
@@ -98,7 +102,12 @@
                 <div class="modal-footer justify-content-between p-4" style="background-color: #DBDCDE;">
                     <div>
                         <input type="submit" name="submit" value="{% trans 'Save changes' %}" class="btn btn-primary mx-1 text-uppercase" id="submit-id-submit">
-                        <input type="reset" class="btn btn-secondary mx-1" value="{% trans 'Reset' %}">
+                        {% if close_only %}
+                        {# when the modal is required in order to view the program page #}
+                            <input type="exit" id="reportingperiod_update_form_exit_btn" class="btn btn-secondary mx-1" value="{% trans 'Back to Homepage' %}">
+                        {% else %}
+                            <input type="reset" class="btn btn-secondary mx-1" value="{% trans 'Reset' %}">
+                        {% endif %}
                     </div>
                     <div class="text-muted">{% include "form_guidance.html" %}</div>
                 </div>
@@ -256,10 +265,15 @@
         // the API call and the rest of the code that precedes the datepicker setup.  The datepicker has the potential
         // to depend on the results of all of the intervening code.
         var api_url = "{% url 'datedtargetinfo' 0 %}";
-        api_url = api_url.replace(/0\//, $(event.relatedTarget).data('program')) + '/?format=json';
+        var source_data = $(event.relatedTarget).data();
+        if (typeof source_data == 'undefined') {
+            source_data = $(this).data();
+        }
+        api_url = api_url.replace(/0\//, source_data['program']) + '/?format=json';
+        
         $.get(api_url, function(data){
             max_target_start = data['max_start_date'];
-            modalSetup(data);
+            modalSetup(data, source_data);
         }).fail(function(data){
           createAlert(
             "danger",
@@ -268,7 +282,7 @@
             "#div-id-reportingperiod-alert");
         });
 
-        function modalSetup(data){
+        function modalSetup(data, source_data){
             if (data['max_start_date']) {
                 $("#id_reporting_start_date").attr("disabled", true);
                 $("#div_reporting_dates_description_locked").show();
@@ -280,38 +294,38 @@
             }
             var base_url = "{% url 'reportingperiod_update' 0 %}";
             base_url = base_url.slice(0,-1);
-            $("input[name=program_id]").val($(event.relatedTarget).data('program'));
-            $("#reportingperiod_update_form").attr("action", base_url + $(event.relatedTarget).data('program'));
+            $("input[name=program_id]").val(source_data['program']);
+            $("#reportingperiod_update_form").attr("action", base_url + source_data['program']);
             var testDate = "";
-            if ((testDate = new Date($(event.relatedTarget).data('progstart'))) == "Invalid Date"){
+            if ((testDate = new Date(source_data['progstart'])) == "Invalid Date"){
                 $("#id_gait_start_date").html("Unavailable");
                 $("#id_gait_start_date").addClass("color-red");
             }
             else {
                 $("#id_gait_start_date").html(formatDate(testDate)); // TODO: shouldn't use formatDate
             }
-            if ((testDate = new Date($(event.relatedTarget).data('progend'))) == "Invalid Date"){
+            if ((testDate = new Date(source_data['progend'])) == "Invalid Date"){
                 $("#id_gait_end_date").html("Unavailable");
                 $("#id_gait_end_date").addClass("color-red");
             }
             else {
                 $("#id_gait_end_date").html(formatDate(testDate)); // TODO: shouldn't use formatDate
             }
-            if ((testDate = new Date($(event.relatedTarget).data('rptstart'))) == "Invalid Date"){
+            if ((testDate = new Date(source_data['rptstart'])) == "Invalid Date"){
                 $("#id_reporting_start_date").val("");
                 origRptStart = "";
             }
             else {
                 $("#id_reporting_start_date").val(formatDate(testDate)); // TODO: shouldn't use formatDate
-                origRptStart = $(event.relatedTarget).data('rptstart');
+                origRptStart = source_data['rptstart'];
             }
-            if ((testDate = new Date($(event.relatedTarget).data('rptend'))) == "Invalid Date"){
+            if ((testDate = new Date(source_data['rptend'])) == "Invalid Date"){
                 $("#id_reporting_end_date").val("");
                 origRptEnd = "";
             }
             else {
                 $("#id_reporting_end_date").val(formatDate(testDate)); // TODO: shouldn't use formatDate
-                origRptEnd = $(event.relatedTarget).data('rptend');
+                origRptEnd = source_data['rptend'];
             }
 
             setupMonthPickers();
@@ -382,6 +396,7 @@
             "#div-id-reportingperiod-alert");
         }
         else{
+             reporting_period_submitting = true;
             $.post($(this).attr('action'), $(this).serialize(), function(data){
 
                 $('#id_reporting_period_modal').modal("hide")
@@ -429,6 +444,11 @@
             }
             catch(error){}
         }
+    });
+    
+    $("#reportingperiod_update_form_exit_btn").on('click', function(e) {
+        e.preventDefault();
+        $('#id_reporting_period_modal').modal('hide');
     });
 
 

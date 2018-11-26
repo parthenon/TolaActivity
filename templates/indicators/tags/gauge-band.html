@@ -1,8 +1,18 @@
 {% load i18n %}
 {# to enable list filtering, the page calling this templatetag should load static/js/program_page_filters.js #}
 <div class="gauge">
-    <h6 class="gauge__title">{% trans "Indicators on track" %}</h6>
+    <h6 class="gauge__title">
+        {% trans "Indicators on track" %}
+    </h6>
     <div class="gauge__overview">
+        {% if scope_percents.nonreporting == 100 %}
+        <div>
+            <p class="text-muted">{% trans "Unavailable until results are reported" %}</p>
+            <div>
+                <i class="gauge__icon gauge__icon--error fas fa-frown"></i>
+            </div>
+        </div>
+        {% else %}
         <div class="gauge__graphic gauge__graphic--performance-band">
             <div class="graphic__tick-marks">
                 {% for i in ticks %}
@@ -18,36 +28,73 @@
         </div>
         <div class="gauge__labels">
             <div class="gauge__label">
-
-                <a href="#" class="text-muted" data-over-under-filter="None"
-                   data-list-title="{{ scope_counts.nonreporting }} {% trans 'indicators are non-reporting' %}">
-                    {% comment %}Translators: shows how many indicators have indicators with non-reporting targets. Example: 31% are non-reporting{% endcomment %}
-                    {% blocktrans with scope_percents.nonreporting as nonreporting %}{{ nonreporting }}% are non-reporting{% endblocktrans %}
-                </a>
-                <!-- TOOLTIP -->
+                <span class="text-muted {% if has_filters %}filter-trigger--band{% endif %}"
+                    data-target="over-under"
+                    data-over-under-filter="None"
+                    {% comment %}Translators: shows what number of indicators have no targets reporting data. Example: 3 indicators have data unavailable{% endcomment %}
+                    data-list-title="{% blocktrans count filter_title_count=scope_counts.nonreporting %}{{ filter_title_count }} indicator has data unavailable{% plural %}{{ filter_title_count }} indicators have data unavailable{% endblocktrans %}"
+                    >
+                    {% comment %}Translators: shows what percentage of indicators have no targets reporting data. Example: 31% unavailable{% endcomment %}
+                    {% blocktrans with scope_percents.nonreporting as unavailable %}
+                        {{ unavailable }}% unavailable
+                    {% endblocktrans %}
+                </span>
+                <a href="#"
+                   tabindex="0"
+                   data-toggle="popover"
+                   data-placement="right"
+                   data-trigger="focus"
+                   data-content="{% trans "The indicator has no targets, no completed target periods, or no results reported." %}"
+                   ><i class="far fa-question-circle"></i></a>
             </div>
             <div class="gauge__label">
-                <a href="#" class="gauge__value--above" data-over-under-filter="1"
-                   data-list-title="{{ scope_counts.high }} {% trans 'indicators are >15% above target' %}">
-                    {% comment %}Translators: shows how many indicators are a certain percentage above target. Example: 31% are >15% above target{% endcomment %}
-                    {% blocktrans with scope_percents.high as high %}<strong>{{ high }}%</strong> are &gt;{{ margin }}% above target{% endblocktrans %}
-                </a>
+                <span class="gauge__value--above {% if has_filters %}filter-trigger--band{% endif %}"
+                    data-target="over-under"
+                    data-over-under-filter="1"
+                    {% comment %}Translators: shows what number of indicators are a certain percentage above target. Example: 3 indicators are >15% above target{% endcomment %}
+                    data-list-title="{% blocktrans count filter_title_count=scope_counts.high %}{{ filter_title_count }} indicator is &gt;15% above target{% plural %}{{ filter_title_count }} indicators are &gt;15% above target{% endblocktrans %}"
+                    >
+                    {% comment %}Translators: shows what percentage of indicators are a certain percentage above target. Example: 31% are >15% above target{% endcomment %}
+                    {% blocktrans with scope_percents.high as high %}
+                        <strong>{{ high }}%</strong> are &gt;{{ margin }}% above target
+                    {% endblocktrans %}
+                </span>
             </div>
             <div class="gauge__label">
-                <a href="#" class="gauge__value" data-over-under-filter="0"
-                   data-list-title="{{ scope_counts.on_scope }} {% trans 'indicators are on track' %}">
-                    {% comment %}Translators: shows how many indicators are within a set range of target. Example: 31% are on track{% endcomment %}
-                    {% blocktrans with scope_percents.on_scope as on_scope %}<strong>{{ on_scope }}%</strong> are on track{% endblocktrans %}
-                </a>
+                <span class="gauge__value {% if has_filters %}filter-trigger--band{% endif %}"
+                    data-target="over-under"
+                    data-over-under-filter="0"
+                    {% comment %}Translators: shows what number of indicators are within a set range of target. Example: 3 indicators are on track{% endcomment %}
+                    data-list-title="{% blocktrans count filter_title_count=scope_counts.on_scope %}{{ filter_title_count }} indicator is on track{% plural %}{{ filter_title_count }} indicators are on track{% endblocktrans %}"
+                    >
+                    {% comment %}Translators: shows what percentage of indicators are within a set range of target. Example: 31%  are on track{% endcomment %}
+                    {% blocktrans with scope_percents.on_scope as on_scope %}
+                        <strong>{{ on_scope }}%</strong> are on track
+                    {% endblocktrans %}
+                </span>
+                <a href="#"
+                   tabindex="0"
+                   data-toggle="popover"
+                   data-placement="right"
+                   data-trigger="focus"
+                   data-content="{% trans "The actual value matches the target value, plus or minus 15%. So if your target is 100 and your result is 110, the indicator is 10% above target and on track.  Please note that if your indicator has a decreasing direction of change, then “above” and “below” are transposed. In that case, if your target is 100 and your result is 200, your indicator is 50% below target and not on track." %}"
+                   ><i class="far fa-question-circle"></i></a>
             </div>
             <div class="gauge__label">
-                <a href="#" class="gauge__value--below" data-over-under-filter="-1"
-                   data-list-title="{{ scope_counts.low }} {% trans 'indicators are >15% below target' %}">
-                    {% comment %}Translators: shows how many indicators are a certain percentage below target. Example: 31% are >15% below target{% endcomment %}
-                    {% blocktrans with scope_percents.low as low %}<strong>{{ low }}%</strong> are &gt;{{ margin }}% below target{% endblocktrans %}
-                </a>
+                <span class="gauge__value--below {% if has_filters %}filter-trigger--band{% endif %}"
+                    data-target="over-under"
+                    data-over-under-filter="-1"
+                    {% comment %}Translators: shows what number of indicators are a certain percentage below target. Example: 3 indicators are >15% below target{% endcomment %}
+                    data-list-title="{% blocktrans count filter_title_count=scope_counts.low %}{{ filter_title_count }} indicator is &gt;15% below target{% plural %}{{ filter_title_count }} indicators are &gt;15% below target{% endblocktrans %}"
+                    >
+                    {% comment %}Translators: shows what percentage of indicators are a certain percentage below target. Example: 31% are >15% below target{% endcomment %}
+                    {% blocktrans with scope_percents.low as low %}
+                        <strong>{{ low }}%</strong> are &gt;{{ margin }}% below target
+                    {% endblocktrans %}
+                </span>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 

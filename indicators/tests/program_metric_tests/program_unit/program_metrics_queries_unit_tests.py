@@ -1,35 +1,15 @@
-#pylint: disable=R0901
-"""ProgramWithMetrics should return stats about which indicators (by count and percent) have targets defined properly:
-Interface:
-ProgramWithMetrics.metrics['reported_results'] = int # percentage of indicators with reported results
-ProgramWithMetrics.metrics['defined_targets'] = int # percentage of indicators with targets fully defined
-ProgramWithMetrics.metrics['results_evidence'] = int # percentage of all results for all indicators that have evidence
-ProgramWithMetrics.metrics['indicator_count'] = int # denominator for the above percentages
+""" Program metrics tests for the Home Page
 
+    - program.metrics['indicator_count'] - total indicators for program
+    - program.metrics['targets_defined'] - indicators with targets defined
+    - program.metrics['reported_results'] - indicators with reported results
+    - program.metrics['results_count'] - total results for all indicators in program
+    - program.metrics['results_evidence'] - total results for all indicators in program which have evidence/tolatable
+    """
 
-Specific business rules
-targets_defined:
-    - Indicator has target frequency
-    - if LOP, indicator has lop_target
-    - if MID_END, indicator has both MID and END periodic_target and also target values for both
-    - if EVENT, indicator has at least one periodic_target and all have target values
-    - if time aware, indicator has all periods from reporting_period_start to reporting_period_end with targets
-reported_results:
-    - Indicator has a piece of collected data tied to either it (indicator_id=pk) or one of its periodic targets
-results_evidence:
-    - Indicator has AT LEAST ONE piece of Collected Data which has an associated Documentation as 'evidence'
-
-Units:
-IPTTIndicator.with_metrics => queryset annotated:
-     - targets_defined
-     - results_count
-     - evidence_count
-
-Query counts and complex situations checked in another test
-"""
 
 import datetime
-from indicators.queries import IPTTIndicator, ProgramWithMetrics
+from indicators.queries import ProgramWithMetrics
 from indicators.models import Indicator, PeriodicTarget
 from indicators.views.views_indicators import generate_periodic_targets
 from indicators.views.views_reports import IPTT_ReportView
@@ -39,8 +19,11 @@ from factories import (
 )
 from workflow.models import Program
 from django import test
-from django.db import connection
-from django.conf import settings
+
+def get_reporting_program(*annotations):
+    if annotations[0] == 'metrics':
+        annotations = ['targets', 'results', 'evidence']
+    return ProgramWithMetrics.home_page.with_annotations(*annotations).get(pk=1)
 
 class ProgramMetricsBase(test.TestCase):
     fixtures = ['one_year_program.yaml']
@@ -51,9 +34,6 @@ class ProgramMetricsBase(test.TestCase):
         self.targets = []
         self.data = []
         self.documents = []
-
-    def get_reporting_program(self):
-        return ProgramWithMetrics.with_metrics.get(pk=1)
 
     def get_indicator(self, frequency=Indicator.LOP):
         indicator = i_factories.IndicatorFactory(
@@ -88,40 +68,42 @@ class ProgramMetricsBase(test.TestCase):
         data.save()
         self.documents.append(documentation)
 
+
+class TestIndicatorCounts(ProgramMetricsBase):
+    def test_indicator_count_zero(self):
+        """no indicators should return indicator count of 0"""
+        program = get_reporting_program('count')
+        self.assertEqual(program.indicator_count, 0)
+
+
 # TARGETS DEFINED TESTS:
 
 # pylint: disable=W0232
 class TargetTestsMixin:
     """mixin containing test methods so tests won't fire on base class"""
+    print_all=False
 
     def test_one_good(self):
         self.add_good_indicator()
-        program_reporting = self.get_reporting_program()
+        program_reporting = get_reporting_program('targets')
         self.assertEqual(program_reporting.metrics['targets_defined'], 1,
                          "One indicator with targets defined should be 1 good, got {0}".format(
                              program_reporting.metrics['targets_defined']))
-        indicator = program_reporting.get_annotated_indicators().first()
-        self.assertTrue(
-            indicator.all_targets_defined, "Indicator with targets defined should show all_targets_defined")
 
     def test_two_good(self):
         self.add_good_indicator()
         self.add_good_indicator()
-        program_reporting = self.get_reporting_program()
+        program_reporting = get_reporting_program('targets')
         self.assertEqual(program_reporting.metrics['targets_defined'], 2,
                          "Two indicators with targets defined should be 2 good, got {0}".format(
                              program_reporting.metrics['targets_defined']))
-        indicators = program_reporting.get_annotated_indicators()
-        for indicator in indicators:
-            self.assertTrue(
-                indicator.all_targets_defined, "Indicator with targets defined should show all_targets_defined")
 
     def test_alternate_good_indicators(self):
         if not hasattr(self, 'good_indicators'):
             self.skipTest('no alternate good indicator methods')
         for good_indicator_method in self.good_indicators:
             getattr(self, good_indicator_method)()
-            program_reporting = self.get_reporting_program()
+            program_reporting = get_reporting_program('targets')
             self.assertEqual(program_reporting.metrics['targets_defined'], 1,
                              "One indicator with targets defined should be 1 good, got {0}".format(
                                  program_reporting.metrics['targets_defined']))
@@ -137,15 +119,11 @@ class TargetTestsMixin:
             self.skipTest('no bad indicator methods')
         for bad_indicator_method in self.bad_indicators:
             getattr(self, bad_indicator_method)()
-            program_reporting = self.get_reporting_program()
+            program_reporting = get_reporting_program('targets')
             self.assertEqual(
                 program_reporting.metrics['targets_defined'], 0,
                 "{case}: One indicator {0} should be 0 good, got {1}".format(
                     bad_indicator_method, program_reporting.metrics['targets_defined'], case=self.testcase))
-            indicator = program_reporting.get_annotated_indicators().first()
-            self.assertFalse(
-                indicator.all_targets_defined,
-                "Indicator in case {0} should not show all_targets_defined".format(self.testcase))
             for indicator in self.indicators:
                 indicator.delete()
             self.indicators = []
@@ -161,17 +139,12 @@ class TargetTestsMixin:
         for bad_indicator_method in self.bad_indicators:
             getattr(self, bad_indicator_method)()
             expected_bad_count += 1
-        program_reporting = self.get_reporting_program()
+        program_reporting = get_reporting_program('targets')
         self.assertEqual(
             program_reporting.metrics['targets_defined'], 1,
-            "One good {0} bad indicators should be {1} good, got {2}".format(
-                expected_bad_count, 1, program_reporting.metrics['targets_defined']))
-        indicators = program_reporting.get_annotated_indicators().all()
-        bad_count = [x for x in indicators if not x.all_targets_defined]
-        self.assertEqual(
-            len(bad_count), expected_bad_count,
-            "Expected {0} bad indicators, got {1}".format(
-                expected_bad_count, [x.all_targets_defined for x in indicators]))
+            "One good {0} bad indicators should be {1} good, got {2} with ct {3} and def {4}".format(
+                expected_bad_count, 1, program_reporting.metrics['targets_defined'],
+                program_reporting.indicator_count, program_reporting.targets_defined_count))
 
 class TestLOPTargetsDefined(ProgramMetricsBase, TargetTestsMixin):
     testcase = "lop"
@@ -190,6 +163,7 @@ class TestLOPTargetsDefined(ProgramMetricsBase, TargetTestsMixin):
 
 class TestMidEndTargetsDefined(ProgramMetricsBase, TargetTestsMixin):
     testcase = "midend"
+    print_all=True
     bad_indicators = [
         'add_no_midline_indicator',
         'add_no_endline_indicator',
@@ -332,77 +306,48 @@ class TestMonthlyTargetCounts(TargetTestsMixin, TimeAwareTargetsMixin, ProgramMe
     testcase = 'monthly'
     frequency = Indicator.MONTHLY
 
-# REPORTED RESULTS TESTS:
-
-class TestIPTTIndicatorReportedResults(ProgramMetricsBase):
-    def test_no_target_indicator_results(self):
-        program = self.get_reporting_program()
-        for frequency in [Indicator.MID_END, Indicator.QUARTERLY, Indicator.LOP]:
-            indicator = self.get_indicator(frequency=frequency)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.reported_results, 0,
-                "Bare Indicator should have no reported results, got {0}".format(iptt.reported_results))
-            self.assertFalse(iptt.has_reported_results, "Bare indicator should not have reported results")
-            self.add_data(indicator)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.reported_results, 1,
-                "Indicator should have 1 reported result, got {0}".format(iptt.reported_results))
-            self.assertTrue(iptt.has_reported_results, "Indicator with 1 result should have reported results")
-            self.add_data(indicator)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.reported_results, 2,
-                "Indicator should have 2 reported results, got {0}".format(iptt.reported_results))
-            self.assertTrue(iptt.has_reported_results, "Indicator with 2 result should have reported results")
-
-    def test_with_target_indicator_results(self):
-        program = self.get_reporting_program()
-        for frequency in [f for f, _ in Indicator.TARGET_FREQUENCIES if f != Indicator.LOP]:
-            indicator = self.get_indicator(frequency=frequency)
-            target = self.get_target(indicator)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.reported_results, 0,
-                "Bare Indicator with target should have no reported results, got {0}".format(iptt.reported_results))
-            self.assertFalse(iptt.has_reported_results, "Bare indicator should not have reported results")
-            self.add_data(indicator, target)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.reported_results, 1,
-                "Indicator with target should have 1 reported result, got {0}".format(iptt.reported_results))
-            self.assertTrue(iptt.has_reported_results, "Indicator with 1 result should have reported results")
-            self.add_data(indicator, target)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.reported_results, 2,
-                "Indicator with target should have 2 reported results, got {0}".format(iptt.reported_results))
-            self.assertTrue(iptt.has_reported_results, "Indicator with 2 result should have reported results")
+# REPORTED RESULTS TESTS:    
 
 class TestProgramReportedResultsQueries(ProgramMetricsBase):
     def test_program_one_indicator_reported_results(self):
         for frequency in [Indicator.LOP, Indicator.EVENT, Indicator.SEMI_ANNUAL, Indicator.MONTHLY]:
             indicator = self.get_indicator(frequency=frequency)
-            with self.assertNumQueries(1):
-                program = self.get_reporting_program()
+            with self.assertNumQueries(2):
+                program = get_reporting_program('results')
+                self.assertEqual(
+                    program.metrics['reported_results'], 0,
+                    "One bare indicator should not be counted as 0 reported results, got {0}".format(
+                        program.metrics['reported_results'])
+                )
                 self.assertEqual(
                     program.metrics['results_count'], 0,
-                    "One bare indicator should not be counted as 0 reported results, got {0}".format(
+                    "One bare indicator should not be counted as 0 results count, got {0}".format(
                         program.metrics['results_count'])
                 )
-            with self.assertNumQueries(1):
-                iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-                self.assertFalse(iptt.has_reported_results, "Bare indicator should have no reported results")
             self.add_data(indicator)
-            program = self.get_reporting_program()
+            program = get_reporting_program('results')
+            self.assertEqual(
+                program.metrics['reported_results'], 1,
+                "One indicator with 1 results should  be counted as 1 reported results, got {0}".format(
+                    program.metrics['reported_results'])
+            )
             self.assertEqual(
                 program.metrics['results_count'], 1,
-                "One indicator with results should  be counted as 1 reported results, got {0}".format(
+                "One indicator with one results should be counted as 1 results count, got {0}".format(
                     program.metrics['results_count'])
             )
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertTrue(iptt.has_reported_results, "Indicator with results should have reported results")
+            self.add_data(indicator)
+            program = get_reporting_program('results')
+            self.assertEqual(
+                program.metrics['reported_results'], 1,
+                "One indicator with 2 results should  be counted as 1 reported results, got {0}".format(
+                    program.metrics['reported_results'])
+            )
+            self.assertEqual(
+                program.metrics['results_count'], 2,
+                "One indicator with 2 results should be counted as 2 results count, got {0}".format(
+                    program.metrics['results_count'])
+            )
             for datum in self.data:
                 datum.delete()
             self.data = []
@@ -414,113 +359,44 @@ class TestProgramReportedResultsQueries(ProgramMetricsBase):
         for frequency, _ in Indicator.TARGET_FREQUENCIES:
             indicator = self.get_indicator(frequency=frequency)
             self.add_data(indicator)
+            self.add_data(indicator)
         for frequency, _ in Indicator.TARGET_FREQUENCIES:
             indicator = self.get_indicator(frequency=frequency)
-        program = self.get_reporting_program()
+        program = get_reporting_program('results')
         self.assertEqual(
-            program.metrics['results_count'], len(Indicator.TARGET_FREQUENCIES),
+            program.metrics['reported_results'], len(Indicator.TARGET_FREQUENCIES),
             "one of each freq with data should count as {0} reported results, got {1}".format(
-                len(Indicator.TARGET_FREQUENCIES), program.metrics['results_count']
+                len(Indicator.TARGET_FREQUENCIES), program.metrics['reported_results']
+            )
+        )
+        self.assertEqual(
+            program.metrics['results_count'], 2*len(Indicator.TARGET_FREQUENCIES),
+            "one of each freq with data should count as {0} reported results, got {1}".format(
+                2*len(Indicator.TARGET_FREQUENCIES), program.metrics['results_count']
             )
         )
 
 # RESULTS BACKED UP TESTS:
 
-class TestIPTTIndicatorWithEvidence(ProgramMetricsBase):
-    def test_no_target_indicator_results(self):
-        program = self.get_reporting_program()
-        for frequency, _ in Indicator.TARGET_FREQUENCIES:
-            indicator = self.get_indicator(frequency=frequency)
-            iptt = IPTTIndicator.with_metrics.get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.evidence_count, 0,
-                "Bare Indicator should have no evidence, got {0}".format(iptt.evidence_count))
-            data = self.add_data(indicator)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.evidence_count, 0,
-                "Indicator with data but no docs should have no evidence, got {0}".format(iptt.evidence_count))
-            self.assertFalse(
-                iptt.all_results_backed_up,
-                "Indicator with 1 result and no evidence should not show all results backed up (no evidence)")
-            self.add_evidence(data)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.evidence_count, 1,
-                "Indicator with evidence should have 1 evidence, got {0}".format(iptt.evidence_count))
-            self.assertTrue(
-                iptt.all_results_backed_up,
-                "Indicator with 1 result and 1 evidence should show all results backed up")
-            data2 = self.add_data(indicator)
-            self.add_evidence(data2)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.evidence_count, 2,
-                "Indicator with evidence should have 2 evidence, got {0}".format(iptt.evidence_count))
-            self.assertTrue(
-                iptt.all_results_backed_up,
-                "Indicator with 2 result, both with evidence should show all results backed up")
-
-    def test_fewer_evidence_than_results(self):
-        program = self.get_reporting_program()
-        for frequency, _ in Indicator.TARGET_FREQUENCIES:
-            indicator = self.get_indicator(frequency=frequency)
-            # add one result with evidence
-            data = self.add_data(indicator)
-            self.add_evidence(data)
-            # add another result (so not all results backed up with evidence)
-            data2 = self.add_data(indicator)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.evidence_count, 1,
-                "Indicator with 2 data points but one doc should have 1 evidence, got {0}".format(
-                    iptt.evidence_count))
-            self.assertEqual(
-                iptt.reported_results, 2,
-                "Indicator with 2 data points but one doc should have 2 rep results, got {0}".format(
-                    iptt.reported_results))
-            self.assertFalse(
-                iptt.all_results_backed_up,
-                "Indicator with 2 results and 1 evidence should not show all results backed up")
-            # add another result and another data (still one fewer data than result)
-            self.add_evidence(data2)
-            _ = self.add_data(indicator)
-            iptt = program.get_annotated_indicators().get(pk=indicator.pk)
-            self.assertEqual(
-                iptt.evidence_count, 2,
-                "Indicator with 2 evidence for 3 results should show 2 evidence, got {0}".format(iptt.evidence_count))
-            self.assertEqual(
-                iptt.reported_results, 3,
-                "Indicator with 2 evidence for 3 results should show 3 results, got {0}".format(
-                    iptt.reported_results))
-            self.assertFalse(
-                iptt.all_results_backed_up,
-                "Indicator with 3 results and 2 evidence should not show all results backed up")
 
 class TestProgramWithEvidenceQueries(ProgramMetricsBase):
     def test_program_one_indicator_reported_results(self):
         for frequency in [Indicator.LOP, Indicator.EVENT, Indicator.MID_END, Indicator.QUARTERLY]:
             indicator = self.get_indicator(frequency=frequency)
-            program = self.get_reporting_program()
+            program = get_reporting_program('evidence')
             self.assertEqual(
                 program.metrics['results_evidence'], 0,
                 "One bare indicator should be counted as 0% evidence, got {0}".format(
                     program.metrics['results_evidence'])
             )
-            iptt = program.get_annotated_indicators().first()
-            self.assertTrue(iptt.all_results_backed_up,
-                            "Indicator with no results or evidence should report all_results_backed_up=True")
             data = self.add_data(indicator)
             self.add_evidence(data)
-            program = self.get_reporting_program()
+            program = get_reporting_program('evidence')
             self.assertEqual(
                 program.metrics['results_evidence'], 1,
                 "One indicator with 1 result and 1 evidence should be counted as 1 with evidence, got {0}".format(
                     program.metrics['results_evidence'])
             )
-            iptt = program.get_annotated_indicators().first()
-            self.assertTrue(iptt.all_results_backed_up,
-                            "Indicator with 1 result and 1 evidence should report all_results_backed_up=True")
             for doc in self.documents:
                 doc.delete()
             self.documents = []
@@ -539,10 +415,7 @@ class TestProgramWithEvidenceQueries(ProgramMetricsBase):
         for frequency, _ in Indicator.TARGET_FREQUENCIES:
             indicator = self.get_indicator(frequency=frequency)
             data = self.add_data(indicator)
-        program = self.get_reporting_program()
-        indicators = program.get_annotated_indicators()
-        bad_count = len([x for x in indicators if x.all_results_backed_up])
-        self.assertEqual(bad_count*2, len(indicators), "half indicators should have all_results_backed_up=True")
+        program = get_reporting_program('evidence')
         self.assertEqual(
             program.metrics['results_evidence']*2, program.metrics['results_count'],
             "one of each freq with data should count as double evidence as count, got {0} ev and {1} results".format(
@@ -560,7 +433,7 @@ class TestProgramWithEvidenceQueries(ProgramMetricsBase):
         for frequency, _ in Indicator.TARGET_FREQUENCIES:
             indicator = self.get_indicator(frequency=frequency)
             data = self.add_data(indicator)
-        program = self.get_reporting_program()
+        program = get_reporting_program('evidence')
         self.assertEqual(
             program.metrics['results_evidence'], len(Indicator.TARGET_FREQUENCIES),
             "one of each freq with 1 ev/3 results, 1 of each freq with 0 ev/1res"
@@ -568,9 +441,6 @@ class TestProgramWithEvidenceQueries(ProgramMetricsBase):
                 program.metrics['results_evidence']
             )
         )
-        indicators = program.get_annotated_indicators()
-        no_missing_count = len([x for x in indicators if x.all_results_backed_up])
-        self.assertEqual(no_missing_count, 0, "All indicators should show as no missing evidence")
 
 
 class TestIndicatorReportingEdgeCases(test.TestCase):
@@ -600,7 +470,7 @@ class TestIndicatorReportingEdgeCases(test.TestCase):
         result.save()
 
     def results_count_asserts(self, indicator_count, with_results_count, results_count):
-        reporting_program = ProgramWithMetrics.with_metrics.get(pk=1)
+        reporting_program = get_reporting_program('metrics')
         self.assertEqual(
             reporting_program.metrics['indicator_count'], indicator_count,
             "{0} indicator should show indicator_count as {0}, got {1}".format(
@@ -618,37 +488,10 @@ class TestIndicatorReportingEdgeCases(test.TestCase):
                 results_count, reporting_program.metrics['results_count'])
         )
 
-    def test_collected_data_counts(self):
-        """indicator has_reported_results and program.metrics['reported_results'] independent of result count"""
-        # one indicator with no reported results
-        indicator = self.get_indicator()
-        reporting_indicator = IPTTIndicator.with_metrics.get(pk=indicator.pk)
-        self.assertFalse(
-            reporting_indicator.has_reported_results,
-            "no results should show has_reported_results false")
-        self.results_count_asserts(1, 0, 0)
-        # two indicators, one with 1 reported result
-        indicator2 = self.get_indicator()
-        self.add_result(indicator2)
-        reporting_indicator2 = IPTTIndicator.with_metrics.get(pk=indicator2.pk)
-        self.assertTrue(
-            reporting_indicator2.has_reported_results,
-            "1 result should show has_reported_results true")
-        self.results_count_asserts(2, 1, 1)
-        # three indicators, one with 1 reported result, 1 with 2 reported results
-        indicator3 = self.get_indicator()
-        self.add_result(indicator3)
-        self.add_result(indicator3)
-        reporting_indicator3 = IPTTIndicator.with_metrics.get(pk=indicator3.pk)
-        self.assertTrue(
-            reporting_indicator3.has_reported_results,
-            "2 result should show has_reported_results true")
-        self.results_count_asserts(3, 2, 3)
-
     def test_needs_evidence_counts(self):
         indicator = self.get_indicator()
         result = self.add_result(indicator)
-        metrics = ProgramWithMetrics.with_metrics.get(pk=1).metrics
+        metrics = get_reporting_program('metrics').metrics
         self.assertEqual(
             metrics['results_count'], 1,
             "one indicator with 1 result should have 1 result count, got {0}".format(metrics['results_count']))
@@ -658,14 +501,8 @@ class TestIndicatorReportingEdgeCases(test.TestCase):
                 metrics['results_evidence']
             )
         )
-        self.assertEqual(
-            metrics['needs_evidence'], 1,
-            "one indicator with 1 result missing evidence should have 1 needs evidence, got {0}".format(
-                metrics['needs_evidence']
-            )
-        )
         self.add_evidence(result)
-        metrics = ProgramWithMetrics.with_metrics.get(pk=1).metrics
+        metrics = get_reporting_program('metrics').metrics
         self.assertEqual(
             metrics['results_count'], 1,
             "one indicator with 1 result should have 1 result count, got {0}".format(metrics['results_count']))
@@ -673,12 +510,6 @@ class TestIndicatorReportingEdgeCases(test.TestCase):
             metrics['results_evidence'], 1,
             "one indicator with 1 result and 1 evidence should have 1 evidence, got {0}".format(
                 metrics['results_evidence']
-            )
-        )
-        self.assertEqual(
-            metrics['needs_evidence'], 0,
-            "one indicator with 1 result with evidence should have 0 needs evidence, got {0}".format(
-                metrics['needs_evidence']
             )
         )
         indicator2 = self.get_indicator()
@@ -689,7 +520,7 @@ class TestIndicatorReportingEdgeCases(test.TestCase):
         self.add_evidence(result4)
         result5 = self.add_result(indicator3)
         self.add_evidence(result5)
-        metrics = ProgramWithMetrics.with_metrics.get(pk=1).metrics
+        metrics = get_reporting_program('metrics').metrics
         self.assertEqual(
             metrics['results_count'], 5,
             "three indicators with 5 results should have 5 result count, got {0}".format(metrics['results_count']))
@@ -697,11 +528,5 @@ class TestIndicatorReportingEdgeCases(test.TestCase):
             metrics['results_evidence'], 3,
             "three indicators with 5 result and 3 evidence should have 3 evidence, got {0}".format(
                 metrics['results_evidence']
-            )
-        )
-        self.assertEqual(
-            metrics['needs_evidence'], 2,
-            "three indicator with 5 result with 3 evidence should have 2 needs evidence, got {0}".format(
-                metrics['needs_evidence']
             )
         )

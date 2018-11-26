@@ -80,36 +80,31 @@ urlpatterns = [
                 url(r'^api/', include(router.urls)),
                 url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                 url(r'^api-token-auth/', auth_views.obtain_auth_token),
+
+                # enable the admin:
+                url(r'^admin/', include(admin.site.urls)),
+
+                # enable admin documentation:
+                url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
                 url(r'^bootstrap/', TemplateView.as_view(template_name="bootstrap4.html")),
                 url(r'^datedtargetinfo/(?P<pk>\w+)/$', dated_target_info, name='datedtargetinfo'),
                 # internationalization
                 url(r'^i18n/', include('django.conf.urls.i18n')),
 
-                # index
+                # Site home page filtered by country
+                url(r'^(?P<selected_country>\w+)/$', views.index, name='index'),
+
+                # Site home page
                 url(r'^$', views.index, name='index'),
 
                 # program page
                 url(r'^program/(?P<program_id>\d+)/(?P<indicator_id>\d+)/(?P<type_id>\d+)/$',
                     ProgramPage.as_view(), name='program_page'),
-                
+
                 # program ajax update for metrics
                 url(r'^program/(?P<program_id>\d+)/metrics/$',
                     ProgramPage.as_view(metrics=True), name='program_metrics'),
-
-                # enable the admin:
-                url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-                url(r'^admin/', include(admin.site.urls)),
-
-                url(r'^(?P<selected_countries>\w+)/$', views.index, name='index'),
-
-                # index
-                url(r'^dashboard/(?P<id>\w+)/(?P<sector>\w+)/$', tolaviews.index, name='index'),
-
-                # base template for layout
-                url(r'^$', TemplateView.as_view(template_name='base.html')),
-
-                # enable admin documentation:
-                url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
                 # app include of workflow urls
                 url(r'^workflow/', include('workflow.urls')),

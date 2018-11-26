@@ -160,3 +160,12 @@ body > .container {
 .card-header {
     background: rgba(0,0,0,0.1) !important;
 }
+
+// inline text style nav with pipes for separators
+.nav--text-list {
+    .nav-item + .nav-item {
+        border-left: 1px solid $gray-300;
+        margin-left: $grid-gutter-width/4;
+        padding-left: $grid-gutter-width/4;
+    }
+}

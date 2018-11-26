@@ -65,7 +65,7 @@
             'bLengthChange': false,
             "aoColumnDefs": [{
                 "bSortable": false,
-                "targets": [0, 1, 2, 3]
+                "aTargets": {% if user.tola_user.allow_projects_access %} [2, 3] {% else %} [2] {% endif %}
             }],
             "oLanguage": {
                 "oPaginate": {
@@ -86,8 +86,10 @@
                     "mRender": function (data, narecord, row) {
                         return '<a class="collecteddata" name=' + row.id + ' href="/workflow/documentation_update/'+row.id+'">' + row.name + '</a>';
                         }},
+                {% if user.tola_user.allow_projects_access %}
                 { title: "{% trans "Project" %}", data: "project__project_name",
                     "defaultContent": "<i>{% trans 'Not set'|escapejs %}</i>"},
+                {% endif %}
                 { title: "{% trans 'Actions' %}",
                     "mRender": function (data, record, row) {
                         return '<div class="text-nowrap"><a href="/workflow/documentation_delete/'+row.id+'" class="btn p-0 pr-4 btn-sm btn-text text-danger"><i class="fas fa-trash-alt"></i>&nbsp;{% trans "Delete"|escapejs %}</a><a href="/workflow/documentation_update/'+row.id+'" class="btn p-0 btn-sm btn-text"><i class="fas fa-edit"></i>&nbsp;{% trans "Edit"|escapejs %}</a></div>';

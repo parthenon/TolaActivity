@@ -13,7 +13,7 @@ def program_menu(context):
         countries = request.user.tola_user.countries.all()
     except AttributeError:
         countries = []
-    programs = Program.objects.filter(funding_status="Funded", country__in=countries).distinct()
+    programs = Program.objects.filter(funding_status="Funded", country__in=countries).prefetch_related('country').distinct()
 
     programs_by_country = OrderedDict((country.country, []) for country in countries)
 

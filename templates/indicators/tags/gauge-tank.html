@@ -1,13 +1,12 @@
 {% load i18n %}
 {# to enable list filtering, the page calling this templatetag should load static/js/program_page_filters.js #}
-<div class="gauge filter-trigger"
-    data-target="{{ id_tag }}"
-    data-target-positive="-1"
+<div class="gauge {% if has_filters %}filter-trigger{% endif %}"
+    data-target="{{ data_target }}"
     data-list-title="{% blocktrans %}{{ filter_title_count }} indicators {{ filter_title }}{% endblocktrans %}"
     >
     <h6 class="gauge__title">{% trans title %}</h6>
     <div class="gauge__overview">
-        <div class="gauge__graphic gauge__graphic--tank">
+        <div class="gauge__graphic gauge__graphic--tank{% if filled_percent == 0 %} gauge__graphic--empty{% endif %}">
             <div class="graphic__tick-marks">
                 {% for i in ticks %}
                 <div class="graphic__tick"></div>
@@ -17,14 +16,28 @@
             <div class="graphic__tank--filled" style="flex-basis: {{ filled_percent }}%"></div>
         </div>
         <div class="gauge__labels">
+            {% if filled_percent > 0 %}
             <div class="gauge__label text-muted">
-                {{ unfilled_percent }}% {% trans unfilled_label %}
+                {{ unfilled_percent }}% {{ unfilled_label }}
                 <!-- TOOLTIP -->
             </div>
             <div class="gauge__label">
-                <span class="gauge__value">{{ filled_percent }}% {% trans filled_label %}</span>
+                <span class="gauge__value">{{ filled_percent }}% {{ filled_label }}</span>
             </div>
+            {% else %}
+            <div class="gauge__label">
+                <span class="text-danger">{{ empty_label }}</span>
+            </div>
+            {% endif %}
         </div>
     </div>
-    <div class="gauge__cta"><span class="btn-link btn-inline"><i class="fas fa-exclamation-triangle text-warning"></i> {{ cta }}</span></div>
+    <div class="gauge__cta">
+    {% if has_filters %}
+        <span class="btn-link btn-inline"><i class="fas fa-exclamation-triangle text-warning"></i> {{ cta }}</span>
+    {% elif unfilled_percent > 0 %}
+        <a href="{% url "program_page" program.id 0 0 %}" class="btn-link btn-inline"><i class="fas fa-exclamation-triangle text-warning"></i> {{ cta }}</a>
+    {% else %}
+        &nbsp;
+    {% endif %}
+    </div>
 </div>

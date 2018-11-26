@@ -1148,6 +1148,10 @@ class SiteProfileList(ListView):
 
         if user_list:
             default_list = int(user_list)
+        else:
+            # add a value (the default) if there was no "user_list" parameter, to avoid "None" being
+            # treated as string by JS
+            user_list = default_list
 
         paginator = Paginator(getSiteProfile, default_list)
         page = request.GET.get('page')

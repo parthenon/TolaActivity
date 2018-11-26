@@ -1,0 +1,18 @@
+// list filters
+// TODO: very incomplete, currently used only on program page indicator filters
+.list__filters {
+    margin-bottom: $grid-gutter-width/2;
+    margin-top: $grid-gutter-width/2;
+}
+.list__filters--inline {
+    align-items: center;
+    display: flex;
+    label { // ugly!
+        margin-bottom: 0;
+        margin-right: 1rem;
+        white-space: nowrap;
+    }
+    .flex-grow { // ugly!
+        flex-grow: 1;
+    }
+}

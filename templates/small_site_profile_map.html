@@ -226,8 +226,8 @@
     var indicators = L.layerGroup(indicator_sites).addTo(map);
 
     var overlayMaps = {
-        "Indicator Data Sites": indicators,
-        "Project Sites": projects,
+        "Sites with data": indicators,
+        "Program sites": projects,
     };
 
     L.control.layers(baseLayers,overlayMaps).addTo(map);

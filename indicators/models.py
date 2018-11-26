@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import uuid
-from datetime import timedelta
+from datetime import timedelta, date
 from decimal import Decimal
 
 import dateparser
@@ -10,8 +10,10 @@ from django.http import QueryDict
 from django.urls import reverse
 from django.utils import formats, timezone, functional
 from django.utils.translation import ugettext_lazy as _
-
+from tola.l10n_utils import l10n_date_year_month, l10n_date_medium
 from django.contrib import admin
+from django.utils.functional import cached_property
+
 
 from simple_history.models import HistoricalRecords
 
@@ -626,10 +628,19 @@ class Indicator(models.Model):
             return self.lop_target + '%'
         return self.lop_target
 
+    @cached_property
+    def cached_data_count(self):
+        return self.collecteddata_set.count()
+
 
 class PeriodicTarget(models.Model):
-    MIDLINE = _('Midline')
-    ENDLINE = _('Endline')
+    LOP_PERIOD = 'Life of Program (LoP) only'
+    MIDLINE = 'Midline'
+    ENDLINE = 'Endline'
+    ANNUAL_PERIOD = 'Year'
+    SEMI_ANNUAL_PERIOD = 'Semi-annual period'
+    TRI_ANNUAL_PERIOD = 'Tri-annual period'
+    QUARTERLY_PERIOD = 'Quarter'
 
     indicator = models.ForeignKey(
         Indicator, null=False, blank=False, verbose_name=_("Indicator"), related_name="periodictargets"
@@ -653,45 +664,132 @@ class PeriodicTarget(models.Model):
         blank=True
     )
 
-    customsort = models.IntegerField(_("Customsort"), blank=True, null=True)
+    customsort = models.IntegerField(_("Customsort"), default=0)
     create_date = models.DateTimeField(_("Create date"), null=True, blank=True)
     edit_date = models.DateTimeField(_("Edit date"), null=True, blank=True)
 
     class Meta:
         ordering = ('customsort', '-create_date')
         verbose_name = _("Periodic Target")
+        unique_together = (('indicator', 'customsort'),)
 
     def __unicode__(self):
+        period_name = None
         # used in the collected data modal to display options in the target period dropdown
-        if self.indicator.target_frequency == Indicator.LOP \
-            or self.indicator.target_frequency == Indicator.EVENT \
-                or self.indicator.target_frequency == Indicator.MID_END:
-            return self.period
-        if self.start_date and self.end_date:
-            return "%s (%s - %s)" % (
-                self.period,
-                formats.date_format(self.start_date, "MEDIUM_DATE_FORMAT"),
-                formats.date_format(self.end_date, "MEDIUM_DATE_FORMAT"),
+        if self.indicator.target_frequency == Indicator.MID_END:
+            # midline is the translated "midline" or "endline" based on customsort
+            period_name = _(self.MIDLINE) if self.customsort == 0 else _(self.ENDLINE)
+        if self.indicator.target_frequency == Indicator.LOP:
+            # lop always has translated lop value
+            period_name = _(self.LOP_PERIOD)
+        if period_name is not None:
+            return u'{0}'.format(period_name)
+        # for time-based frequencies get translated name of period:
+        if self.indicator.target_frequency == Indicator.ANNUAL:
+            period_name = _(self.ANNUAL_PERIOD)
+        elif self.indicator.target_frequency == Indicator.SEMI_ANNUAL:
+            period_name = _(self.SEMI_ANNUAL_PERIOD)
+        elif self.indicator.target_frequency == Indicator.TRI_ANNUAL:
+            period_name = _(self.TRI_ANNUAL_PERIOD)
+        elif self.indicator.target_frequency == Indicator.QUARTERLY:
+            period_name = _(self.QUARTERLY_PERIOD)
+        if period_name and self.start_date and self.end_date:
+            # e.g "Year 1 (date - date)" or "Quarter 2 (date - date)"
+            return "{period_name} {period_number} ({start_date} - {end_date})".format(
+                period_name=period_name,
+                period_number=self.customsort+1,
+                start_date=self.start_date,
+                end_date=self.end_date
+            )
+        elif period_name:
+            # if no date for some reason but time-based frequency:
+            return "{period_name} {period_number}".format(
+                period_name=period_name,
+                period_number=self.customsort
                 )
+        if self.indicator.target_frequency == Indicator.MONTHLY:
+            # translate month name, add year
+            month_name = _(self.start_date.strftime("%B"))
+            year = self.start_date.strftime('%Y')
+            return "{month_name} {year}".format(month_name=month_name, year=year)
         return self.period
-
-    @property
-    def start_date_formatted(self):
-        # apparently unused?
-        if self.start_date:
-            return formats.date_format(self.start_date, "MEDIUM_DATE_FORMAT")
-        return self.start_date
-
-    @property
-    def end_date_formatted(self):
-        # apparently unused?
-        if self.end_date:
-            return formats.date_format(self.end_date, "MEDIUM_DATE_FORMAT")
-        return self.end_date
 
     @property
     def getcollected_data(self):
         return self.collecteddata_set.all().order_by('date_collected')
+
+    @classmethod
+    def generate_for_frequency(cls, frequency):
+        """ returns a generator function to yield periods based on start and end dates for a given frequency"""
+        months_per_period = {
+            Indicator.SEMI_ANNUAL: 6,
+            Indicator.TRI_ANNUAL: 4,
+            Indicator.QUARTERLY: 3,
+            Indicator.MONTHLY: 1
+        }
+        if frequency == Indicator.ANNUAL:
+            next_date_func = lambda x: date(x.year + 1, x.month, x.day)
+            name_func = lambda start, count: '{period_name} {count}'.format(
+                period_name=_(cls.ANNUAL_PERIOD), count=count)
+        elif frequency in months_per_period:
+            next_date_func = lambda x: date(
+                x.year if x.month <= 12-months_per_period[frequency] else x.year + 1,
+                x.month + months_per_period[frequency] if x.month <= 12 - months_per_period[frequency] \
+                else x.month + months_per_period[frequency] - 12,
+                x.day)
+            if frequency == Indicator.MONTHLY:
+                name_func = lambda start, count: '{month_name} {year}'.format(
+                    month_name=_(start.strftime('%B')),
+                    year=start.strftime('%Y')
+                    )
+            else:
+                period_name = {
+                    Indicator.SEMI_ANNUAL: cls.SEMI_ANNUAL_PERIOD,
+                    Indicator.TRI_ANNUAL: cls.TRI_ANNUAL_PERIOD,
+                    Indicator.QUARTERLY: cls.QUARTERLY_PERIOD
+                }[frequency]
+                name_func = lambda start, count: '{period_name} {count}'.format(
+                    period_name=_(period_name), count=count)
+        elif frequency == Indicator.LOP:
+            return lambda start, end: [{
+                'name': _(cls.LOP_PERIOD),
+                'start': start,
+                'label': '{0} - {1}'.format(l10n_date_medium(start), l10n_date_medium(end)),
+                'end': end,
+                'customsort': 0
+                }]
+        elif frequency == Indicator.MID_END:
+            return lambda start, end: [
+                {'name': _(cls.MIDLINE),
+                 'start': start,
+                 'label': None,
+                 'end': end,
+                 'customsort': 0},
+                {'name': _(cls.ENDLINE),
+                 'start': start,
+                 'label': None,
+                 'end': end,
+                 'customsort': 1}
+            ]
+        else:
+            next_date_func = None
+            name_func = None
+        def period_generator(start, end):
+            count = 0
+            while start < end:
+                next_start = next_date_func(start)
+                yield {
+                    'name': name_func(start, count+1),
+                    'start': start,
+                    'label': '{0} - {1}'.format(
+                        l10n_date_medium(start), l10n_date_medium(next_start - timedelta(days=1))
+                        ) if frequency != Indicator.MONTHLY else None,
+                    'end': next_start - timedelta(days=1),
+                    'customsort': count
+                }
+                count += 1
+                start = next_start
+        return period_generator
 
 
 class PeriodicTargetAdmin(admin.ModelAdmin):
@@ -735,6 +833,7 @@ class CollectedData(models.Model):
 
     indicator = models.ForeignKey(
         Indicator, help_text=" ", verbose_name=_("Indicator"),
+        db_index=True
     )
 
     agreement = models.ForeignKey(

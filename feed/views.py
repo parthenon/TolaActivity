@@ -23,6 +23,8 @@ from indicators.models import (
 )
 
 from django.contrib.auth.models import User
+from django.db import models
+from django.shortcuts import get_object_or_404
 from tola.util import getCountry
 from django.shortcuts import get_object_or_404
 
@@ -566,11 +568,9 @@ class OrganizationViewSet(APIDefaultsMixin, viewsets.ModelViewSet):
 
 class ProgramTargetFrequencies(viewsets.ViewSet):
     def list(self, request):
-        program_id = request.query_params.get('program_id', None)
-        queryset = Indicator.objects.filter(program__in=[program_id]) \
-            .exclude(target_frequency=Indicator.EVENT).exclude(target_frequency=None) \
-            .values('target_frequency') \
-            .distinct() \
-            .order_by('target_frequency')
+        program = get_object_or_404(Program, pk=request.query_params.get('program_id', None))
+        queryset = program.indicator_set.exclude(
+            models.Q(target_frequency=Indicator.EVENT) | models.Q(target_frequency__isnull=True)
+            ).values('target_frequency').distinct().order_by('target_frequency')
         serializer = ProgramTargetFrequenciesSerializer(queryset, many=True)
         return Response(serializer.data)

@@ -1,31 +1,45 @@
-""" Supplements test_program_metrics with both Functional and Transactional (query-counting) tests for program metrics
+"""Integration tests for the Program Page (indicator data for one program with rollup metrics available)"""
 
-ProgramWithMetrics.with_metrics.all()
- - single query
- - each program has a .metrics property
-    - targets_defined
-    - reported_results
-    - results_evidence
-    - indicator_count
- - program.metrics should not trigger another query (annotated)
-
-program page call with program id:
-    context:
-        - program
-            - has metrics with correct values
-"""
-import time
 import datetime
-import json
 import unittest
-from factories import (
-    indicators_models as i_factories,
-    workflow_models as w_factories
-)
-from workflow.models import Documentation, Program
+import time
+import json
 from indicators.models import Indicator, PeriodicTarget, CollectedData
-from indicators.queries import ProgramWithMetrics, IPTTIndicator
+from workflow.models import Documentation, Program
+from indicators.queries import ProgramWithMetrics
+from factories import (
+    workflow_models as w_factories,
+    indicators_models as i_factories
+)
 from django import test
+
+class ProgramPageQueryTests(test.TestCase):
+    fixtures = ['one_program_home_page.yaml']
+
+    def test_scope_counts_and_metric_counts(self):
+        with self.assertNumQueries(2):
+            program = ProgramWithMetrics.program_page.get(pk=1)
+            indicators = program.annotated_indicators
+            indicator_count = len(indicators)
+            nonreporting = len([i for i in indicators if not i.reporting])
+            low = len([i for i in indicators if i.reporting and i.over_under == -1])
+            on_scope = len([i for i in indicators if i.reporting and i.over_under == 0])
+            high = len([i for i in indicators if i.reporting and i.over_under == 1])
+            targets_defined = len([i for i in indicators if i.all_targets_defined])
+            reported_results = len([i for i in indicators if i.has_reported_results])
+            results_count = sum([i.results_count for i in indicators])
+            results_evidence = sum([i.results_with_evidence_count for i in indicators])
+        self.assertEqual(nonreporting, 7)
+        self.assertEqual(low, 5)
+        self.assertEqual(on_scope, 3)
+        self.assertEqual(high, 4)
+        self.assertEqual(indicator_count, 19)
+        self.assertEqual(targets_defined, 15)
+        self.assertEqual(reported_results, 12)
+        self.assertEqual(results_count, 22)
+        self.assertEqual(results_evidence, 2)
+
+
 
 def do_add_indicator(program):
     indicator = i_factories.IndicatorFactory(program=program)
@@ -58,6 +72,7 @@ def do_add_evidence(result, program):
     doc = w_factories.DocumentationFactory(program=program)
     result.evidence = doc
     result.save()
+
 
 class ProgramWithMetricsQueryCountsBase(test.TestCase):
     skip_all = False
@@ -99,17 +114,17 @@ class ProgramWithMetricsQueryCountsBase(test.TestCase):
 #pylint: disable=W0232
 class QueryTestsMixin:
     def test_program_queryset_returns_one(self):
-        program_qs = ProgramWithMetrics.with_metrics.all()
+        program_qs = ProgramWithMetrics.program_page.all()
         self.assertEqual(program_qs.count(), len(self.expected_cases),
                          "{0} programs created, {1} returned, {2}".format(
                              len(self.expected_cases), program_qs.count(), [x.name for x in program_qs]))
 
     def test_program_queryset_metric_counts(self):
         for expected in self.expected_cases:
+            program = ProgramWithMetrics.program_page.filter(name=expected['name']).first()
             if self.do_print:
-                program = ProgramWithMetrics.with_metrics.filter(name=expected['name']).first()
                 print "targets defined count: {0}".format(program.targets_defined_count)
-                for indicator in IPTTIndicator.with_metrics.filter(program__in=[program.id]).all():
+                for indicator in program.annotated_indicators.all():
                     print "indicator: {0} and defined_targets {1} and targets {2}".format(
                         indicator,
                         indicator.defined_targets,
@@ -123,7 +138,7 @@ class QueryTestsMixin:
                         indicator.evidence_count,
                         [x for x in Documentation.objects.filter(collecteddata__indicator_id=indicator.pk).all()])
                 print "metrics: {0}".format(program.metrics)
-            metrics = ProgramWithMetrics.with_metrics.filter(name=expected['name']).first().metrics
+            metrics = program.metrics
             for key in ['targets_defined', 'reported_results', 'results_evidence', 'indicator_count']:
                 self.assertIn(
                     key, metrics.keys(), "program.metrics should have {0}, got {1}".format(key, metrics.keys()))
@@ -132,16 +147,19 @@ class QueryTestsMixin:
 
     def test_program_queryset_takes_one_query(self):
         for expected in self.expected_cases:
-            with self.assertNumQueries(1):
-                count = ProgramWithMetrics.with_metrics.filter(name=expected['name']).first().metrics['indicator_count']
+            with self.assertNumQueries(2):
+                metrics = ProgramWithMetrics.program_page.filter(name=expected['name']).first().metrics
+                count = metrics['indicator_count']
+                defined_targets = metrics['targets_defined']
                 assert count == expected['indicator_count'] # to ensure queryset is evaluated
+                
 
     def test_program_view_returns_correct_program_data(self):
         client = test.Client()
         client.force_login(self.user.user)
-        programs = ProgramWithMetrics.with_metrics.all()
         for c, expected in enumerate(self.expected_cases):
-            response = client.get('/program/{program_id}/0/0/'.format(program_id=programs[c].id))
+            program = Program.objects.filter(name=expected['name']).first()
+            response = client.get('/program/{program_id}/0/0/'.format(program_id=program.id))
             self.assertEqual(response.status_code, 200)
             program_response_metrics = response.context['program'].metrics
             for key in ['targets_defined', 'reported_results', 'results_evidence', 'indicator_count']:

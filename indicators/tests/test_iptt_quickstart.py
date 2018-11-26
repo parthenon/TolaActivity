@@ -1,16 +1,19 @@
-from django.test import Client, RequestFactory, TestCase
+import unittest
+import datetime
+from django.test import Client, RequestFactory, TestCase, tag
 from django.urls import reverse_lazy
 
-from factories.indicators_models import IndicatorFactory
+from factories.indicators_models import IndicatorFactory, PeriodicTargetFactory
 from factories.workflow_models import (
     ProgramFactory,
     TolaUserFactory,
     UserFactory
 )
 from indicators.models import Indicator
-from indicators.views.views_reports import IPTTReportQuickstartView
+from indicators.views.views_reports import IPTTReportQuickstartView, IPTT_Mixin
 
 
+@tag('iptt', 'fast')
 class IPTTReportQuickstartViewTests(TestCase):
     """Unit tests to valid the IPTTReportQuickStartView"""
 
@@ -27,6 +30,9 @@ class IPTTReportQuickstartViewTests(TestCase):
         self.indicator = IndicatorFactory(
             program=self.program, unit_of_measure_type=Indicator.NUMBER, is_cumulative=False,
             direction_of_change=Indicator.DIRECTION_OF_CHANGE_NONE, target_frequency=Indicator.ANNUAL)
+        lop_indicator = IndicatorFactory(
+            program=self.program, target_frequency=Indicator.LOP
+        )
         self.request_factory = RequestFactory()
         self.client = Client()
         self.client.login(username="IC", password='password')
@@ -117,3 +123,223 @@ class IPTTReportQuickstartViewTests(TestCase):
         response = self.client.post(path, data={'foo': 'bar'})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'indicators/iptt_quickstart.html')
+
+@tag('targets', 'iptt', 'fast')
+class TargetFrequencyAPITests(TestCase):
+    """Tests for the api call /api/programtargetfrequencies/?program_id=#"""
+    def setUp(self):
+        self.program = ProgramFactory()
+        self.url = '/api/programtargetfrequencies/?program_id={pk}'.format(pk=self.program.pk)
+        user = UserFactory()
+        self.client = Client()
+        self.client.force_login(user=user)
+
+    def test_one_indicator_of_each_frequency(self):
+        indicator = IndicatorFactory(
+            program=self.program
+        )
+        for frequency, name in Indicator.TARGET_FREQUENCIES:
+            if frequency != Indicator.EVENT:
+                indicator.target_frequency = frequency
+                indicator.save()
+                response = self.client.get(self.url).json()
+                expected = [{'frequency_name': name, 'target_frequency': frequency}]
+                self.assertEqual(
+                    response, expected,
+                    "One {0} indicator expected {1} but got {2}".format(
+                        name, expected, response)
+                )
+
+    def test_multiple_indicators(self):
+        for frequency in [Indicator.LOP, Indicator.LOP, Indicator.MID_END, Indicator.SEMI_ANNUAL]:
+            IndicatorFactory(program=self.program, target_frequency=frequency)
+        response = self.client.get(self.url).json()
+        self.assertEqual(len(response), 3)
+        self.assertEqual(set([x['target_frequency'] for x in response]),
+                             set([Indicator.LOP, Indicator.MID_END, Indicator.SEMI_ANNUAL]))
+
+@tag('iptt', 'fast')
+class TestIPTTGenerateTargetPeriods(TestCase):
+    """Tests for IPTTMixin._generate_targetperiods function
+        
+        IPTTMixin.program = program
+        IPTTMixin.filter_form_initial_data
+            - start_period - blank or ISO date to filter targets after
+            - end_period - blank or ISO date to filter targets before
+            - timeframe - blank (dates) or 1 (show all) or 2 (most recent)
+            - numrecentperiods - show X most recent timeperiods (requires 2 timeframe)
+        call with (period = frequency #)
+        
+    """
+    def setUp(self):
+        pass
+
+    def test_generate_target_periods_annual(self):
+        # program with 5 year period
+        program = ProgramFactory(
+            reporting_period_start=datetime.date(2013, 1, 1),
+            reporting_period_end=datetime.date(2017, 12, 31)
+        )
+        
+        mixin = IPTT_Mixin()
+        mixin.program = program
+        mixin.filter_form_initial_data = {
+            'timeframe': 1
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.ANNUAL)
+        self.assertEqual(end_date, datetime.date(2017, 12, 31))
+        self.assertEqual(len(date_ranges), 5)
+        self.assertEqual(date_ranges[1]['start'], datetime.date(2014, 1, 1))
+        self.assertEqual(len(targetperiods), 5)
+        mixin.filter_form_initial_data = {
+            'timeframe': 0,
+            'start_period': '2013-01-01',
+            'end_period': '2016-12-31'
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.ANNUAL)
+        self.assertEqual(end_date, datetime.date(2016, 12, 31))
+        self.assertEqual(len(date_ranges), 5)
+        self.assertEqual(len(targetperiods), 4)
+        mixin.filter_form_initial_data = {
+            'timeframe': 0,
+            'start_period': '2013-01-01',
+            'end_period': '2014-12-31'
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.ANNUAL)
+        self.assertEqual(end_date, datetime.date(2014, 12, 31))
+        self.assertEqual(len(date_ranges), 5)
+        self.assertEqual(len(targetperiods), 2)
+        mixin.filter_form_initial_data = {
+            'timeframe': 2,
+            'numrecentperiods': 3
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.ANNUAL)
+        self.assertEqual(end_date, datetime.date(2017, 12, 31))
+        self.assertEqual(len(date_ranges), 5)
+        self.assertEqual(len(targetperiods), 3)
+        self.assertEqual(targetperiods[0]['start'], datetime.date(2015, 1, 1))
+
+    def test_generate_target_periods_quarterly(self):
+        program = ProgramFactory(
+            reporting_period_start=datetime.date(2015, 4, 1),
+            reporting_period_end=datetime.date(2016, 6, 30)
+        )
+        mixin = IPTT_Mixin()
+        mixin.program = program
+        mixin.filter_form_initial_data = {
+            'timeframe': 1
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.QUARTERLY)
+        self.assertEqual(end_date, datetime.date(2016, 6, 30))
+        self.assertEqual(len(date_ranges), 5)
+        self.assertEqual(date_ranges[1]['start'], datetime.date(2015, 7, 1))
+        self.assertEqual(len(targetperiods), 5)
+        mixin.filter_form_initial_data = {
+            'timeframe': 0,
+            'start_period': '2015-04-01',
+            'end_period': '2015-12-31'
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.QUARTERLY)
+        self.assertEqual(end_date, datetime.date(2015, 12, 31))
+        self.assertEqual(len(date_ranges), 5)
+        self.assertEqual(len(targetperiods), 3)
+        mixin.filter_form_initial_data = {
+            'timeframe': 0,
+            'start_period': '2015-10-01',
+            'end_period': '2016-3-31'
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.QUARTERLY)
+        self.assertEqual(end_date, datetime.date(2016, 3, 31))
+        self.assertEqual(targetperiods[1]['name'], 'Quarter 4')
+        self.assertEqual(len(date_ranges), 5)
+        self.assertEqual(len(targetperiods), 2)
+        mixin.filter_form_initial_data = {
+            'timeframe': 2,
+            'numrecentperiods': 3
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.QUARTERLY)
+        self.assertEqual(end_date, datetime.date(2016, 6, 30))
+        self.assertEqual(len(date_ranges), 5)
+        self.assertEqual(targetperiods[0]['name'], 'Quarter 3')
+        self.assertEqual(len(targetperiods), 3)
+        self.assertEqual(targetperiods[0]['start'], datetime.date(2015, 10, 1))
+
+    def test_generate_target_periods_lop(self):
+        program = ProgramFactory(
+            reporting_period_start=datetime.date(2015, 4, 1),
+            reporting_period_end=datetime.date(2016, 6, 30)
+        )
+        mixin = IPTT_Mixin()
+        mixin.program = program
+        mixin.filter_form_initial_data = {
+            'timeframe': 1
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.LOP)
+        self.assertEqual(end_date, datetime.date(2016, 6, 30))
+        self.assertEqual(len(date_ranges), 1)
+        self.assertEqual(date_ranges[0]['start'], datetime.date(2015, 4, 1))
+        self.assertEqual(date_ranges[0]['end'], datetime.date(2016, 6, 30))
+        self.assertEqual(len(targetperiods), 1)
+
+    def test_generate_target_periods_midend(self):
+        program = ProgramFactory(
+            reporting_period_start=datetime.date(2015, 4, 1),
+            reporting_period_end=datetime.date(2016, 6, 30)
+        )
+        mixin = IPTT_Mixin()
+        mixin.program = program
+        mixin.filter_form_initial_data = {
+            'timeframe': 1
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_targetperiods(Indicator.MID_END)
+        self.assertEqual(end_date, datetime.date(2016, 6, 30))
+        self.assertEqual(len(date_ranges), 1)
+        self.assertEqual(date_ranges[0]['start'], datetime.date(2015, 4, 1))
+        self.assertEqual(date_ranges[0]['end'], datetime.date(2016, 6, 30))
+        self.assertEqual(len(targetperiods), 2)
+
+    @unittest.skip('generate timeperiods made redundant')
+    def test_generate_timeperiods(self):
+        program = ProgramFactory(
+            reporting_period_start=datetime.date(2015, 1, 1),
+            reporting_period_end=datetime.date(2016, 12, 31)
+        )
+        mixin = IPTT_Mixin()
+        mixin.program = program
+        mixin.filter_form_initial_data = {
+            'timeframe': 1
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_timeperiods()
+        self.assertEqual(end_date, datetime.date(2016, 12, 31))
+        self.assertEqual(len(date_ranges), 24)
+        self.assertEqual(len(targetperiods), 24)
+        self.assertEqual(date_ranges[9]['start'], datetime.date(2015, 10, 1))
+        mixin.filter_form_initial_data = {
+            'timeframe': 0,
+            'start_period': '2015-10-1',
+            'end_period': '2016-12-31'
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_timeperiods()
+        self.assertEqual(end_date, datetime.date(2016, 12, 31))
+        self.assertEqual(len(date_ranges), 24)
+        self.assertEqual(len(targetperiods), 15)
+        self.assertEqual(targetperiods[9]['start'], datetime.date(2016, 7, 1))
+        mixin.filter_form_initial_data = {
+            'timeframe': 0,
+            'start_period': '2015-10-1',
+            'end_period': '2016-10-31'
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_timeperiods()
+        self.assertEqual(end_date, datetime.date(2016, 10, 31))
+        self.assertEqual(len(date_ranges), 24)
+        self.assertEqual(len(targetperiods), 13)
+        self.assertEqual(targetperiods[-1]['start'], datetime.date(2016, 10, 1))
+        mixin.filter_form_initial_data = {
+            'timeframe': 2,
+            'numrecentperiods': 4
+        }
+        (end_date, date_ranges, targetperiods) = mixin._generate_timeperiods(Indicator.MONTHLY)
+        self.assertEqual(end_date, datetime.date(2016, 12, 31))
+        self.assertEqual(len(date_ranges), 24)
+        self.assertEqual(len(targetperiods), 4)
+        self.assertEqual(targetperiods[0]['start'], datetime.date(2016, 9, 1))

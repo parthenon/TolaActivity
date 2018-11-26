@@ -1,0 +1,34 @@
+{% load i18n %}
+<div class="gauge--small">
+    <div class="gauge__overview">
+        <div class="gauge__graphic gauge__graphic--tank--small">
+            <div class="graphic__tick-marks">
+                {% for i in ticks %}
+                <div class="graphic__tick"></div>
+                {% endfor %}
+            </div>
+            <div class="graphic__tank--unfilled" style="flex-basis: {{ unfilled_percent }}%"></div>
+            <div class="graphic__tank--filled" style="flex-basis: {{ filled_percent }}%"></div>
+        </div>
+        <div class="gauge__labels">
+            <div class="gauge__label">
+                {# need an empty element to force the next label to the end of the flex container #}
+            </div>
+            <div class="gauge__label">
+                <span class="gauge__value--small">
+                    <span class="gauge__value__value">{{ filled_percent }}%</span><br>
+                    {% trans filled_label %}
+                    {% if help_text %}
+                    <a href="#"
+                       tabindex="0"
+                       data-toggle="popover"
+                       data-placement="bottom"
+                       data-trigger="focus"
+                       data-content="{{ help_text }}"
+                       ><i class="far fa-question-circle"></i></a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

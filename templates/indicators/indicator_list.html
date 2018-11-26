@@ -10,10 +10,13 @@
     {% for program in programs %}
         <div class='card border-0 program indicators-list__program'>
             <div class='card-header'>
-                 <h4><a href="{% url 'program_page' program.id 0 0 %}" class="text-dark">{{ program.name|truncatechars:140 }}</a></h4>
+                {% if not program.indicator_set.all %}
+                    <a href="{% url 'indicator_create' program.id %}" role="button" class="btn-link btn-add float-right"><i class="fas fa-plus-circle"></i> {% trans "Add indicator" %}</a>
+                {% endif %}
+                <h4><a href="{% url "program_page" program.id 0 0 %}" class="text-dark">{{ program.name }} <i class="fas fa-arrow-right text-action"></i></a></h4>
                 {% if not program.reporting_period_start or not program.reporting_period_end %}
-                    <div class="">
-                        {% trans "Before adding indicators and performance results, we need to know your program's " %}
+                    <div class="text-muted">
+                        {% trans "Before adding indicators and performance results, we need to know your program's" %}
                         <a
                             class="pl-1"
                             href="#"
@@ -28,9 +31,9 @@
                         </a>
                     </div>
                 {% elif not program.indicator_set.all %}
-                    <div class="">
-                        <p>{% trans "No Indicators have been entered for this program" %}</p>
-                        <a href="{% url 'indicator_create' program.id %}" role="button" class="btn-link btn-add"><i class="fas fa-plus-circle"></i> {% trans "Add indicator" %}</a>
+                    <div class="text-muted">
+                        {% trans "No Indicators have been entered for this program." %}
+                        <a href="{% url 'indicator_create' program.id %}" role="" class="">{% trans "Add an indicator." %}</a>
                     </div>
                 {% else %}
                     <a
@@ -42,36 +45,44 @@
                         data-target="#hidden-{{ program.id }}">
                         <!-- Need the div to make ensure rotating symbol doesn't push text to the right -->
                         <div class="div-expand-symbol"><i class="fas fa-caret-right"></i></div>
-                        {{ program.indicator_count }}
-                        {% if program.indicator_count == 1 %}
-                            {% trans "program indicator" %}
-                        {% else %}
-                            {% trans "program indicators" %}
-                        {% endif %}
+                        {% blocktrans count indicator_count=program.indicator_count %}
+                            {{ indicator_count }} program indicator
+                            {% plural %}
+                            {{ indicator_count }} program indicators
+                        {% endblocktrans %}
                     </a>
                 {% endif %}
             </div>
             <div id="hidden-{{ program.id }}" class="card-body collapse">
                 {% if program.reporting_period_start and program.reporting_period_end %}
-                    <nav class="nav indicators-list__indicator-actions">
-                        <a class="nav-link" href="{% url 'programIndicatorReport' program.id %}">{% trans 'Indicator plan' %}</a>
-                        <a
-                            id="id_link_reporting_period_{{program.id}}"
-                            class="nav-link"
-                            href="#"
-                            data-toggle="modal"
-                            data-program="{{ program.id }}"
-                            data-progstart="{{ program.start_date }}"
-                            data-progend="{{ program.end_date }}"
-                            data-rptstart="{{ program.reporting_period_start }}"
-                            data-rptend="{{ program.reporting_period_end }}"
-                            data-target="#id_reporting_period_modal">
-                                {% trans 'Reporting period' %}
-                        </a>
+                    <ul class="nav indicators-list__indicator-actions nav--text-list">
+                        <li class="nav-item">
+                            <small><a class="" href="{% url "program_page" program.id 0 0 %}">{% trans "Program page" %}</a></small>
+                        </li>
+                        <li class="nav-item">
+                            <small><a class="" href="{% url 'programIndicatorReport' program.id %}">{% trans 'Indicator plan' %}</a></small>
+                        </li>
+                        <li class="nav-item">
+                            <small><a
+                                id="id_link_reporting_period_{{program.id}}"
+                                class=""
+                                href="#"
+                                data-toggle="modal"
+                                data-program="{{ program.id }}"
+                                data-progstart="{{ program.start_date }}"
+                                data-progend="{{ program.end_date }}"
+                                data-rptstart="{{ program.reporting_period_start }}"
+                                data-rptend="{{ program.reporting_period_end }}"
+                                data-target="#id_reporting_period_modal">
+                                    {% trans 'Reporting period' %}
+                            </a></small>
+                        </li>
                         {% if program.reporting_period_start and program.reporting_period_end %}
-                            <a href="{% url 'indicator_create' program.id %}" role="button" class="btn-link btn-add nav-link"><i class="fas fa-plus-circle"></i> {% trans "Add indicator" %}</a>
+                            <li class="nav-item">
+                                <small><a href="{% url 'indicator_create' program.id %}" role="button" class="btn-link btn-add "><i class="fas fa-plus-circle"></i> {% trans "Add indicator" %}</a></small>
+                            </li>
                         {% endif %}
-                    </nav>
+                    </ul>
                 {% endif %}
                 {% if program.indicator_set.all %}
                     <div class="indicators-list__table-container">

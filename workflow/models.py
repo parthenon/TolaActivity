@@ -142,6 +142,8 @@ class TolaUser(models.Model):
         Organization, default=1, blank=True, null=True, verbose_name=_("Organization"))
     language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en')
     country = models.ForeignKey(Country, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_("Country"))
+    active_country = models.ForeignKey( Country, blank=True, null=True, on_delete=models.SET_NULL,\
+        related_name='active_country', verbose_name=_("Active Country"))
     countries = models.ManyToManyField(
         Country, verbose_name=_("Accessible Countries"), related_name='countries', blank=True)
     tables_api_token = models.CharField(blank=True, null=True, max_length=255)
@@ -161,11 +163,26 @@ class TolaUser(models.Model):
     def countries_list(self):
         return ', '.join([x.code for x in self.countries.all()])
 
+    @property
+    def allow_projects_access(self):
+        """
+        Only allow existing users to access the Projects/workflow functionality
+        """
+        user_country_codes = set(self.countries.values_list('code', flat=True))
+        if self.country:
+            user_country_codes.add(self.country.code)
+        return bool(user_country_codes & settings.PROJECTS_ACCESS_WHITELIST_SET)
+
     # on save add create date or update edit date
     def save(self, *args, **kwargs):
         if self.create_date == None:
             self.create_date = timezone.now()
         self.edit_date = timezone.now()
+        super(TolaUser, self).save()
+
+    # update active country
+    def update_active_country(self, country):
+        self.active_country = country
         super(TolaUser, self).save()
 
 
@@ -196,7 +213,7 @@ class TolaBookmarksAdmin(admin.ModelAdmin):
 
     list_display = ('user', 'name')
     display = 'Tola User Bookmarks'
-    list_filter = ('user__name',)
+    listd_filter = ('user__name',)
     search_fields = ('name','user')
 
 
@@ -423,6 +440,10 @@ class Program(models.Model):
             .order_by('number', 'target_frequency')
 
         return indicators
+
+    def get_periods_for_frequency(self, frequency):
+        period_generator = PeriodicTarget.generate_for_frequency(frequency)
+        return period_generator(self.reporting_period_start, self.reporting_period_end)
 
 
 class ApprovalAuthority(models.Model):

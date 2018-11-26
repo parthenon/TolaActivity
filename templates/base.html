@@ -69,7 +69,7 @@
                             <div class="navbar-brand--mc">
                                 <img class="navbar-brand--mc-logo" src="{% static "img/mc_logo_bounded.svg" %}" />
                             </div>
-                            <a class="navbar-brand--tola" href="{% url "index" %}">
+                            <a class="navbar-brand--tola" href="{% url 'index' %}">
                                 <img class="navbar-brand--tola-logo" src="{% static "img/tola_activity_white.svg" %}" />
                             </a>
                         </div>
@@ -81,35 +81,28 @@
                                 {% program_menu %}
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans "Browse" %}</a>
-                                <ul class="dropdown-menu">
-                                    <li class="dropdown-item">
-                                        <a class="nav-link" href="/workflow/documentation_list/0/0/">{% trans "Documents" %}</a>
-                                    </li>
-                                    <li class="dropdown-item">
-                                        <a class="nav-link" href="/workflow/dashboard/0/">{% trans "Projects" %}</a>
-                                    </li>
-                                    <li class="dropdown-item">
-                                        <a class="nav-link" href="/workflow/siteprofile_list/0/0/">{% trans "Sites" %}</a>
-                                    </li>
-                                    <li class="dropdown-item">
-                                        <a class="nav-link" href="/workflow/stakeholder_list/0/0">{% trans "Stakeholders" %}</a>
-                                    </li>
-                                </ul>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarBrowse" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans "Browse" %}</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarBrowse">
+                                    <a class="dropdown-item" href="/workflow/documentation_list/0/0/">{% trans "Documents" %}</a>
+                                    <a class="dropdown-item" href="{% url 'indicator_list' 0 0 0 %}">{% trans "Indicators" %}</a>
+                                    {% if user.tola_user.allow_projects_access %}
+                                    <a class="dropdown-item" href="/workflow/dashboard/0/">{% trans "Projects" %}</a>
+                                    {% endif %}
+                                    <a class="dropdown-item" href="/workflow/siteprofile_list/0/0/">{% trans "Sites" %}</a>
+                                    {% if user.tola_user.allow_projects_access %}
+                                    <a class="dropdown-item" href="/workflow/stakeholder_list/0/0">{% trans "Stakeholders" %}</a>
+                                    {% endif %}
+                                </div>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans "Reports" %}</a>
-                                <ul class="dropdown-menu">
-                                    <li class="dropdown-item">
-                                        <a class="nav-link" href="{% url 'iptt_quickstart' %}">{% trans "Indicator Performance Tracking Table" %}</a>
-                                    </li>
-                                    <li class="dropdown-item">
-                                        <a class="nav-link" href="{% url 'disrep' 0 %}">{% trans "Indicator Disaggregation Report" %}</a>
-                                    </li>
-                                    <li class="dropdown-item">
-                                        <a class="nav-link" href="/workflow/report/0/none">{% trans "Project Report" %}</a>
-                                    </li>
-                                </ul>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarReportsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans "Reports" %}</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarReportsDropdown">
+                                    <a class="dropdown-item" href="{% url 'iptt_quickstart' %}">{% trans "Indicator Performance Tracking Table" %}</a>
+                                    <a class="dropdown-item" href="{% url 'disrep' 0 %}">{% trans "Indicator Disaggregation Report" %}</a>
+                                    {% if user.tola_user.allow_projects_access %}
+                                    <a class="dropdown-item" href="/workflow/report/0/none">{% trans "Project Report" %}</a>
+                                    {% endif %}
+                                </div>
                             </li>
                         </ul>
 
@@ -231,7 +224,7 @@
 
         <script src="{% static "js/bootstrap.min.js" %}"></script>
 
-        <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"></script>
 
 
         <script type="text/javascript" src="{% static 'js/datatables.min.js' %}"></script>
@@ -253,7 +246,6 @@
         <script type="text/javascript">
             var userLang = "{{ LANGUAGE_CODE }}";
             $(document).ready(function() {
-                // Set datepicker language
                 $.datepicker.setDefaults( $.datepicker.regional[ userLang ] );
             });
         </script>

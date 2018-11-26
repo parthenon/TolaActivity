@@ -1,13 +1,15 @@
 import datetime
 
-from django.test import TestCase
-
 from indicators.models import Indicator
-from indicators.views.views_indicators import generate_periodic_target_single, \
+from indicators.views.views_indicators import (
+    generate_periodic_target_single,
     generate_periodic_targets
+)
+from django import test
 
 
-class GeneratePeriodicTargetTests(TestCase):
+@test.tag('targets', 'fast')
+class GenerateSinglePeriodicTarget(test.TestCase):
 
     def setUp(self):
         self.start_date = datetime.datetime(2018, 10, 5, 18, 00)
@@ -42,10 +44,9 @@ class GeneratePeriodicTargetTests(TestCase):
         self.assertEqual(expected, result)
 
     def test_annual(self):
-        """Do we get back the correct value if it is ANNUAL"""
+        """Do we get back the correct period name back for ANNUAL frequency"""
 
         tf = Indicator.ANNUAL
-        # TODO: Get clarification on the business rules for this function
         expected = {'period': 'Year 11', 'end_date': '2029-10-04',
                     'start_date': '2028-10-01'}
 
@@ -55,9 +56,9 @@ class GeneratePeriodicTargetTests(TestCase):
         self.assertDictEqual(expected, result)
 
     def test_semi_annual(self):
-        tf = Indicator.SEMI_ANNUAL
+        """Do we get the correct period name back for SEMI_ANNUAL frequency"""
 
-        # TODO: Get clarification on the business rules for this function
+        tf = Indicator.SEMI_ANNUAL
         expected = {'end_date': '2024-04-04',
                     'period': 'Semi-annual period 11',
                     'start_date': '2023-10-01'}
@@ -68,8 +69,9 @@ class GeneratePeriodicTargetTests(TestCase):
         self.assertDictEqual(expected, result)
 
     def test_tri_annual(self):
+        """Do we get the correct period name back for TRI_ANNUAL frequency"""
+
         tf = Indicator.TRI_ANNUAL
-        # TODO: Get clarification on the business rules for this function
         expected = {'end_date': '2022-06-04',
                     'period': 'Tri-annual period 11',
                     'start_date': '2022-02-01'}
@@ -80,9 +82,9 @@ class GeneratePeriodicTargetTests(TestCase):
         self.assertDictEqual(expected, result)
 
     def test_quarterly(self):
-        tf = Indicator.QUARTERLY
+        """Do we get the correct period name back for QUARTERLY frequency"""
 
-        # TODO: Get clarification on the business rules for this function
+        tf = Indicator.QUARTERLY
         expected = {'end_date': '2021-07-04',
                     'period': 'Quarter 11',
                     'start_date': '2021-04-01'}
@@ -93,9 +95,9 @@ class GeneratePeriodicTargetTests(TestCase):
         self.assertDictEqual(expected, result)
 
     def test_monthly(self):
-        tf = Indicator.MONTHLY
+        """Do we get the correct period name back for MONTHLY frequency"""
 
-        # TODO: Get clarification on the business rules for this function
+        tf = Indicator.MONTHLY
         expected = {'end_date': '2019-09-04',
                     'period': 'August 2019',
                     'start_date': '2019-08-01'}
@@ -106,8 +108,9 @@ class GeneratePeriodicTargetTests(TestCase):
         self.assertDictEqual(expected, result)
 
 
-class GenerateTargetsTests(TestCase):
-
+@test.tag('targets', 'fast')
+class GenerateMultiplePeriodicTargets(test.TestCase):
+    """generate_periodic_targets tests for period name and quantity"""
     def setUp(self):
         self.start_date = datetime.datetime(2018, 10, 5, 18, 00)
         self.total_targets = 10
@@ -144,7 +147,9 @@ class GenerateTargetsTests(TestCase):
 
         self.assertEqual(expected, result)
 
-class GenerateNewPeriodicTargetsWithExisting(TestCase):
+@test.tag('targets', 'fast')
+class GenerateNewPeriodicTargetsWithExisting(test.TestCase):
+    """adding periodic targets when targets exist"""
     DATE_AWARE_FREQUENCIES = [
         Indicator.ANNUAL,
         Indicator.SEMI_ANNUAL,
@@ -159,4 +164,5 @@ class GenerateNewPeriodicTargetsWithExisting(TestCase):
             result = generate_periodic_targets(tf, self.start_date, 1, '', 2)
             self.assertEqual(result[0]['period'][-1], '3',
                              "third {0} target period name should end with 3, got {1}".format(
-                                tf, result[0]['period']))
+                                 tf, result[0]['period']))
+

@@ -1,0 +1,43 @@
+.home { // bodyclass
+    .region-header {
+        justify-content: flex-start;
+    }
+    .page-title {
+        margin-right: $grid-gutter-width/2;
+    }
+}
+.home__featured-country {
+    display: flex;
+    flex-direction: column;
+    @include media-breakpoint-up(md) {
+        flex-direction: row;
+    }
+}
+.home__program-list {
+    margin-top: $grid-gutter-width;
+}
+.program-list__program {
+    margin-bottom: $grid-gutter-width/2;
+    .card-header {
+        align-items: flex-start;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+.program-header__info {
+}
+
+// Map
+#home_country_map {
+    // This ID is mainly for JS targeting; add styles to the container element, below
+    min-height: 350px; // yuck
+    height: 100%;
+    z-index: 1; // double yuck
+}
+.featured-country__map {
+    border: 1px solid $gray-500;
+    @include media-breakpoint-up(md) {
+        flex-basis: 66%;
+    }
+    margin-right: $grid-gutter-width;
+}

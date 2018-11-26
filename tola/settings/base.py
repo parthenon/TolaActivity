@@ -362,6 +362,10 @@ WEBPACK_LOADER = {
     }
 }
 
+# Projects whitelist (https://github.com/mercycorps/TolaActivity/issues/132)
+# Limit access to projects to existing users while hiding it from all others
+PROJECTS_ACCESS_WHITELIST_SET = {'AF', 'PK', 'TL'}  # country code in `workflow_country`
+
 ########## LOGGING CONFIGURATION
 LOGGING = {
     'version': 1,

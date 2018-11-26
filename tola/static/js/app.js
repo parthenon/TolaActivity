@@ -116,6 +116,12 @@ $(function() {
     $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
     window.location.hash = e.target.hash;
     });
+
+    // Enable popovers
+    $('[data-toggle="popover"]').popover()
+    $('[data-toggle="popover"]').on('click', function(e){
+        e.preventDefault();
+    });
 });
 
 
@@ -271,6 +277,7 @@ $(document).ready(function() {
      * Handle change in the indicator services drop-down; updates the indicator drop-down accordingly.
      */
     $("#services").change(function() {
+        // this maybe was made obsolete by a change to radio buttons?
         var selected_service = $(this).val();
         if (selected_service == undefined || selected_service == -1 || selected_service == '') {
             $("#serivce").html("<option>--Service--</option>");
@@ -291,7 +298,6 @@ $(document).ready(function() {
         // page-specific-action call if a page has implemented the 'country_dropdwon_has_changed' function
         if(typeof services_dropdwon_has_changed != 'undefined') services_dropdwon_has_changed(selected_service);
     });
-
 
     /*
      * Handle change in the country drop-down; updates the province drop-down accordingly.

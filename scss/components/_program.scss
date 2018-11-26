@@ -1,20 +1,6 @@
 // Program page and Program Status components
 // May need to split into more components e.g. "gauges"
 
-.program__calendar-complete {
-    color: $success;
-    display: flex;
-    align-items: center;
-    p {
-        line-height: 1.1;
-        margin: 0;
-    }
-    .fa-calendar {
-        font-size: 42px;
-        margin-right: $grid-gutter-width/4;
-    }
-
-}
 .program__status {
     background-color: $card-bg;
     border: 1px solid $border-color;
