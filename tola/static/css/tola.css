@@ -7141,15 +7141,16 @@ body > .container {
   margin-bottom: 15px;
   margin-top: 15px; }
 
-.list__filters--inline {
+.list__filters--inline-label {
   align-items: center;
   display: flex; }
-  .list__filters--inline label {
+  .list__filters--inline-label .filters__label {
     margin-bottom: 0;
     margin-right: 1rem;
     white-space: nowrap; }
-  .list__filters--inline .flex-grow {
-    flex-grow: 1; }
+  .list__filters--inline-label .filters__control {
+    flex-grow: 1;
+    width: 1%; }
 
 /* Local custom CSS and overloads for non-BS libraries */
 .help-block {

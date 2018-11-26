@@ -36,8 +36,8 @@ $(document).ready(function() {
         data-indicator-level-ids="[{{ indicator.level_ids }}]"
         data-reporting="{% if indicator.reporting %}1{% else %}-1{% endif %}" {# whether indicator progress towards targets is reported (min. one target period complete, one result reported) #}
         data-defined-targets="{% if indicator.defined_targets > 0 %}1{% else %}-1{% endif %}" {# whether all targets are defined for this indicator #}
-        data-reported-results="{% if indicator.reported_results > 0 %}1{% else %}-1{% endif %}" {# whether any collecteddata is reported for this indicator #}
-        data-has-evidence="{% if indicator.all_results_backed_up %}1{% else %}-1{% endif %}"
+        data-reported-results="{% if indicator.results_count > 0 %}1{% else %}-1{% endif %}" {# whether any collecteddata is reported for this indicator #}
+        data-has-evidence="{% if indicator.results_count == indicator.results_with_evidence_count %}1{% else %}-1{% endif %}"
         {# data-has-evidence: 1: indicator has results and all results have evidence, -1: indicator has results and at least one is missing evidence, 0: indicator has no results #}
         data-over-under="{{ indicator.over_under }}"> {# indicator progress towards targets (1: over, 0: within 15% of target, -1: under, "None": non reporting #}
         <td id="id_indicator_name_{{ indicator.id }}">
@@ -78,8 +78,8 @@ $(document).ready(function() {
         data-indicator-level-ids="[{{ indicator.level_ids }}]"
         data-reporting="{% if indicator.reporting %}1{% else %}-1{% endif %}" {# whether indicator progress towards targets is reported (min. one target period complete, one result reported) #}
         data-defined-targets="{% if indicator.defined_targets > 0 %}1{% else %}-1{% endif %}" {# whether all targets are defined for this indicator #}
-        data-reported-results="{% if indicator.reported_results > 0 %}1{% else %}-1{% endif %}" {# whether any collecteddata is reported for this indicator #}
-        data-has-evidence="{% if indicator.all_results_backed_up %}1{% else %}-1{% endif %}"
+        data-reported-results="{% if indicator.results_count > 0 %}1{% else %}-1{% endif %}" {# whether any collecteddata is reported for this indicator #}
+        data-has-evidence="{% if indicator.results_count == indicator.results_with_evidence_count %}1{% else %}-1{% endif %}"
         {# data-has-evidence: 1: indicator has results and all results have evidence, -1: indicator has results and at least one is missing evidence, 0: indicator has no results #}
         data-over-under="{{ indicator.over_under }}"> {# indicator progress towards targets (1: over, 0: within 15% of target, -1: under, "None": non reporting #}
         <td colspan="6" class="p-0 bg-blue border-0">
