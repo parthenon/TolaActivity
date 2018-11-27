@@ -185,7 +185,6 @@ export const IndicatorList = observer(function (props) {
     const resultsMap = props.rootStore.resultsMap;
     const currentIndicatorFilter = props.uiStore.currentIndicatorFilter;
     const selectedIndicatorIds = this.props.uiStore.selectedIndicatorIds;
-    const selectedIndicatorLevelIds = this.props.uiStore.selectedIndicatorLevelIds;
 
     // apply gas gauge filter
     let metricsFilteredIndicators = indicatorStore.filterIndicators(currentIndicatorFilter);
@@ -197,10 +196,6 @@ export const IndicatorList = observer(function (props) {
 
     if (selectedIndicatorIds.length > 0) {
         filteredIndicators = filteredIndicators.filter((i) => selectedIndicatorIds.indexOf(i.id) > -1);
-    }
-
-    if (selectedIndicatorLevelIds.length > 0) {
-        filteredIndicators = filteredIndicators.filter((i) => selectedIndicatorLevelIds.indexOf(i.level) > -1);
     }
 
     return <React.Fragment>

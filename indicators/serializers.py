@@ -82,15 +82,3 @@ class ProgramSerializer(serializers.ModelSerializer):
             'id',
             'does_it_need_additional_target_periods',
         ]
-
-
-class LevelSerializer(serializers.ModelSerializer):
-    """
-    Serializer specific to the Program Page
-    """
-    class Meta:
-        model = Level
-        fields = [
-            'id',
-            'name'
-        ]

@@ -135,7 +135,6 @@ export class ProgramPageStore {
 export class ProgramPageUIStore {
     @observable currentIndicatorFilter;  // selected gas gauge filter
     @observable selectedIndicatorIds = []; // indicators filter
-    @observable selectedIndicatorLevelIds = []; // indicator levels filter
 
     constructor() {
         this.setIndicatorFilter = this.setIndicatorFilter.bind(this);
@@ -155,10 +154,5 @@ export class ProgramPageUIStore {
     @action
     setSelectedIndicatorIds(selectedIndicatorIds) {
         this.selectedIndicatorIds = selectedIndicatorIds;
-    }
-
-    @action
-    setSelectedIndicatorLevelIds(selectedIndicatorLevelIds) {
-        this.selectedIndicatorLevelIds = selectedIndicatorLevelIds;
     }
 }

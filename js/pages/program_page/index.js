@@ -72,10 +72,6 @@ eventBus.on('select-indicators-to-filter', (selectedIndicatorIds) => {
     uiStore.setSelectedIndicatorIds(selectedIndicatorIds);
 });
 
-// filter down by selecting individual indicator levels
-eventBus.on('select-indicator-levels-to-filter', (selectedIndicatorLevelIds) => {
-    uiStore.setSelectedIndicatorLevelIds(selectedIndicatorLevelIds);
-});
 
 /*
  * React components on page
@@ -90,7 +86,7 @@ ReactDOM.render(<ProgramMetrics rootStore={rootStore}
     document.querySelector('#program-metrics-react-component'));
 
 ReactDOM.render(<IndicatorFilters rootStore={rootStore}
-                                  uiStore={uiStore} indicatorLevels={jsContext.indicator_levels}/>,
+                                  uiStore={uiStore}/>,
     document.querySelector('#indicator-filters-react-component'));
 
 /*

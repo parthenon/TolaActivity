@@ -102,23 +102,14 @@ export class IndicatorFilters extends React.Component{
 
 
     render() {
-        const indicatorLevels = this.props.indicatorLevels;
         const currentIndicatorFilter = this.props.uiStore.currentIndicatorFilter;
         const indicators = this.props.rootStore.indicatorStore.filterIndicators(currentIndicatorFilter);
         const selectedIndicatorIds = this.props.uiStore.selectedIndicatorIds;
-        const selectedIndicatorLevelIds = this.props.uiStore.selectedIndicatorLevelIds;
 
         const indicatorSelectOptions = indicators.map(i => {
             return {
                 value: i.id,
                 label: i.name,
-            }
-        });
-
-        const indicatorLevelSelectOptions = indicatorLevels.map(il => {
-            return {
-                value: il.id,
-                label: il.name,
             }
         });
 
@@ -131,17 +122,6 @@ export class IndicatorFilters extends React.Component{
                     <MultiSelect options={indicatorSelectOptions}
                                  selected={selectedIndicatorIds}
                                  onSelectCb={(selectedIndicatorIds) => eventBus.emit('select-indicators-to-filter', selectedIndicatorIds)} />
-                </div>
-            </div>
-
-            <div className="form-group" id="id_div_levels">
-                <label htmlFor="id_levels" className="col-form-label text-uppercase">
-                    {gettext('Levels')}
-                </label>
-                <div className="form-group-row">
-                    <MultiSelect options={indicatorLevelSelectOptions}
-                                 selected={selectedIndicatorLevelIds}
-                                 onSelectCb={(selectedIndicatorLevelIds) => eventBus.emit('select-indicator-levels-to-filter', selectedIndicatorLevelIds)} />
                 </div>
             </div>
         </React.Fragment>
