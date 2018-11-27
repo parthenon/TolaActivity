@@ -125,29 +125,45 @@ class GaugeBand extends React.Component {
 
                         <a href="#" className="text-muted" onClick={e => this.onFilterLinkClick(e, IndicatorFilter.nonReporting)}>
                             {
-                                /*Translators: shows how many indicators have indicators with non-reporting targets. Example: 31% are non-reporting*/
-                                interpolate('%s% are non-reporting', [percentNonReporting])
+                                /*Translators: shows how many indicators have indicators with non-reporting targets. Example: 31% unavailable*/
+                                interpolate('%s% unavailable', [percentNonReporting])
                             }
                         </a>
+                        {' '}
+                        <a href="#"
+                           tabIndex="0"
+                           data-toggle="popover"
+                           data-placement="right"
+                           data-trigger="focus"
+                           data-content={gettext("The indicator has no targets, no completed target periods, or no results reported.")}
+                        ><i className="far fa-question-circle"/></a>
                     </div>
-                    <div className="gauge__label" onClick={e => this.onFilterLinkClick(e, IndicatorFilter.aboveTarget)}>
-                        <a href="#" className="gauge__value--above">
+                    <div className="gauge__label">
+                        <a href="#" className="gauge__value--above" onClick={e => this.onFilterLinkClick(e, IndicatorFilter.aboveTarget)}>
                             {
                                 /*Translators: shows how many indicators are a certain percentage above target. Example: 31% are >15% above target*/
                                 interpolate('%s% are >%s% above target', [percentHigh, marginPercent])
                             }
                         </a>
                     </div>
-                    <div className="gauge__label" onClick={e => this.onFilterLinkClick(e, IndicatorFilter.onTarget)}>
-                        <a href="#" className="gauge__value">
+                    <div className="gauge__label">
+                        <a href="#" className="gauge__value" onClick={e => this.onFilterLinkClick(e, IndicatorFilter.onTarget)}>
                             {
                                 /*Translators: shows how many indicators are within a set range of target. Example: 31% are on track*/
                                 interpolate('%s% are on track', [percentOnTarget])
                             }
                         </a>
+                        {' '}
+                        <a href="#"
+                           tabIndex="0"
+                           data-toggle="popover"
+                           data-placement="right"
+                           data-trigger="focus"
+                           data-content={gettext("The actual value matches the target value, plus or minus 15%. So if your target is 100 and your result is 110, the indicator is 10% above target and on track.  Please note that if your indicator has a decreasing direction of change, then “above” and “below” are transposed. In that case, if your target is 100 and your result is 200, your indicator is 50% below target and not on track.")}
+                        ><i className="far fa-question-circle"/></a>
                     </div>
-                    <div className="gauge__label" onClick={e => this.onFilterLinkClick(e, IndicatorFilter.belowTarget)}>
-                        <a href="#" className="gauge__value--below">
+                    <div className="gauge__label">
+                        <a href="#" className="gauge__value--below" onClick={e => this.onFilterLinkClick(e, IndicatorFilter.belowTarget)}>
                             {
                                 /*Translators: shows how many indicators are a certain percentage below target. Example: 31% are >15% below target*/
                                 interpolate('%s% are >%s% below target', [percentBelow, marginPercent])
@@ -182,8 +198,8 @@ export const ProgramMetrics = observer(function (props) {
             />
 
             <GaugeTank title={gettext("Indicators with targets")}
-                       filledLabel={gettext("have targets defined")}
-                       unfilledLabel={gettext("have no targets")}
+                       filledLabel={gettext("have targets")}
+                       unfilledLabel={gettext("no targets")}
                        cta={gettext("Add missing targets")}
 
                        filterType={IndicatorFilter.missingTarget}
@@ -194,8 +210,8 @@ export const ProgramMetrics = observer(function (props) {
                        />
 
             <GaugeTank title={gettext("Indicators with results")}
-                       filledLabel={gettext("have reported results")}
-                       unfilledLabel={gettext("have no results")}
+                       filledLabel={gettext("have results")}
+                       unfilledLabel={gettext("no results")}
                        cta={gettext("Add missing results")}
 
                        filterType={IndicatorFilter.missingResults}
@@ -207,7 +223,7 @@ export const ProgramMetrics = observer(function (props) {
 
             <GaugeTank title={gettext("Results with evidence")}
                        filledLabel={gettext("have evidence")}
-                       unfilledLabel={gettext("are missing evidence")}
+                       unfilledLabel={gettext("no evidence")}
                        cta={gettext("Add missing evidence")}
 
                        filterType={IndicatorFilter.missingEvidence}
