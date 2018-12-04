@@ -117,9 +117,6 @@ urlpatterns = [ # rest framework
                 # app include of workflow urls
                 url(r'^formlibrary/', include('formlibrary.urls')),
 
-                # app include of configurable dashboard urls
-                # url(r'^configurabledashboard/', include('configurabledashboard.urls')),
-
                 # local login
                 url(r'^login/$', authviews.login, name='login'),
                 url(r'^accounts/login/$', authviews.login, name='login'),
