@@ -3,6 +3,7 @@ from crispy_forms.layout import *
 from crispy_forms.bootstrap import *
 from crispy_forms.layout import Layout, Submit, Reset, Field
 from django.forms import HiddenInput, URLInput
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from functools import partial
 from widgets import GoogleMapsWidget
@@ -1463,6 +1464,31 @@ class DocumentationForm(forms.ModelForm):
         # only display Project field to existing users
         if not self.request.user.tola_user.allow_projects_access:
             self.fields.pop('project')
+
+    def clean(self):
+        cleaned_data = super(DocumentationForm, self).clean()
+        program = cleaned_data.get('program')
+        name = cleaned_data.get('name')
+        url = cleaned_data.get('url')
+
+        # Validate uniqueness of name across program
+        qs = Documentation.objects.filter(program=program, name=name).exclude(id=self.instance.id)
+        if qs.exists():
+            other_record = qs[0]  # Maybe multiple dupes because of old data in the DB
+            existing_obj_url = reverse('documentation_update', args=[other_record.id])
+            msg = _('A record already exists with this name. <a href={existing_obj_url} target="_blank">View the record.</a>')\
+                .format(existing_obj_url=existing_obj_url)
+            self.add_error('name', msg)
+
+        # Validate uniqueness of url across program
+        qs = Documentation.objects.filter(program=program, url=url).exclude(id=self.instance.id)
+        if qs.exists():
+            other_record = qs[0]  # Maybe multiple dupes because of old data in the DB
+            existing_obj_url = reverse('documentation_update', args=[other_record.id])
+            msg = _('A record already exists with this link. <a href={existing_obj_url} target="_blank">View the record.</a>')\
+                .format(existing_obj_url=existing_obj_url)
+            self.add_error('url', msg)
+
 
 
 class QuantitativeOutputsForm(forms.ModelForm):

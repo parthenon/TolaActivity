@@ -222,6 +222,9 @@
                 <div class="">
                     {% render_field form.name class+="form-control" %}
                     <small class="form-text text-muted">{{ form.name.help_text }}</small>
+                    {% for error in form.name.errors %}
+                        <span class="has-error">{{ error|safe }}</span>
+                    {% endfor %}
                     <span id="validation_id_name" class="has-error"></span>
                 </div>
             </div>
@@ -233,6 +236,9 @@
                 <div class="">
                     {% render_field form.url class+="form-control" %}
                     <small class="form-text text-muted">{{ form.url.help_text }}</small>
+                    {% for error in form.url.errors %}
+                        <span class="has-error">{{ error|safe }}</span>
+                    {% endfor %}
                     <span id="validation_id_url" class="has-error"></span>
                 </div>
                 <button type="button" style="" class="btn btn-sm btn-secondary" onclick="onApiLoad();">gdrive</button>
