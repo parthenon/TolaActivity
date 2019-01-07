@@ -1419,7 +1419,6 @@ class DocumentationForm(forms.ModelForm):
         model = Documentation
         exclude = ['create_date', 'edit_date']
 
-
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -1454,6 +1453,12 @@ class DocumentationForm(forms.ModelForm):
         self.fields['url'].required = True
         self.fields['project'].queryset = ProjectAgreement.objects.filter(program__country__in=countries)
         self.fields['program'].queryset = Program.active_programs.filter(country__in=countries)
+
+        instance = kwargs.get('instance')
+
+        # Do not allow editing of program if Record is associated with a result
+        if instance:
+            self.fields['program'].disabled = instance.result_set.exists()
 
         # only display Project field to existing users
         if not self.request.user.tola_user.allow_projects_access:
