@@ -2,14 +2,14 @@
 {% load widget_tweaks %}
 {% load i18n %}
 
-{% block title %}{% trans "Document" %} | {% endblock %}
-{% block page_title %}{% trans "Document" %}{% endblock %}
+{% block title %}{% trans "Record" %} | {% endblock %}
+{% block page_title %}{% trans "Record" %}{% endblock %}
 
 {% block bread_crumb %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url "documentation_list" %}">{% trans "Documents" %}</a></li>
-        <li class="breadcrumb-item active">{% trans "Document" %}</li>
+        <li class="breadcrumb-item"><a href="{% url "documentation_list" %}">{% trans "Records" %}</a></li>
+        <li class="breadcrumb-item active">{% trans "Record" %}</li>
     </ol>
 </nav>
 {% endblock %}

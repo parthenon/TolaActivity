@@ -2,6 +2,8 @@ import collections
 import operator
 import unicodedata
 
+from django.utils.translation import gettext as _
+
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -1000,7 +1002,7 @@ class DocumentationCreate(CreateView):
 
         form.save()
 
-        messages.success(self.request, 'Success, Documentation Created!')
+        messages.success(self.request, _('Success! Record saved.'))
         latest = Documentation.objects.latest('id')
         redirect_url = '/workflow/documentation_update/' + str(latest.id)
         return HttpResponseRedirect(redirect_url)
@@ -1038,7 +1040,7 @@ class DocumentationUpdate(UpdateView):
     def form_valid(self, form):
 
         form.save()
-        messages.success(self.request, 'Success, Documentation Updated!')
+        messages.success(self.request, _('Success! Record saved.'))
 
         return self.render_to_response(self.get_context_data(form=form))
 
