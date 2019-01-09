@@ -2,6 +2,7 @@
 {% load static %}
 {% load group_tag menu_tag %}
 {% load i18n %}
+{% load render_bundle from webpack_loader %}
 <!doctype html>
 <html lang="en">
     <head>
@@ -18,11 +19,8 @@
         <!-- Datatables css for HTML tables -->
         <link href="{% static 'css/datatables.min.css' %}" rel="stylesheet" type="text/css">
 
-        <!-- compiled CSS -->
-        <link href="{% static 'css/tola.css' %}?q=gp1110" rel="stylesheet" type="text/css">
-
-        <!-- Custom CSS -->
-        <link href="{% static 'css/app.css' %}?q=gp1110" rel="stylesheet" type="text/css">
+        <!-- compiled webpack CSS -->
+        {% render_bundle 'base' 'css' %}
 
         <!--- Django Tables2 css -->
         <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}">
