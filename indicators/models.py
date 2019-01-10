@@ -1007,6 +1007,7 @@ class Result(models.Model):
         _("Comment/Explanation"), max_length=255, blank=True, null=True,
         help_text=" ")
 
+    # Deprecated - see evidence_name/evidence_url
     evidence = models.ForeignKey(
         Documentation, null=True, blank=True, on_delete=models.SET_NULL,
         verbose_name=_("Evidence Document or Link"), help_text=" ")
@@ -1015,12 +1016,17 @@ class Result(models.Model):
         TolaUser, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_("Originated By"),
         related_name="approving_data", help_text=" ")
 
+    # Deprecated
     tola_table = models.ForeignKey(
         TolaTable, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_("TolaTable"), help_text=" ")
 
+    # Deprecated
     update_count_tola_table = models.BooleanField(
         verbose_name=_("Would you like to update the achieved total with the \
         row count from TolaTables?"), default=False, help_text=" ")
+
+    evidence_name = models.CharField(max_length=135, blank=True)
+    evidence_url = models.CharField(max_length=255, blank=True)
 
     create_date = models.DateTimeField(null=True, blank=True, help_text=" ")
     edit_date = models.DateTimeField(null=True, blank=True, help_text=" ")
