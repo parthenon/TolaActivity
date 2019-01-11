@@ -20,7 +20,6 @@ from program_metric_tests.indicator_unit.has_reported_results_queries_unit_tests
 
 from program_metric_tests.indicator_unit.results_with_evidence_count_queries_unit_tests import (
     TestResultswithEvidenceCount,
-    TestResultsMixedEvidenceTypes
 )
 
 from program_metric_tests.indicator_unit.reporting_queries_unit_tests import (

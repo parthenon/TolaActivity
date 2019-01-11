@@ -51,7 +51,7 @@
     indicator: 1
     date_collected: '2015-05-01'
     achieved: 550
-    evidence: 1
+    evidence_url: 'http://test_evidence_url'
 - model: indicators.indicator
   pk: 2
   fields:
@@ -78,7 +78,7 @@
     indicator: 2
     date_collected: '2015-01-10'
     achieved: 450
-    evidence: 2
+    evidence_url: 'http://test_evidence_url_2'
 - model: indicators.result
   pk: 3
   fields:

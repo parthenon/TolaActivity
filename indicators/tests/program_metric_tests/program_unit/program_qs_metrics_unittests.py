@@ -47,8 +47,7 @@ def get_data(indicator):
     )
 
 def get_evidence(data):
-    ev = w_factories.DocumentationFactory()
-    data.evidence=ev
+    data.evidence_url = 'http://test_evidence_url'
     data.save()
 
 class TestTwoProgramsBothDefined(test.TestCase):

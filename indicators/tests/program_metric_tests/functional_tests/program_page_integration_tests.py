@@ -68,8 +68,7 @@ def do_add_reported_result(indicator, collect_date, program):
     )
 
 def do_add_evidence(result, program):
-    doc = w_factories.DocumentationFactory(program=program)
-    result.evidence = doc
+    result.evidence_url = 'http://test_evidence_url'
     result.save()
 
 
