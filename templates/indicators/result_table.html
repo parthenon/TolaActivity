@@ -96,10 +96,15 @@
                     {% endwith %}
                 </td>
                 <td class="td--stretch">
-                    {% if cdata.evidence %}
-                        {% if cdata.evidence.url %}<a href="{{cdata.evidence.url}}" target="_blank">{% endif %}
-                        {{ cdata.evidence|default_if_none:"" }}
-                        {% if cdata.evidence.url %}</a>{% endif %}
+{#                    {% if cdata.evidence %}#}
+{#                        {% if cdata.evidence.url %}<a href="{{cdata.evidence.url}}" target="_blank">{% endif %}#}
+{#                        {{ cdata.evidence|default_if_none:"" }}#}
+{#                        {% if cdata.evidence.url %}</a>{% endif %}#}
+{#                    {% endif %}#}
+                    {% if cdata.evidence_url %}
+                        <a href="{{cdata.evidence_url}}" target="_blank">
+                        {{ cdata.evidence_name|default:cdata.evidence_url }}
+                        </a>
                     {% endif %}
                     {% if cdata.complete %}
                         <a href="{% url 'projectcomplete_update' cdata.complete.id %}"
@@ -110,7 +115,6 @@
                            target="_blank"
                            class="btn-link"><i class="fas fa-clipboard"></i> {% trans "View project" %}</a>
                     {% endif %}
-                    {% comment {{ cdata.complete|default_if_none:cdata.agreement|default_if_none:'' }} %} {% endcomment %}
                     {% if cdata.tola_table %}
                         cdata.tola_table
                         <a href="{{ cdata.tola_table.detail_url }}" target="_blank">{{ cdata.tola_table }}</a>
