@@ -251,9 +251,9 @@ class Command(BaseCommand):
 
                             if null_level == self.NULL_LEVELS['EVIDENCE']:
                                 continue
-                            document = Documentation.objects.create(
-                                program=program, name='Doc for RSid {}'.format(rs.id), url='http://my/doc/here/')
-                            rs.evidence = document
+
+                            rs.evidence_name = 'Evidence link for RSid {}'.format(rs.id)
+                            rs.evidence_url = 'http://my/evidence/here/'
                             rs.save()
 
                         indicator.lop_target = lop_target
@@ -396,9 +396,9 @@ class Command(BaseCommand):
 
                 if q in [5, 6]:
                     continue
-                document = Documentation.objects.create(
-                    program=program, name='Doc for RSid {}'.format(rs.id), url='http://my/doc/here/')
-                rs.evidence = document
+
+                rs.evidence_name = 'Evidence link for RSid {}'.format(rs.id)
+                rs.evidence_url = 'http://my/evidence/here/'
                 rs.save()
 
             indicator.lop_target = lop_target
